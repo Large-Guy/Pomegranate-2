@@ -14,7 +14,7 @@ struct Vector2 : public Serializable {
     Vector2 operator/(const Vector2& v);
 
     void serialize(Archive& a) const override;
-    void deserialize(Archive& a) const override;
+    void deserialize(Archive& a) override;
 };
 
 

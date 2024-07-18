@@ -43,7 +43,7 @@ void Vector2::serialize(Archive& a) const
     a << x << y;
 }
 
-void Vector2::deserialize(Archive& a) const
+void Vector2::deserialize(Archive& a)
 {
     a >> &x >> &y;
 }

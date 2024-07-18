@@ -29,6 +29,6 @@ void Entity::serialize(Archive &a) const {
     a << id << name;
 }
 
-void Entity::deserialize(Archive &a) const {
+void Entity::deserialize(Archive &a) {
     a >> &id >> &name;
 }

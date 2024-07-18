@@ -312,7 +312,7 @@ Archive& Archive::operator>>(const Serializable* i) {
     Archive a;
     a.data = std::vector<char>(bytes, bytes + size);
     // Deserialize the object
-    i->deserialize(a);
+    ((Serializable*)i)->deserialize(a);
     return *this;
 }
 
@@ -374,7 +374,7 @@ void Serializable::serialize(Archive& a) const {
     // Do nothing
 }
 
-void Serializable::deserialize(Archive& a) const {
+void Serializable::deserialize(Archive& a) {
     // Do nothing
 }
 

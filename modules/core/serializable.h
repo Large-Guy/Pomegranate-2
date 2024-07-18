@@ -52,7 +52,7 @@ public:
 class Serializable {
 public:
     virtual void serialize(Archive&) const;
-    virtual void deserialize(Archive&) const;
+    virtual void deserialize(Archive&);
 };
 
 
