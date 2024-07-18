@@ -17,7 +17,7 @@ private:
 public:
     Archive();
     Archive& operator<<(long i);
-    Archive& operator<<(unsigned long i);
+    Archive& operator<<(ulong i);
     Archive& operator<<(int i);
     Archive& operator<<(uint i);
     Archive& operator<<(short i);
@@ -26,24 +26,22 @@ public:
     Archive& operator<<(double i);
     Archive& operator<<(float i);
     Archive& operator<<(bool i);
-    Archive& operator<<(const char* i);
     Archive& operator<<(const std::string& i);
     Archive& operator<<(const Serializable& i);
     Archive& operator<<(const Serializable* i);
 
-    Archive& operator>>(long* i);
-    Archive& operator>>(unsigned long* i);
-    Archive& operator>>(int* i);
-    Archive& operator>>(uint* i);
-    Archive& operator>>(short* i);
-    Archive& operator>>(ushort* i);
-    Archive& operator>>(char* i);
-    Archive& operator>>(double* i);
+    Archive& operator>>(const long* i);
+    Archive& operator>>(const ulong* i);
+    Archive& operator>>(const int* i);
+    Archive& operator>>(const uint* i);
+    Archive& operator>>(const short* i);
+    Archive& operator>>(const ushort* i);
+    Archive& operator>>(const char* i);
+    Archive& operator>>(const double* i);
     Archive& operator>>(const float* i);
-    Archive& operator>>(bool* i);
-    Archive& operator>>(char** i);
-    Archive& operator>>(std::string* i);
-    Archive& operator>>(Serializable* i);
+    Archive& operator>>(const bool* i);
+    Archive& operator>>(const std::string* i);
+    Archive& operator>>(const Serializable* i);
 
     size_t size();
     void get_bytes(char* buffer, size_t size);

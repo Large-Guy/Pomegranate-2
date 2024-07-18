@@ -3,17 +3,19 @@
 #include<string>
 #include<unordered_map>
 #include<vector>
+#include<serializable.h>
 
-class Entity {
+class Entity : public Serializable {
 private:
     uint id;
     std::string name;
     static uint entityCount;
-    static std::unordered_map<uint, Entity*> entities;
 public:
     Entity();
     int getId() const;
     static int getEntityCount();
+    void serialize(Archive& a) const override;
+    void deserialize(Archive& a) const override;
 };
 
 

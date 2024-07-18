@@ -10,7 +10,7 @@ struct test : public Serializable {
     }
 
     void deserialize(Archive& a) const override {
-        a >> (Serializable*)&v;
+        a >> &v;
     }
 };
 

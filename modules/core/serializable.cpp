@@ -14,10 +14,10 @@ Archive& Archive::operator<<(long i){
     return *this;
 }
 
-Archive& Archive::operator<<(unsigned long i){
-    // Convert unsigned long to char array
+Archive& Archive::operator<<(ulong i){
+    // Convert ulong to char array
     char* c = (char*)&i;
-    for (int j = 0; j < sizeof(unsigned long); j++)
+    for (int j = 0; j < sizeof(ulong); j++)
     {
         data.push_back(c[j]);
     }
@@ -104,20 +104,14 @@ Archive& Archive::operator<<(bool i){
     return *this;
 }
 
-Archive& Archive::operator<<(const char* i){
-    // Convert char* to char array
-    for (int j = 0; j < strlen(i); j++)
-    {
-        data.push_back(i[j]);
-    }
-    return *this;
-}
-
 Archive& Archive::operator<<(const std::string& i){
-    // Convert std::string to char array
-    for (int j = 0; j < i.length(); j++)
+    //Add the string size
+    *this << i.size();
+
+    // Add the string to the data
+    for (char j : i)
     {
-        data.push_back(i[j]);
+        data.push_back(j);
     }
     return *this;
 }
@@ -161,100 +155,100 @@ Archive& Archive::operator<<(const Serializable* i) {
     return *this;
 }
 
-Archive& Archive::operator>>(long* i){
+Archive& Archive::operator>>(const long* i){
     // Convert char array to long
     char* c = new char[sizeof(long)];
     for (int j = 0; j < sizeof(long); j++)
     {
         c[j] = data[j];
     }
-    *i = *(long*)c;
+    *(long*)i = *(long*)c;
     // Remove the bytes from the data
     data.erase(data.begin(), data.begin() + sizeof(long));
     return *this;
 }
 
-Archive& Archive::operator>>(unsigned long* i){
-    // Convert char array to unsigned long
-    char* c = new char[sizeof(unsigned long)];
-    for (int j = 0; j < sizeof(unsigned long); j++)
+Archive& Archive::operator>>(const ulong* i){
+    // Convert char array to ulong
+    char* c = new char[sizeof(ulong)];
+    for (int j = 0; j < sizeof(ulong); j++)
     {
         c[j] = data[j];
     }
-    *i = *(unsigned long*)c;
+    *(ulong*)i = *(ulong*)c;
     // Remove the bytes from the data
-    data.erase(data.begin(), data.begin() + sizeof(unsigned long));
+    data.erase(data.begin(), data.begin() + sizeof(ulong));
     return *this;
 }
 
-Archive& Archive::operator>>(int* i){
+Archive& Archive::operator>>(const int* i){
     // Convert char array to int
     char* c = new char[sizeof(int)];
     for (int j = 0; j < sizeof(int); j++)
     {
         c[j] = data[j];
     }
-    *i = *(int*)c;
+    *(int*)i = *(int*)c;
     // Remove the bytes from the data
     data.erase(data.begin(), data.begin() + sizeof(int));
     return *this;
 }
 
-Archive& Archive::operator>>(uint* i){
+Archive& Archive::operator>>(const uint* i){
     // Convert char array to uint
     char* c = new char[sizeof(uint)];
     for (int j = 0; j < sizeof(uint); j++)
     {
         c[j] = data[j];
     }
-    *i = *(uint*)c;
+    *(uint*)i = *(uint*)c;
     // Remove the bytes from the data
     data.erase(data.begin(), data.begin() + sizeof(uint));
     return *this;
 }
 
-Archive& Archive::operator>>(short* i){
+Archive& Archive::operator>>(const short* i){
     // Convert char array to short
     char* c = new char[sizeof(short)];
     for (int j = 0; j < sizeof(short); j++)
     {
         c[j] = data[j];
     }
-    *i = *(short*)c;
+    *(short*)i = *(short*)c;
     // Remove the bytes from the data
     data.erase(data.begin(), data.begin() + sizeof(short));
     return *this;
 }
 
-Archive& Archive::operator>>(ushort* i){
+Archive& Archive::operator>>(const ushort* i){
     // Convert char array to ushort
     char* c = new char[sizeof(ushort)];
     for (int j = 0; j < sizeof(ushort); j++)
     {
         c[j] = data[j];
     }
-    *i = *(ushort*)c;
+    *(ushort*)i = *(ushort*)c;
     // Remove the bytes from the data
     data.erase(data.begin(), data.begin() + sizeof(ushort));
     return *this;
 }
 
-Archive& Archive::operator>>(char* i){
+Archive& Archive::operator>>(const char* i){
     // Convert char array to char
-    *i = data[0];
+    *(char*)i = data[0];
     // Remove the bytes from the data
     data.erase(data.begin(), data.begin() + sizeof(char));
     return *this;
 }
 
-Archive& Archive::operator>>(double* i){
+Archive& Archive::operator>>(const double* i){
     // Convert char array to double
     char* c = new char[sizeof(double)];
     for (int j = 0; j < sizeof(double); j++)
     {
         c[j] = data[j];
     }
-    *i = *(double*)c;
+    *(double*)i = *(double*)c;
     // Remove the bytes from the data
     data.erase(data.begin(), data.begin() + sizeof(double));
     return *this;
@@ -273,38 +267,32 @@ Archive& Archive::operator>>(const float* i){
     return *this;
 }
 
-Archive& Archive::operator>>(bool* i){
+Archive& Archive::operator>>(const bool* i){
     // Convert char array to bool
-    *i = data[0];
+    *(bool*)i = data[0];
     // Remove the bytes from the data
     data.erase(data.begin(), data.begin() + sizeof(bool));
     return *this;
 }
 
-Archive& Archive::operator>>(char** i){
-    // Convert char array to char*
-    *i = new char[data.size()];
-    for (int j = 0; j < data.size(); j++)
+Archive& Archive::operator>>(const std::string* i){
+    // Get the size of the string
+    size_t size;
+    *this >> &size;
+    // Get the string from the data
+    std::string s = "";
+    for (int j = 0; j < size; j++)
     {
-        (*i)[j] = data[j];
+        s += data[j];
     }
     // Remove the bytes from the data
-    data.erase(data.begin(), data.end());
+    data.erase(data.begin(), data.begin() + size);
+    // Set the string
+    *(std::string*)i = s;
     return *this;
 }
 
-Archive& Archive::operator>>(std::string* i){
-    // Convert char array to std::string
-    for (int j = 0; j < data.size(); j++)
-    {
-        i->push_back(data[j]);
-    }
-    // Remove the bytes from the data
-    data.erase(data.begin(), data.end());
-    return *this;
-}
-
-Archive& Archive::operator>>(Serializable* i) {
+Archive& Archive::operator>>(const Serializable* i) {
     // Deserialize the object
     // Get the size of the object
     size_t size;

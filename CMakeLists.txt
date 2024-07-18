@@ -10,6 +10,7 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/core)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/math)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/ecs)
 
 
 set(SOURCE_FILES
@@ -25,6 +26,8 @@ add_executable(PomegranateEngine ${SOURCE_FILES})
 # Link the modules
 target_link_libraries(PomegranateEngine PomegranateCore)
 target_link_libraries(PomegranateEngine PomegranateMath)
+target_link_libraries(PomegranateEngine PomegranateECS)
+
 
 
 # Set the output directory for the build
