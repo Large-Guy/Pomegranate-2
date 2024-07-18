@@ -1,37 +1,24 @@
 #include<iostream>
 #include <vector2.h>
-
-//Create a nested serializable struct
-
-struct test : public Serializable {
-    Vector2 v;
-    void serialize(Archive& a) const override {
-        a << v;
-    }
-
-    void deserialize(Archive& a) const override {
-        a >> &v;
-    }
-};
+#include <entity.h>
 
 int main() {
-    //Create a test object
-    test t;
-    t.v = Vector2(1, 2);
-    //Print the object
-    std::cout << "Before serialization: " << t.v.x << ", " << t.v.y << std::endl;
-    //Serialize the object
+    Entity e = Entity("Hello World!");
+    std::cout << e.getName() << std::endl;
+    std::cout << e.getId() << std::endl;
+
+    //Serialization
     Archive a;
-    t.serialize(a);
-    //Write the archive to a file
-    a.write_to_file("test.bin");
-    //Read the archive from a file
+    e.serialize(a);
+    //Write to file
+    a.write_to_file("entity.bin");
+
+    //Read from file
     Archive b;
-    b.read_from_file("test.bin");
-    //Deserialize the object
-    test t2;
-    t2.deserialize(b);
-    //Print the object
-    std::cout << "After serialization: " << t2.v.x << ", " << t2.v.y << std::endl;
+    b.read_from_file("entity.bin");
+    Entity e2;
+    e2.deserialize(b);
+    std::cout << e2.getName() << std::endl;
+    std::cout << e2.getId() << std::endl;
     return 0;
 }

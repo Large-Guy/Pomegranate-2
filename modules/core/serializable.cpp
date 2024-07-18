@@ -106,12 +106,12 @@ Archive& Archive::operator<<(bool i){
 
 Archive& Archive::operator<<(const std::string& i){
     //Add the string size
-    *this << i.size();
+    *this << (ulong)i.size();
 
     // Add the string to the data
-    for (char j : i)
+    for (int j = 0; j < i.size(); j++)
     {
-        data.push_back(j);
+        data.push_back(i[j]);
     }
     return *this;
 }
@@ -329,28 +329,43 @@ void Archive::get_bytes(char* buffer, size_t size){
 }
 
 void Archive::write_to_file(const char* filename) {
-    // Open the file
-    std::ofstream file;
-    file.open(filename, std::ios::out | std::ios::binary);
-    // Write the data to the file
-    for (int i = 0; i < data.size(); i++)
-    {
-        file << data[i];
+    // Open the file in binary mode
+    std::ofstream file(filename, std::ios::out | std::ios::binary);
+
+    // Check if file opened successfully
+    if (!file.is_open()) {
+        // Handle error - couldn't open file
+        return;
     }
+
+    // Write data using write function
+    file.write(data.data(), data.size() * sizeof(data[0]));
+
     // Close the file
     file.close();
 }
 
 void Archive::read_from_file(const char* filename) {
-    // Open the file
-    std::ifstream file;
-    file.open(filename, std::ios::in | std::ios::binary);
-    // Read the data from the file
-    char c;
-    while (file >> c)
-    {
-        data.push_back(c);
+    // Open the file in binary mode
+    std::ifstream file(filename, std::ios::in | std::ios::binary);
+
+    // Check if file opened successfully
+    if (!file.is_open()) {
+        // Handle error - couldn't open file
+        return;
     }
+
+    // Get the file size
+    file.seekg(0, std::ios::end);
+    size_t file_size = file.tellg();
+    file.seekg(0, std::ios::beg); // Reset position to beginning
+
+    // Allocate memory for data based on file size
+    data.resize(file_size / sizeof(data[0]));
+
+    // Read data using read function
+    file.read(data.data(), file_size);
+
     // Close the file
     file.close();
 }

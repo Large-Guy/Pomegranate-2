@@ -12,8 +12,10 @@ private:
     static uint entityCount;
 public:
     Entity();
-    int getId() const;
-    static int getEntityCount();
+    explicit Entity(std::string name);
+    [[nodiscard]] uint getId() const;
+    [[nodiscard]] std::string getName() const;
+    static uint getEntityCount();
     void serialize(Archive& a) const override;
     void deserialize(Archive& a) const override;
 };

@@ -1,5 +1,7 @@
 #include "entity.h"
 
+#include <utility>
+
 uint Entity::entityCount = 0;
 
 Entity::Entity() {
@@ -7,11 +9,19 @@ Entity::Entity() {
     name = "Entity" + std::to_string(id);
 }
 
-int Entity::getId() const {
+Entity::Entity(std::string name) : name(std::move(name)) {
+    id = entityCount++;
+}
+
+uint Entity::getId() const {
     return id;
 }
 
-int Entity::getEntityCount() {
+std::string Entity::getName() const {
+    return name;
+}
+
+uint Entity::getEntityCount() {
     return entityCount;
 }
 
