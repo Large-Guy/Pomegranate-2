@@ -8,8 +8,9 @@
 
 class Entity : public Serializable {
 private:
-    uint id;
-    std::string name;
+    uint _id;
+    std::string _name;
+    static uint _entityCount;
 public:
     Entity();
     explicit Entity(std::string name);

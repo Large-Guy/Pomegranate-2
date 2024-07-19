@@ -12,8 +12,8 @@ struct Archive;
 
 struct Archive {
 private:
-    std::vector<char> data;
-    int index;
+    std::vector<char> _data;
+    int _index;
 public:
     Archive();
     Archive& operator<<(long i);

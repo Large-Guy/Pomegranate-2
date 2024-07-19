@@ -1,6 +1,10 @@
 set(POMEGRANATE_MATH_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vector2.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vector2.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector3.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector3.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector4.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector4.h
 )
 
 set(POMEGRANATE_MATH_INCLUDE_DIRS

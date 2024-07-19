@@ -11,6 +11,7 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/core)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/math)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/ecs)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/graphics/glfw)
 
 
 set(SOURCE_FILES
@@ -27,6 +28,7 @@ add_executable(PomegranateEngine ${SOURCE_FILES})
 target_link_libraries(PomegranateEngine PomegranateCore)
 target_link_libraries(PomegranateEngine PomegranateMath)
 target_link_libraries(PomegranateEngine PomegranateECS)
+target_link_libraries(PomegranateEngine PomegranateGraphicsGLFW)
 
 
 

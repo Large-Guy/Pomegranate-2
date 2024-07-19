@@ -2,33 +2,33 @@
 
 #include <utility>
 
-uint Entity::entityCount = 0;
+uint Entity::_entityCount = 0;
 
 Entity::Entity() {
-    id = entityCount++;
-    name = "Entity" + std::to_string(id);
+    _id = _entityCount++;
+    _name = "Entity" + std::to_string(_id);
 }
 
-Entity::Entity(std::string name) : name(std::move(name)) {
-    id = entityCount++;
+Entity::Entity(std::string name) : _name(std::move(name)) {
+    _id = _entityCount++;
 }
 
 uint Entity::getId() const {
-    return id;
+    return _id;
 }
 
 std::string Entity::getName() const {
-    return name;
+    return _name;
 }
 
 uint Entity::getEntityCount() {
-    return entityCount;
+    return _entityCount;
 }
 
 void Entity::serialize(Archive &a) const {
-    a << id << name;
+    a << _id << _name;
 }
 
 void Entity::deserialize(Archive &a) {
-    a >> &id >> &name;
+    a >> &_id >> &_name;
 }
