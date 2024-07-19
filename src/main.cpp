@@ -6,7 +6,7 @@
 #include <window.h>
 #include <GLFW/glfw3.h>
 #include <shader.h>
-#include <model3d.h>
+#include <model2d.h>
 
 int main() {
 
@@ -19,38 +19,58 @@ int main() {
 
     //Create a shader program
 
-    const char* vertexShaderSource = "#version 460 core\n"
-                                     "layout (location = 0) in vec3 aPos;\n"
-                                     "void main()\n"
-                                     "{\n"
-                                     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                     "}\0";
-    const char* fragmentShaderSource = "#version 460 core\n"
-                                       "out vec4 FragColor;\n"
-                                       "void main()\n"
-                                       "{\n"
-                                       "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                                       "}\n\0";
+    std::string vertexShaderSource = "";
+    std::string fragmentShaderSource = "";
+
+    //Load from file
+    std::ifstream vertexShaderFile("assets/shaders/default2d/vertex.glsl");
+    std::ifstream fragmentShaderFile("assets/shaders/default2d/fragment.glsl");
+
+    if (vertexShaderFile.is_open()) {
+        std::string line;
+        while (getline(vertexShaderFile, line)) {
+            vertexShaderSource += line + "\n";
+        }
+        vertexShaderFile.close();
+    }
+
+    if (fragmentShaderFile.is_open()) {
+        std::string line;
+        while (getline(fragmentShaderFile, line)) {
+            fragmentShaderSource += line + "\n";
+        }
+        fragmentShaderFile.close();
+    }
 
     Shader shader = Shader(vertexShaderSource, fragmentShaderSource);
 
-    std::vector<Vector3> vertices = {
-            {0.0f,0.0f,0.0f},
-            {0.0f,1.0f,0.0f},
-            {1.0f,0.0f,0.0f}
+    std::vector<Vector2> vertices = {
+            {-16.0f,-16.0f},
+            {-16.0f,16.0f},
+            {16.0f,-16.0f},
+            {16.0f,16.0f}
     };
 
-    Model3D model;
+    Model2D model;
     for (auto& vertex : vertices) {
-        model.addVertex(Vertex3D(vertex));
+        model.addVertex(Vertex2D(vertex));
     }
 
     model.addIndex(0);
     model.addIndex(1);
     model.addIndex(2);
 
+    model.addIndex(2);
+    model.addIndex(1);
+    model.addIndex(3);
+
     model.regenerateBuffers();
 
+    //Serialize the model
+
+    Archive archive;
+    model.serialize(archive);
+    archive.write_to_file("model3d.bin");
 
     while (window.isOpen()) {
         // Game loop
@@ -60,6 +80,12 @@ int main() {
         window.draw.clear();
 
         shader.use();
+        shader.set("SCREEN_RESOLUTION", Vector2(800, 600));
+
+        shader.set("ENTITY_POSITION", Vector2(-64, 0));
+        model.draw();
+
+        shader.set("ENTITY_POSITION", Vector2(64, 0));
         model.draw();
 
         window.draw.end();

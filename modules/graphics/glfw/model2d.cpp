@@ -1,43 +1,43 @@
-#include "model3d.h"
+#include "model2d.h"
 
-Model3D::Model3D() {
-    this->_vertices = std::vector<Vertex3D>();
+Model2D::Model2D() {
+    this->_vertices = std::vector<Vertex2D>();
     this->_indices = std::vector<unsigned int>();
     this->_VAO = 0;
     this->_VBO = 0;
     this->_EBO = 0;
 }
 
-std::vector<Vertex3D> Model3D::getVertices() const {
+std::vector<Vertex2D> Model2D::getVertices() const {
     return this->_vertices;
 }
 
-std::vector<unsigned int> Model3D::getIndices() const {
+std::vector<unsigned int> Model2D::getIndices() const {
     return this->_indices;
 }
 
-void Model3D::setVertices(const std::vector<Vertex3D>& vertices) {
+void Model2D::setVertices(const std::vector<Vertex2D>& vertices) {
     this->_vertices = vertices;
 }
 
-void Model3D::setIndices(const std::vector<unsigned int>& indices) {
+void Model2D::setIndices(const std::vector<unsigned int>& indices) {
     this->_indices = indices;
 }
 
-void Model3D::addVertex(const Vertex3D &vertex) {
+void Model2D::addVertex(const Vertex2D &vertex) {
     this->_vertices.push_back(vertex);
 }
 
-void Model3D::addIndex(uint index) {
+void Model2D::addIndex(uint index) {
     this->_indices.push_back(index);
 }
 
-void Model3D::regenerateBuffers() {
+void Model2D::regenerateBuffers() {
     std::vector<float> vertices;
     for (auto& vertex : this->_vertices) {
         vertices.push_back(vertex.position.x);
         vertices.push_back(vertex.position.y);
-        vertices.push_back(vertex.position.z);
+        vertices.push_back(0.0f);
     }
 
     glGenVertexArrays(1, &this->_VAO);
@@ -59,13 +59,13 @@ void Model3D::regenerateBuffers() {
     glBindVertexArray(0);
 }
 
-void Model3D::draw() const {
+void Model2D::draw() const {
     glBindVertexArray(this->_VAO);
     glDrawElements(GL_TRIANGLES, this->_indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
-void Model3D::serialize(Archive &a) const {
+void Model2D::serialize(Archive &a) const {
     a << this->_vertices.size();
     for (auto& vertex : this->_vertices) {
         a << vertex;
@@ -76,11 +76,11 @@ void Model3D::serialize(Archive &a) const {
     }
 }
 
-void Model3D::deserialize(Archive &a) {
+void Model2D::deserialize(Archive &a) {
     unsigned long size;
     a >> &size;
     for (unsigned int i = 0; i < size; i++) {
-        Vertex3D vertex;
+        Vertex2D vertex;
         a >> &vertex;
         this->_vertices.push_back(vertex);
     }
