@@ -40,7 +40,6 @@ void Window::open() {
     }
 
     draw._window = _window;
-
     draw.init();
 }
 
@@ -83,14 +82,14 @@ void Window::Draw::clear() const {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Window::Draw::drawTexture(Texture2D *texture, Vector2 position, Vector2 size, float rotation) {
-    _shader.use();
-    _shader.set("SCREEN_RESOLUTION", Vector2((float)GraphicsCore::getViewportWidth(), (float)GraphicsCore::getViewportHeight()));
-    _shader.set("TEXTURE", *texture);
+void Window::Draw::drawTexture(Texture2D& texture, Vector2 position, Vector2 size, float rotation) {
+    texture.bind(0);
+    Matrix3x3 modelMatrix = Matrix3x3::makeTransform(position, size, rotation);
 
-    Matrix3x3 modelMatrix = Matrix3x3::makeTransform(std::move(position), std::move(size), rotation);
-
-    _shader.set("MODEL_MATRIX", modelMatrix);
+    _currentShader->use();
+    _currentShader->set("SCREEN_RESOLUTION", Vector2((float)GraphicsCore::getViewportWidth(), (float)GraphicsCore::getViewportHeight()));
+    _currentShader->set("TEXTURE", texture);
+    _currentShader->set("MODEL_MATRIX", modelMatrix);
 
     _rect.draw();
 }
@@ -103,8 +102,18 @@ void Window::Draw::setColor(const Vector3& color, float a) {
     _color = Vector4(color.x, color.y, color.z, a);
 }
 
+void Window::Draw::setShader(Shader *shader) {
+    if(shader == nullptr)
+    {
+        _currentShader = _shader;
+        return;
+    }
+    _currentShader = shader;
+}
+
 void Window::Draw::init() {
     _color = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+
     //Create a rectangle model
     _rect.addVertex({
                             {-0.5,-0.5},
@@ -138,7 +147,6 @@ void Window::Draw::init() {
     _rect.regenerateBuffers();
 
     //Create a shader program
-
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
 
@@ -162,6 +170,7 @@ void Window::Draw::init() {
         fragmentShaderFile.close();
     }
 
-    _shader = Shader(vertexShaderSource, fragmentShaderSource);
+    _shader = new Shader(vertexShaderSource, fragmentShaderSource);
+    _currentShader = _shader;
 }
 

@@ -25,15 +25,17 @@ public:
         Vector4 _color;
         GLFWwindow* _window;
         Model2D _rect;
-        Shader _shader;
+        Shader* _shader;
+        Shader* _currentShader;
         void init();
     public:
         void begin();
         void end();
         void setColor(Vector4 color);
+        void setShader(Shader* shader);
         void setColor(const Vector3& color, float a = 1.0);
         void clear() const;
-        void drawTexture(Texture2D* texture, Vector2 position, Vector2 size, float rotation = 0.0f);
+        void drawTexture(Texture2D& texture, Vector2 position, Vector2 size, float rotation = 0.0f);
 
 
         friend class Window;

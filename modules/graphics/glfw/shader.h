@@ -15,10 +15,10 @@ private:
     GLuint id;
     std::string vertexSource;
     std::string fragmentSource;
-    void compileShader(std::string source, GLenum type);
+    void compileShader(const std::string& source, GLenum type);
 public:
     Shader();
-    Shader(std::string vertexSource, std::string fragmentSource);
+    Shader(const std::string& vertexSource, const std::string& fragmentSource);
     ~Shader();
     void use() const;
     void set(const char* name, bool value) const;

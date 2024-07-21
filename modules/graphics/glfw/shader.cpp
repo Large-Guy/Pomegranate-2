@@ -3,10 +3,10 @@
 Shader::Shader() {
     this->vertexSource = "";
     this->fragmentSource = "";
-    id = -1;
+    id = 0;
 }
 
-Shader::Shader(std::string vertexSource, std::string fragmentSource)
+Shader::Shader(const std::string& vertexSource, const std::string& fragmentSource)
 {
     this->vertexSource = vertexSource;
     this->fragmentSource = fragmentSource;
@@ -18,7 +18,8 @@ Shader::Shader(std::string vertexSource, std::string fragmentSource)
 
 Shader::~Shader()
 {
-    glDeleteProgram(id);
+    if(id != 0)
+        glDeleteProgram(id);
 }
 
 void Shader::use() const
@@ -26,7 +27,7 @@ void Shader::use() const
     glUseProgram(id);
 }
 
-void Shader::compileShader(std::string source, GLenum type)
+void Shader::compileShader(const std::string& source, GLenum type)
 {
     const char* c = source.c_str();
     GLuint shader = glCreateShader(type);

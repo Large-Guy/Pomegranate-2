@@ -21,14 +21,17 @@ int main() {
 
     GraphicsCore::setViewport(1080, 720);
 
-    //Create a shader program
+    Texture2D texture("assets/images/batman.png");
 
+    texture.bind(0);
+
+    //Create a shader program
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
 
     //Load from file
-    std::ifstream vertexShaderFile("assets/shaders/default2d/vertex.glsl");
-    std::ifstream fragmentShaderFile("assets/shaders/default2d/fragment.glsl");
+    std::ifstream vertexShaderFile("assets/shaders/test/vertex.glsl");
+    std::ifstream fragmentShaderFile("assets/shaders/test/fragment.glsl");
 
     if (vertexShaderFile.is_open()) {
         std::string line;
@@ -46,51 +49,7 @@ int main() {
         fragmentShaderFile.close();
     }
 
-    Shader shader = Shader(vertexShaderSource, fragmentShaderSource);
-
-
-    Model2D model;
-
-    model.addVertex({
-                            {-0.5,-0.5},
-                            {1.0},
-                            {0.0,0.0}
-                    });
-    model.addVertex({
-                            {-0.5,0.5},
-                            {1.0},
-                            {0.0,1.0}
-    });
-    model.addVertex({
-                            {0.5,0.5},
-                            {1.0},
-                            {1.0,1.0}
-    });
-    model.addVertex({
-                            {0.5,-0.5},
-                            {1.0},
-                            {1.0,0.0}
-    });
-
-    model.addIndex(0);
-    model.addIndex(1);
-    model.addIndex(2);
-
-    model.addIndex(0);
-    model.addIndex(2);
-    model.addIndex(3);
-
-    model.regenerateBuffers();
-
-    //Serialize the model
-
-    Archive archive;
-    model.serialize(archive);
-    archive.writeToFile("model3d.bin");
-
-    Texture2D texture("assets/images/batman.png");
-
-    texture.bind(0);
+    Shader shader(vertexShaderSource, fragmentShaderSource);
 
     float time = 0.0f;
 
@@ -110,9 +69,8 @@ int main() {
 
         window.draw.clear();
 
-        window.draw.drawTexture(&texture, Vector2(0.0,0.0), Vector2(128.0,128.0));
-        window.draw.drawTexture(&texture, Vector2(-256.0,0.0), Vector2(128.0,128.0));
-        window.draw.drawTexture(&texture, Vector2(256.0,0.0), Vector2(128.0,128.0));
+        window.draw.setShader(&shader);
+        window.draw.drawTexture(texture, Vector2(0.0,0.0), Vector2(256.0,256.0),time);
 
         window.draw.end();
         time += 0.01f;
