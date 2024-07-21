@@ -1,5 +1,11 @@
 #include "shader.h"
 
+Shader::Shader() {
+    this->vertexSource = "";
+    this->fragmentSource = "";
+    id = -1;
+}
+
 Shader::Shader(std::string vertexSource, std::string fragmentSource)
 {
     this->vertexSource = vertexSource;
@@ -8,6 +14,11 @@ Shader::Shader(std::string vertexSource, std::string fragmentSource)
     compileShader(vertexSource, GL_VERTEX_SHADER);
     compileShader(fragmentSource, GL_FRAGMENT_SHADER);
     glLinkProgram(id);
+}
+
+Shader::~Shader()
+{
+    glDeleteProgram(id);
 }
 
 void Shader::use() const
@@ -21,6 +32,16 @@ void Shader::compileShader(std::string source, GLenum type)
     GLuint shader = glCreateShader(type);
     glShaderSource(shader, 1, &c, nullptr);
     glCompileShader(shader);
+    GLint compileStatus;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
+    if (compileStatus != GL_TRUE) {
+        GLint infoLogLength;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+        std::vector<GLchar> infoLog(infoLogLength);
+        glGetShaderInfoLog(shader, infoLogLength, NULL, infoLog.data());
+        std::cerr << "Shader compilation failed:\n" << infoLog.data() << std::endl;
+        // Handle compilation failure, e.g., delete shader and exit
+    }
     glAttachShader(id, shader);
     glDeleteShader(shader);
 }
@@ -47,4 +68,26 @@ void Shader::set(const char *name, const Vector3 &value) const {
 
 void Shader::set(const char *name, const Vector4 &value) const {
     glUniform4f(glGetUniformLocation(id, name), value.x, value.y, value.z, value.w);
+}
+
+void Shader::set(const char *name, const Matrix2x2 &value) const {
+    //Convert Matrix2x2 to float array
+    float values[4] = {value.x.x, value.x.y, value.y.x, value.y.y};
+    glUniformMatrix2fv(glGetUniformLocation(id, name), 1, GL_FALSE, values);
+}
+
+void Shader::set(const char *name, const Matrix3x3 &value) const {
+    //Convert Matrix3x3 to float array
+    float values[9] = {value.x.x, value.x.y, value.x.z, value.y.x, value.y.y, value.y.z, value.z.x, value.z.y, value.z.z};
+    glUniformMatrix3fv(glGetUniformLocation(id, name), 1, GL_FALSE, values);
+}
+
+void Shader::set(const char *name, const Matrix4x4 &value) const {
+    //Convert Matrix4x4 to float array
+    float values[16] = {value.x.x, value.x.y, value.x.z, value.x.w, value.y.x, value.y.y, value.y.z, value.y.w, value.z.x, value.z.y, value.z.z, value.z.w, value.w.x, value.w.y, value.w.z, value.w.w};
+    glUniformMatrix4fv(glGetUniformLocation(id, name), 1, GL_FALSE, values);
+}
+
+void Shader::set(const char *name, const Texture2D &value) const {
+    glUniform1i(glGetUniformLocation(id, name), value.getBindSlot());
 }

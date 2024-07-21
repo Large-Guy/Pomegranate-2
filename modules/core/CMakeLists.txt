@@ -1,6 +1,8 @@
 set(POMEGRANATE_CORE_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/serializable.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/serializable.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/resource.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/resource.h
 )
 
 set(POMEGRANATE_CORE_INCLUDE_DIRS

@@ -3,10 +3,18 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <texture.h>
 
 class GraphicsCore {
+private:
+    static int _viewportWidth;
+    static int _viewportHeight;
 public:
     static void init();
+    static void setRenderTexture(Texture2D* texture);
+    static void setViewport(int width, int height);
+    [[nodiscard]] static int getViewportWidth();
+    [[nodiscard]] static int getViewportHeight();
 };
 
 

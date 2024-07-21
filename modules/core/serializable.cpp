@@ -123,7 +123,7 @@ Archive& Archive::operator<<(const Serializable& i) {
     i.serialize(a);
     // Get the bytes from the archive
     char* bytes = new char[a._data.size()];
-    a.get_bytes(bytes, a._data.size());
+    a.getBytes(bytes, a._data.size());
 
     // Push size of the object
     *this << a._data.size();
@@ -142,7 +142,7 @@ Archive& Archive::operator<<(const Serializable* i) {
     i->serialize(a);
     // Get the bytes from the archive
     char* bytes = new char[a._data.size()];
-    a.get_bytes(bytes, a._data.size());
+    a.getBytes(bytes, a._data.size());
 
     // Push size of the object
     *this << a._data.size();
@@ -320,7 +320,7 @@ size_t Archive::size(){
     return _data.size();
 }
 
-void Archive::get_bytes(char* buffer, size_t size){
+void Archive::getBytes(char* buffer, size_t size){
     // Copy the _data to the buffer
     for (int i = 0; i < size; i++)
     {
@@ -328,7 +328,7 @@ void Archive::get_bytes(char* buffer, size_t size){
     }
 }
 
-void Archive::write_to_file(const char* filename) {
+void Archive::writeToFile(const char* filename) {
     // Open the file in binary mode
     std::ofstream file(filename, std::ios::out | std::ios::binary);
 
@@ -345,7 +345,7 @@ void Archive::write_to_file(const char* filename) {
     file.close();
 }
 
-void Archive::read_from_file(const char* filename) {
+void Archive::readFromFile(const char* filename) {
     // Open the file in binary mode
     std::ifstream file(filename, std::ios::in | std::ios::binary);
 

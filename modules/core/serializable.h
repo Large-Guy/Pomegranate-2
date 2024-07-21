@@ -44,9 +44,9 @@ public:
     Archive& operator>>(const Serializable* i);
 
     size_t size();
-    void get_bytes(char* buffer, size_t size);
-    void write_to_file(const char* filename);
-    void read_from_file(const char* filename);
+    void getBytes(char* buffer, size_t size);
+    void writeToFile(const char* filename);
+    void readFromFile(const char* filename);
 };
 
 class Serializable {

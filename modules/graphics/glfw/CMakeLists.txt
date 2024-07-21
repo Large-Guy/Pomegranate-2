@@ -13,6 +13,8 @@ set(POMEGRANATE_GRAPHICS_GLFW_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vertex2d.h
         ${CMAKE_CURRENT_SOURCE_DIR}/model2d.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/model2d.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/texture.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/texture.h
         ${CMAKE_CURRENT_SOURCE_DIR}/glad.c
 )
 
@@ -28,4 +30,4 @@ find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 
-target_link_libraries(PomegranateGraphicsGLFW glfw OpenGL::GL PomegranateMath)
+target_link_libraries(PomegranateGraphicsGLFW glfw OpenGL::GL PomegranateMath PomegranateCore)

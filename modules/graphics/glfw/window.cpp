@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include <utility>
+
 Window::Window() {
     _window = nullptr;
 }
@@ -32,8 +34,14 @@ void Window::open() {
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         glfwTerminate();
     }
+    if(!gladLoadGL())
+    {
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+    }
 
     draw._window = _window;
+
+    draw.init();
 }
 
 void Window::close() {
@@ -75,10 +83,85 @@ void Window::Draw::clear() const {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Window::Draw::setColor(Vector4 color) {
-    _color = color;
+void Window::Draw::drawTexture(Texture2D *texture, Vector2 position, Vector2 size, float rotation) {
+    _shader.use();
+    _shader.set("SCREEN_RESOLUTION", Vector2((float)GraphicsCore::getViewportWidth(), (float)GraphicsCore::getViewportHeight()));
+    _shader.set("TEXTURE", *texture);
+
+    Matrix3x3 modelMatrix = Matrix3x3::makeTransform(std::move(position), std::move(size), rotation);
+
+    _shader.set("MODEL_MATRIX", modelMatrix);
+
+    _rect.draw();
 }
 
-void Window::Draw::setColor(Vector3 color, float a) {
+void Window::Draw::setColor(Vector4 color) {
+    _color = std::move(color);
+}
+
+void Window::Draw::setColor(const Vector3& color, float a) {
     _color = Vector4(color.x, color.y, color.z, a);
 }
+
+void Window::Draw::init() {
+    _color = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+    //Create a rectangle model
+    _rect.addVertex({
+                            {-0.5,-0.5},
+                            {1.0},
+                            {0.0,0.0}
+                    });
+    _rect.addVertex({
+                            {-0.5,0.5},
+                            {1.0},
+                            {0.0,1.0}
+    });
+    _rect.addVertex({
+                            {0.5,0.5},
+                            {1.0},
+                            {1.0,1.0}
+    });
+    _rect.addVertex({
+                            {0.5,-0.5},
+                            {1.0},
+                            {1.0,0.0}
+    });
+
+    _rect.addIndex(0);
+    _rect.addIndex(1);
+    _rect.addIndex(2);
+
+    _rect.addIndex(0);
+    _rect.addIndex(2);
+    _rect.addIndex(3);
+
+    _rect.regenerateBuffers();
+
+    //Create a shader program
+
+    std::string vertexShaderSource;
+    std::string fragmentShaderSource;
+
+    //Load from file
+    std::ifstream vertexShaderFile("assets/shaders/default2d/vertex.glsl");
+    std::ifstream fragmentShaderFile("assets/shaders/default2d/fragment.glsl");
+
+    if (vertexShaderFile.is_open()) {
+        std::string line;
+        while (getline(vertexShaderFile, line)) {
+            vertexShaderSource += line + "\n";
+        }
+        vertexShaderFile.close();
+    }
+
+    if (fragmentShaderFile.is_open()) {
+        std::string line;
+        while (getline(fragmentShaderFile, line)) {
+            fragmentShaderSource += line + "\n";
+        }
+        fragmentShaderFile.close();
+    }
+
+    _shader = Shader(vertexShaderSource, fragmentShaderSource);
+}
+

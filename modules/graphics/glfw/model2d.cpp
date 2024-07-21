@@ -3,9 +3,9 @@
 Model2D::Model2D() {
     this->_vertices = std::vector<Vertex2D>();
     this->_indices = std::vector<unsigned int>();
-    this->_VAO = 0;
-    this->_VBO = 0;
-    this->_EBO = 0;
+    this->_VAO = -1;
+    this->_VBO = -1;
+    this->_EBO = -1;
 }
 
 std::vector<Vertex2D> Model2D::getVertices() const {
@@ -33,11 +33,25 @@ void Model2D::addIndex(uint index) {
 }
 
 void Model2D::regenerateBuffers() {
+    //Clear previous buffers
+    if(this->_VAO != -1) {
+        glDeleteVertexArrays(1, &this->_VAO);
+        glDeleteBuffers(1, &this->_VBO);
+        glDeleteBuffers(1, &this->_EBO);
+    }
+
+
     std::vector<float> vertices;
     for (auto& vertex : this->_vertices) {
         vertices.push_back(vertex.position.x);
         vertices.push_back(vertex.position.y);
-        vertices.push_back(0.0f);
+
+        vertices.push_back(vertex.color.x);
+        vertices.push_back(vertex.color.y);
+        vertices.push_back(vertex.color.z);
+
+        vertices.push_back(vertex.texCoords.x);
+        vertices.push_back(vertex.texCoords.y);
     }
 
     glGenVertexArrays(1, &this->_VAO);
@@ -52,8 +66,17 @@ void Model2D::regenerateBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->_indices.size() * sizeof(unsigned int), this->_indices.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0); // Position (stride 7)
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(2 * sizeof(float))); // Color (stride 7, offset 2 floats)
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(5 * sizeof(float))); // TexCoords (stride 7, offset 5 floats)
+    glEnableVertexAttribArray(2);
+
+    //Shader will look like this
+    //layout(location = 0) in vec2 position;
+    //layout(location = 1) in vec3 color;
+    //layout(location = 2) in vec2 texCoords;
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

@@ -7,6 +7,9 @@
 #include <vector2.h>
 #include <vector3.h>
 #include <vector4.h>
+#include <model2d.h>
+#include <shader.h>
+#include <graphics_core.h>
 
 
 class Window {
@@ -21,13 +24,16 @@ public:
     private:
         Vector4 _color;
         GLFWwindow* _window;
+        Model2D _rect;
+        Shader _shader;
+        void init();
     public:
         void begin();
         void end();
         void setColor(Vector4 color);
-        void setColor(Vector3 color, float a = 1.0);
+        void setColor(const Vector3& color, float a = 1.0);
         void clear() const;
-        void drawRect(float x, float y, float width, float height) const;
+        void drawTexture(Texture2D* texture, Vector2 position, Vector2 size, float rotation = 0.0f);
 
 
         friend class Window;

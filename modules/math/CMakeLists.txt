@@ -5,6 +5,12 @@ set(POMEGRANATE_MATH_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vector3.h
         ${CMAKE_CURRENT_SOURCE_DIR}/vector4.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vector4.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/matrix2x2.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/matrix2x2.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/matrix3x3.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/matrix3x3.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/matrix4x4.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/matrix4x4.h
 )
 
 set(POMEGRANATE_MATH_INCLUDE_DIRS
