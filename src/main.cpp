@@ -24,15 +24,6 @@ int main() {
     Texture2D texture("assets/images/batman.png");
     Texture2D texture2("assets/images/pomegranate.png");
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-
     float time = 0.0f;
 
     double lastFrameTime = glfwGetTime();
@@ -50,12 +41,6 @@ int main() {
         window.draw.setColor(Vector3(1.0,1.0,1.0));
 
         window.draw.clear();
-
-        //Draw both textures
-        window.draw.setZIndex(0.5f);
-        window.draw.drawTexture(texture, Vector2(-128.0f, 0.0f), Vector2(256.0f, 256.0f), -time);
-        window.draw.setZIndex(0.75f);
-        window.draw.drawTexture(texture2, Vector2(128.0f, 0.0f), Vector2(256.0f, 256.0f), time);
 
         window.draw.end();
         time += 0.01f;
