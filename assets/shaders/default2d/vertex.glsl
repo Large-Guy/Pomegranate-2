@@ -4,6 +4,7 @@ layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec2 aTexCoords;
 uniform vec2 SCREEN_RESOLUTION;
 uniform mat3x3 MODEL_MATRIX;
+uniform float Z_INDEX;
 out vec2 TexCoords;
 void main()
 {
@@ -16,6 +17,6 @@ void main()
     //Convert to pixel coordinates based on screen resolution
     //pos.x /= aspect;
     
-    gl_Position = vec4(pos.x, pos.y, 0.0, 1.0);
+    gl_Position = vec4(pos.x, pos.y, Z_INDEX, 1.0);
     TexCoords = aTexCoords;
 }

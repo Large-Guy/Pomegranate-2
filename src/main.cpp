@@ -22,34 +22,16 @@ int main() {
     GraphicsCore::setViewport(1080, 720);
 
     Texture2D texture("assets/images/batman.png");
+    Texture2D texture2("assets/images/pomegranate.png");
 
-    texture.bind(0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    //Create a shader program
-    std::string vertexShaderSource;
-    std::string fragmentShaderSource;
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
-    //Load from file
-    std::ifstream vertexShaderFile("assets/shaders/test/vertex.glsl");
-    std::ifstream fragmentShaderFile("assets/shaders/test/fragment.glsl");
-
-    if (vertexShaderFile.is_open()) {
-        std::string line;
-        while (getline(vertexShaderFile, line)) {
-            vertexShaderSource += line + "\n";
-        }
-        vertexShaderFile.close();
-    }
-
-    if (fragmentShaderFile.is_open()) {
-        std::string line;
-        while (getline(fragmentShaderFile, line)) {
-            fragmentShaderSource += line + "\n";
-        }
-        fragmentShaderFile.close();
-    }
-
-    Shader shader(vertexShaderSource, fragmentShaderSource);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
     float time = 0.0f;
 
@@ -69,13 +51,16 @@ int main() {
 
         window.draw.clear();
 
-        window.draw.setShader(&shader);
-        window.draw.drawTexture(texture, Vector2(0.0,0.0), Vector2(256.0,256.0),time);
+        //Draw both textures
+        window.draw.setZIndex(0.5f);
+        window.draw.drawTexture(texture, Vector2(-128.0f, 0.0f), Vector2(256.0f, 256.0f), -time);
+        window.draw.setZIndex(0.75f);
+        window.draw.drawTexture(texture2, Vector2(128.0f, 0.0f), Vector2(256.0f, 256.0f), time);
 
         window.draw.end();
         time += 0.01f;
 
-        //std::cout << "FPS: " << 1.0f / deltaTime << std::endl;
+        std::cout << "FPS: " << 1.0f / deltaTime << std::endl;
     }
 
     return 0;

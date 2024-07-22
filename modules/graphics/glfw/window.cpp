@@ -80,6 +80,7 @@ void Window::Draw::end() {
 void Window::Draw::clear() const {
     glClearColor(_color.x,_color.y,_color.z,_color.w);
     glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::Draw::drawTexture(Texture2D& texture, Vector2 position, Vector2 size, float rotation) {
@@ -90,7 +91,7 @@ void Window::Draw::drawTexture(Texture2D& texture, Vector2 position, Vector2 siz
     _currentShader->set("SCREEN_RESOLUTION", Vector2((float)GraphicsCore::getViewportWidth(), (float)GraphicsCore::getViewportHeight()));
     _currentShader->set("TEXTURE", texture);
     _currentShader->set("MODEL_MATRIX", modelMatrix);
-
+    _currentShader->set("Z_INDEX", _z_index);
     _rect.draw();
 }
 
@@ -109,6 +110,10 @@ void Window::Draw::setShader(Shader *shader) {
         return;
     }
     _currentShader = shader;
+}
+
+void Window::Draw::setZIndex(float z_index) {
+    _z_index = z_index;
 }
 
 void Window::Draw::init() {
@@ -136,13 +141,13 @@ void Window::Draw::init() {
                             {1.0,0.0}
     });
 
-    _rect.addIndex(0);
+    _rect.addIndex(2);
     _rect.addIndex(1);
-    _rect.addIndex(2);
-
     _rect.addIndex(0);
-    _rect.addIndex(2);
+
     _rect.addIndex(3);
+    _rect.addIndex(2);
+    _rect.addIndex(0);
 
     _rect.regenerateBuffers();
 

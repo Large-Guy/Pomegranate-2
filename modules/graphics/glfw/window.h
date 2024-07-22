@@ -23,6 +23,7 @@ public:
     class Draw {
     private:
         Vector4 _color;
+        float _z_index = 0.0f;
         GLFWwindow* _window;
         Model2D _rect;
         Shader* _shader;
@@ -33,6 +34,7 @@ public:
         void end();
         void setColor(Vector4 color);
         void setShader(Shader* shader);
+        void setZIndex(float z_index);
         void setColor(const Vector3& color, float a = 1.0);
         void clear() const;
         void drawTexture(Texture2D& texture, Vector2 position, Vector2 size, float rotation = 0.0f);
