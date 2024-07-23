@@ -5,27 +5,24 @@
 #include <unordered_map>
 #include <ecs_typedefs.h>
 
-class Archetype {
-private:
-
-    struct VectorHash {
-        std::size_t operator()(const std::vector<ComponentID>& vec) const;
-    };
-
-    uint _id;
-    static uint _archetypeCount;
-public:
-    std::unordered_set<ComponentID> _type;
-    std::vector<ComponentID> _components;
-    static std::unordered_map<std::vector<ComponentID>,Archetype*,VectorHash> archetypes;
-
-    Archetype();
-
-    // Getters
-    [[nodiscard]] uint getId() const;
-
-    Archetype* addComponent(ComponentID new_component);
+struct VectorHash {
+    std::size_t operator()(const std::vector<component_id>& v) const {
+        std::size_t seed = 0;
+        for (const component_id& i : v) {
+            seed ^= i + 0x9e3779b9 + (seed<<6) + (seed>>2);
+        }
+        return seed;
+    }
 };
 
+struct Archetype {
+    archetype_id _id;
+    entity_type _type;
+    std::unordered_set<component_id> _typeSet;
+    static std::unordered_map<entity_type, Archetype*, VectorHash> _archetypeIndex;
+    static std::unordered_map<component_id,std::unordered_set<archetype_id>> _componentIndex;
+
+    explicit Archetype(entity_type type);
+};
 
 #endif //POMEGRANATEENGINE_ARCHETYPE_H

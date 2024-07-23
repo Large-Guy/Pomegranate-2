@@ -6,18 +6,6 @@
 #include <window.h>
 #include <GLFW/glfw3.h>
 
-void testEntity(Entity* entity)
-{
-    if (entity->hasComponent(0)) {
-        std::cout << "Has position" << std::endl;
-    }
-    if (entity->hasComponent(1)) {
-        std::cout << "Has velocity" << std::endl;
-    }
-    if (entity->hasComponent(2)) {
-        std::cout << "Has name" << std::endl;
-    }
-}
 
 int main() {
 
@@ -25,16 +13,21 @@ int main() {
 #define VELOCITY 1
 #define NAME 2
 
-    Entity entity;
-    entity.addComponent(POSITION,0);
-    entity.addComponent(VELOCITY,1);
+    new Archetype({POSITION});
+    new Archetype({VELOCITY});
+    new Archetype({POSITION,VELOCITY});
+    new Archetype({POSITION,VELOCITY, NAME});
 
-    Entity entity2;
-    entity2.addComponent(POSITION,0);
-    entity2.addComponent(NAME,"Name");
+    std::unordered_set<archetype_id> position_archetypes = Archetype::_componentIndex[POSITION];
+    std::unordered_set<archetype_id> velocity_archetypes = Archetype::_componentIndex[VELOCITY];
 
-    testEntity(&entity);
-    testEntity(&entity2);
+    for(auto& archetype : position_archetypes)
+    {
+        if(velocity_archetypes.count(archetype) != 0)
+        {
+            std::cout << "Found archetype with velocity and position: " << archetype << std::endl;
+        }
+    }
 
     return 0;
 }
