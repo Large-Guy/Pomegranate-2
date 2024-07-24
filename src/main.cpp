@@ -5,7 +5,7 @@
 #include <graphics_core.h>
 #include <window.h>
 #include <GLFW/glfw3.h>
-
+#include <chrono>
 
 int main() {
 
@@ -13,21 +13,14 @@ int main() {
 #define VELOCITY 1
 #define NAME 2
 
-    new Archetype({POSITION});
-    new Archetype({VELOCITY});
-    new Archetype({POSITION,VELOCITY});
-    new Archetype({POSITION,VELOCITY, NAME});
+    Entity entity = Entity();
+    entity.addComponent(NAME);
+    entity.addComponent(POSITION);
+    entity.addComponent(VELOCITY);
 
-    std::unordered_set<archetype_id> position_archetypes = Archetype::_componentIndex[POSITION];
-    std::unordered_set<archetype_id> velocity_archetypes = Archetype::_componentIndex[VELOCITY];
-
-    for(auto& archetype : position_archetypes)
-    {
-        if(velocity_archetypes.count(archetype) != 0)
-        {
-            std::cout << "Found archetype with velocity and position: " << archetype << std::endl;
-        }
-    }
+    std::cout << entity.hasComponent(NAME) << std::endl;
+    std::cout << entity.hasComponent(POSITION) << std::endl;
+    std::cout << entity.hasComponent(VELOCITY) << std::endl;
 
     return 0;
 }

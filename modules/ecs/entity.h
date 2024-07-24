@@ -15,8 +15,10 @@ public:
     static std::unordered_map<entity_id, Archetype*> _entityIndex;
 
     Entity();
+    ~Entity();
 
     bool hasComponent(component_id component);
+    void addComponent(component_id component);
 };
 
 #endif //POMEGRANATEENGINE_ENTITY_H

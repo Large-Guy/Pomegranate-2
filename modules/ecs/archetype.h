@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <ecs_typedefs.h>
 
+struct Archetype;
+
 struct VectorHash {
     std::size_t operator()(const std::vector<component_id>& v) const {
         std::size_t seed = 0;
@@ -15,14 +17,23 @@ struct VectorHash {
     }
 };
 
+struct ArchetypeNode{
+    Archetype* add;
+    Archetype* remove;
+};
+
 struct Archetype {
     archetype_id _id;
     entity_type _type;
     std::unordered_set<component_id> _typeSet;
+    std::unordered_map<component_id, ArchetypeNode> nodes;
+
     static std::unordered_map<entity_type, Archetype*, VectorHash> _archetypeIndex;
     static std::unordered_map<component_id,std::unordered_set<archetype_id>> _componentIndex;
 
     explicit Archetype(entity_type type);
+
+    Archetype* addComponent(component_id component);
 };
 
 #endif //POMEGRANATEENGINE_ARCHETYPE_H

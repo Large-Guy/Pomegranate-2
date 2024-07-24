@@ -14,3 +14,19 @@ Archetype::Archetype(entity_type type) {
         Archetype::_componentIndex[c].insert(_id);
     }
 }
+
+Archetype* Archetype::addComponent(component_id component) {
+    ArchetypeNode& node = nodes[component];
+    if(node.add == nullptr)
+    {
+        entity_type type = _type;
+        type.push_back(component);
+        Archetype*& archetype = Archetype::_archetypeIndex[type];
+        if(archetype == nullptr)
+        {
+            archetype = new Archetype(type);
+        }
+        node.add = archetype;
+    }
+    return node.add;
+}
