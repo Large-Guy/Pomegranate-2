@@ -2,8 +2,8 @@
 
 #include <utility>
 
-std::unordered_map<entity_type, Archetype*, VectorHash> Archetype::_archetypeIndex;
-std::unordered_map<component_id,std::unordered_set<archetype_id>> Archetype::_componentIndex;
+std::unordered_map<entity_type, Archetype*, VectorHash, VectorComparison> Archetype::_archetypeIndex;
+std::unordered_map<component_id,std::unordered_map<archetype_id, ComponentLocation>> Archetype::_componentIndex;
 
 Archetype::Archetype(entity_type type) {
     _id = Archetype::_archetypeIndex.size();
@@ -11,12 +11,13 @@ Archetype::Archetype(entity_type type) {
     Archetype::_archetypeIndex[_type] = this;
     for(auto& c : _type)
     {
-        Archetype::_componentIndex[c].insert(_id);
+        Archetype::_componentIndex[c][_id].column = _components.size();
+        _components.push_back({c,0,{}});
     }
 }
 
 Archetype* Archetype::addComponent(component_id component) {
-    ArchetypeNode& node = nodes[component];
+    ArchetypeNode& node = _nodes[component];
     if(node.add == nullptr)
     {
         entity_type type = _type;

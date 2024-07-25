@@ -8,4 +8,8 @@
 #include <functional>
 #include <ecs_typedefs.h>
 
+struct Component {
+
+};
+
 #endif //POMEGRANATEENGINE_COMPONENT_H

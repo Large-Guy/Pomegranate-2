@@ -13,14 +13,15 @@ int main() {
 #define VELOCITY 1
 #define NAME 2
 
-    Entity entity = Entity();
-    entity.addComponent(NAME);
+    Entity entity;
     entity.addComponent(POSITION);
-    entity.addComponent(VELOCITY);
 
-    std::cout << entity.hasComponent(NAME) << std::endl;
-    std::cout << entity.hasComponent(POSITION) << std::endl;
-    std::cout << entity.hasComponent(VELOCITY) << std::endl;
+    void* data = entity.getComponent(POSITION);
+
+    if(data == nullptr)
+    {
+        std::cout << "IT WORKED!!!" << std::endl;
+    }
 
     return 0;
 }

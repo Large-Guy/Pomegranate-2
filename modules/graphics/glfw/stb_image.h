@@ -2017,7 +2017,7 @@ static int stbi__build_huffman(stbi__huffman *h, int *count)
    code = 0;
    k = 0;
    for(j=1; j <= 16; ++j) {
-      // compute delta to add to code to compute symbol id
+      // compute delta to add to code to compute symbol component
       h->delta[j] = k - code;
       if (h->size[k] == j) {
          while (h->size[k] == j)
@@ -2133,13 +2133,13 @@ stbi_inline static int stbi__jpeg_huff_decode(stbi__jpeg *j, stbi__huffman *h)
    if (k > j->code_bits)
       return -1;
 
-   // convert the huffman code to the symbol id
+   // convert the huffman code to the symbol component
    c = ((j->code_buffer >> (32 - k)) & stbi__bmask[k]) + h->delta[k];
-   if(c < 0 || c >= 256) // symbol id out of bounds!
+   if(c < 0 || c >= 256) // symbol component out of bounds!
        return -1;
    STBI_ASSERT((((j->code_buffer) >> (32 - h->size[c])) & stbi__bmask[h->size[c]]) == h->code[c]);
 
-   // convert the id to a symbol
+   // convert the component to a symbol
    j->code_bits -= k;
    j->code_buffer <<= k;
    return h->values[c];
