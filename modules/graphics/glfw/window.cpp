@@ -68,6 +68,10 @@ void Window::pollEvents() {
     }
 }
 
+GLFWwindow *Window::getGLFWwindow() const {
+    return _window;
+}
+
 void Window::Draw::begin() {
     glfwMakeContextCurrent(_window);
     _color = Vector4(0.0f, 0.0f, 0.0f, 1.0f);

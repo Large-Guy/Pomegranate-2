@@ -24,25 +24,6 @@ bool Entity::hasComponent(component_id component) const {
     return archetypes.count(eRecord.archetype->_id);
 }
 
-void Entity::addComponent(component_id component) {
-    EntityRecord& eRecord = Entity::_entityIndex[this->_id]; //Get current record
-    Archetype* new_archetype = eRecord.archetype->addComponent(component); //Find the new archetype of the entity with new component
-    moveEntityArchetype(eRecord.archetype,eRecord.row,new_archetype,component); //Move the archetype
-    eRecord = {new_archetype,new_archetype->_components[0].data.size() - 1}; //Set the record to the new archetype and the new row
-}
-
-void *Entity::getComponent(component_id component) const {
-    EntityRecord& eRecord = Entity::_entityIndex[this->_id];
-    Archetype*& archetype = eRecord.archetype;
-    std::unordered_map<archetype_id,ComponentLocation> archetypes = Archetype::_componentIndex[component];
-    if(archetypes.count(archetype->_id) == 0) {
-        return nullptr;
-    }
-
-    ComponentLocation& aRecord = archetypes[archetype->_id];
-    return archetype->_components[aRecord.column].data[eRecord.row];
-}
-
 void Entity::moveEntityArchetype(Archetype *current, size_t row, Archetype *next, component_id component) {
     for(auto& c : next->_components)
     {

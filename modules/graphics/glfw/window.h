@@ -55,7 +55,7 @@ public:
     [[nodiscard]] bool isOpen() const;
     [[nodiscard]] int getWidth() const;
     [[nodiscard]] int getHeight() const;
-
+    [[nodiscard]] GLFWwindow* getGLFWwindow() const;
 };
 
 

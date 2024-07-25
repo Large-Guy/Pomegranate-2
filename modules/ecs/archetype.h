@@ -1,6 +1,5 @@
 #ifndef POMEGRANATEENGINE_ARCHETYPE_H
 #define POMEGRANATEENGINE_ARCHETYPE_H
-#include <component.h>
 #include <unordered_set>
 #include <unordered_map>
 #include <ecs_typedefs.h>
@@ -64,6 +63,7 @@ public:
     Archetype* addComponent(component_id component);
 
     friend class Entity;
+    friend class Component;
 };
 
 #endif //POMEGRANATEENGINE_ARCHETYPE_H
