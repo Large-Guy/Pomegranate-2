@@ -1,14 +1,9 @@
-//
-// Created by ravi on 7/25/24.
-//
-
 #ifndef POMEGRANATEENGINE_COMPONENT_H
 #define POMEGRANATEENGINE_COMPONENT_H
 
-template <typename T>
-class Component {
+template <typename T> class Component {
+public:
     T _data;
-
 };
 
 

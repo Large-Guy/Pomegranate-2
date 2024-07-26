@@ -6,6 +6,7 @@
 #include<serializable.h>
 #include<archetype.h>
 #include <ecs_typedefs.h>
+#include "component.h"
 
 struct Group;
 
@@ -27,22 +28,24 @@ public:
     ~Entity();
 
     bool hasComponent(component_id component) const;
-    template <typename T> void addComponent(component_id component, T data);
-    template <typename T> T* getComponent(component_id component);
+    template <typename T> void addComponent(component_id component);
+    template <typename T> Component<T>* getComponent(component_id component);
 
     friend class Group;
 };
 
 template<typename T>
-void Entity::addComponent(component_id component, T data) {
+void Entity::addComponent(component_id component) {
     EntityRecord& eRecord = Entity::_entityIndex[this->_id]; //Get current record
     Archetype* new_archetype = eRecord.archetype->addComponent(component); //Find the new archetype of the entity with new component
     moveEntityArchetype(eRecord.archetype,eRecord.row,new_archetype,component); //Move the archetype
-    eRecord = {new_archetype,new_archetype->_components[0].data.size() - 1}; //Set the record to the new archetype and the new row
-    new_archetype->_components[Archetype::_componentIndex[component][new_archetype->_id].column].data[eRecord.row] = new T(data); //Set the new component data
+    eRecord = {new_archetype,new_archetype->_components[0].componentCount - 1}; //Set the record to the new archetype and the new row
+    Column& new_column = new_archetype->_components[Archetype::_componentIndex[component][new_archetype->_id].column];
+    new_column.componentSize = sizeof(Component<T>);
+    ((Component<T>*)new_column.data)[eRecord.row] = Component<T>{T()};
 }
 
-template <typename T> T*
+template <typename T> Component<T>*
 Entity::getComponent(component_id component) {
     EntityRecord& eRecord = Entity::_entityIndex[this->_id];
     Archetype*& archetype = eRecord.archetype;
@@ -52,6 +55,6 @@ Entity::getComponent(component_id component) {
     }
 
     ComponentLocation& aRecord = archetypes[archetype->_id];
-    return (T*)archetype->_components[aRecord.column].data[eRecord.row];
+    return &((Component<T>*)archetype->_components[aRecord.column].data)[eRecord.row];
 }
 #endif //POMEGRANATEENGINE_ENTITY_H

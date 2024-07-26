@@ -25,46 +25,17 @@ int main() {
 #define TRANSFORM 0
 #define VELOCITY 1
 
-    Group group;
+    Entity e;
+    e.addComponent<Transform>(TRANSFORM);
 
-    //Populate group with 100 entities
-    for(int i = -2; i < 2; i++)
-    {
-        Entity* entity = new Entity();
-        entity->addComponent<Transform>(TRANSFORM,{Vector2(i * 64,0),Vector2(64,64),0});
-        entity->addComponent<Velocity>(VELOCITY,{Vector2(0,0),0});
-        group.addEntity(entity);
-    }
+    Component<Transform>* transform = e.getComponent<Transform>(TRANSFORM);
+    transform->_data.position = Vector2(1.0f, 2.0f);
 
-    GraphicsCore::init();
-    Window window;
-    window.setSize(800,600);
-    window.setTitle("Pomegranate Engine");
-    window.open();
+    e.addComponent<Velocity>(VELOCITY);
 
-    Texture2D texture("assets/images/batman.png","Batman");
-
-    auto start = std::chrono::high_resolution_clock::now();
-    while(window.isOpen())
-    {
-        window.pollEvents();
-        window.draw.begin();
-        window.draw.clear();
-        for(auto&e : group.getEntities())
-        {
-            if(e->hasComponent(TRANSFORM))
-            {
-                Transform* transform = e->getComponent<Transform>(TRANSFORM);
-                if(transform != nullptr)
-                    window.draw.drawTexture(texture,transform->position,transform->scale,transform->rotation);
-            }
-        }
-        window.draw.end();
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> elapsed = end - start;
-        start = end;
-        std::cout << "FPS: " << 1.0/elapsed.count() << std::endl;
-    }
+    Component<Transform>* transform2 = e.getComponent<Transform>(TRANSFORM);
+    Component<Velocity>* velocity = e.getComponent<Velocity>(VELOCITY);
+    std::cout << transform2->_data.position.x << " " << transform2->_data.position.y << std::endl;
 
     return 0;
 }

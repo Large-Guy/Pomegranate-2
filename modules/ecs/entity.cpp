@@ -27,13 +27,15 @@ bool Entity::hasComponent(component_id component) const {
 void Entity::moveEntityArchetype(Archetype *current, size_t row, Archetype *next, component_id component) {
     for(auto& c : next->_components)
     {
-        c.data.emplace_back(nullptr); //Add new row
+        c.resize(c.componentCount + 1);
     }
     for(auto& c : current->_components)
     {
-        void* data = c.data[row]; //Get data from current Archetype
-        c.data.erase(c.data.begin() + row); // Remove data from current Archetype
-        int column = Archetype::_componentIndex[(int)c.component][next->_id].column; //Find column that next archetype component data is in
-        next->_components[column].data.back() = data; //Set that new rows data to data
+        void* data = (char*)c.data + c.componentSize * row;
+        int column = Archetype::_componentIndex[(int)c.component][next->_id].column;
+        Column& next_column = next->_components[column];
+        void* new_data = (char*)next_column.data + next_column.componentSize * next_column.componentCount;
+        memcpy(new_data,data,c.componentSize);
+        c.remove(row);
     }
 }

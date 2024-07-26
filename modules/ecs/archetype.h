@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <ecs_typedefs.h>
+#include <cstring>
 
 struct Group;
 
@@ -45,7 +46,10 @@ struct ComponentLocation {
 struct Column {
     component_id component;
     size_t componentSize;
-    std::vector<void*> data;
+    size_t componentCount;
+    void* data;
+    void resize(size_t size);
+    void remove(size_t row);
 };
 
 struct Archetype {
@@ -65,7 +69,6 @@ public:
     Archetype* addComponent(component_id component);
 
     friend class Entity;
-    friend class Component;
     friend class Group;
 };
 
