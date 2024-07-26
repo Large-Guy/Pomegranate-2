@@ -1,6 +1,7 @@
 #include<iostream>
 #include <vector2.h>
 #include <entity.h>
+#include <group.h>
 #include <graphics_core.h>
 #include <window.h>
 #include <GLFW/glfw3.h>
@@ -13,60 +14,57 @@ struct Transform
     float rotation;
 };
 
+struct Velocity
+{
+    Vector2 linearVelocity;
+    float angularVelocity;
+};
+
 int main() {
 
 #define TRANSFORM 0
+#define VELOCITY 1
 
-    Entity e;
-    e.addComponent<Transform>(TRANSFORM,{Vector2(0,0),Vector2(1,1),0});
+    Group group;
 
-    GraphicsCore::init();
-
-    Window window;
-    window.setTitle("Pomegranate Engine");
-    window.setSize(800,600);
-    window.open();
-
-    Texture2D texture("assets/images/batman.png","batman");
-
-    while(window.isOpen())
+    //Populate group with 100 entities
+    for(int i = -2; i < 2; i++)
     {
-        //Update
-        window.pollEvents();
-        //Input
-        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        {
-            window.close();
-        }
-
-        //Move the entity
-        auto* t = e.getComponent<Transform>(TRANSFORM);
-        Vector2 move = Vector2(0,0);
-        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_W) == GLFW_PRESS)
-        {
-            move.y += 1;
-        }
-        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_S) == GLFW_PRESS)
-        {
-            move.y -= 1;
-        }
-        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_A) == GLFW_PRESS)
-        {
-            move.x -= 1;
-        }
-        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_D) == GLFW_PRESS)
-        {
-            move.x += 1;
-        }
-        t->position = t->position + move * 6.0f;
-
-        //Render
-        window.draw.begin();
-        window.draw.clear();
-        window.draw.drawTexture(texture,t->position,t->scale * 64,t->rotation);
-        window.draw.end();
+        Entity* entity = new Entity();
+        entity->addComponent<Transform>(TRANSFORM,{Vector2(i * 64,0),Vector2(64,64),0});
+        entity->addComponent<Velocity>(VELOCITY,{Vector2(0,0),0});
+        group.addEntity(entity);
     }
 
+    GraphicsCore::init();
+    Window window;
+    window.setSize(800,600);
+    window.setTitle("Pomegranate Engine");
+    window.open();
+
+    Texture2D texture("assets/images/batman.png","Batman");
+
+    auto start = std::chrono::high_resolution_clock::now();
+    while(window.isOpen())
+    {
+        window.pollEvents();
+        window.draw.begin();
+        window.draw.clear();
+        for(auto&e : group.getEntities())
+        {
+            if(e->hasComponent(TRANSFORM))
+            {
+                Transform* transform = e->getComponent<Transform>(TRANSFORM);
+                if(transform != nullptr)
+                    window.draw.drawTexture(texture,transform->position,transform->scale,transform->rotation);
+            }
+        }
+        window.draw.end();
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end - start;
+        start = end;
+        std::cout << "FPS: " << 1.0/elapsed.count() << std::endl;
+    }
 
     return 0;
 }

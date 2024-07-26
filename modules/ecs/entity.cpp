@@ -34,6 +34,6 @@ void Entity::moveEntityArchetype(Archetype *current, size_t row, Archetype *next
         void* data = c.data[row]; //Get data from current Archetype
         c.data.erase(c.data.begin() + row); // Remove data from current Archetype
         int column = Archetype::_componentIndex[(int)c.component][next->_id].column; //Find column that next archetype component data is in
-        next->_components[column].data[row] = data; //Set that new rows data to data
+        next->_components[column].data.back() = data; //Set that new rows data to data
     }
 }

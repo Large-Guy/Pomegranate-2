@@ -7,6 +7,8 @@
 #include<archetype.h>
 #include <ecs_typedefs.h>
 
+struct Group;
+
 struct EntityRecord
 {
     Archetype* archetype;
@@ -27,6 +29,8 @@ public:
     bool hasComponent(component_id component) const;
     template <typename T> void addComponent(component_id component, T data);
     template <typename T> T* getComponent(component_id component);
+
+    friend class Group;
 };
 
 template<typename T>

@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <ecs_typedefs.h>
 
+struct Group;
+
 struct Archetype;
 
 struct VectorHash {
@@ -64,6 +66,7 @@ public:
 
     friend class Entity;
     friend class Component;
+    friend class Group;
 };
 
 #endif //POMEGRANATEENGINE_ARCHETYPE_H
