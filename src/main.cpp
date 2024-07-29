@@ -20,22 +20,35 @@ struct Velocity
     float angularVelocity;
 };
 
+struct Name
+{
+    std::string name;
+};
+
 int main() {
 
 #define TRANSFORM 0
 #define VELOCITY 1
+#define NAME 2
+    Group group;
 
-    Entity e;
-    e.addComponent<Transform>(TRANSFORM);
+    Entity* e1 = new Entity();
+    e1->addComponent<Name>(NAME,{"Hello World!"});
+    e1->addComponent<Transform>(TRANSFORM);
 
-    Component<Transform>* transform = e.getComponent<Transform>(TRANSFORM);
-    transform->_data.position = Vector2(1.0f, 2.0f);
+    Entity* e2 = new Entity();
+    e2->addComponent<Name>(NAME,{"This is Entity 2"});
+    e2->addComponent<Transform>(TRANSFORM);
 
-    e.addComponent<Velocity>(VELOCITY);
+    std::vector<Entity*> entities = {e1,e2};
 
-    Component<Transform>* transform2 = e.getComponent<Transform>(TRANSFORM);
-    Component<Velocity>* velocity = e.getComponent<Velocity>(VELOCITY);
-    std::cout << transform2->_data.position.x << " " << transform2->_data.position.y << std::endl;
-
+    for(auto e : entities) {
+        std::cout << "Name" << std::endl;
+        std::cout << e->getComponent<Name>(NAME)->name << std::endl;
+        std::cout << "Transform" << std::endl;
+        std::cout << (std::string)e->getComponent<Transform>(TRANSFORM)->position << std::endl;
+        std::cout << (std::string)e->getComponent<Transform>(TRANSFORM)->scale << std::endl;
+        std::cout << e->getComponent<Transform>(TRANSFORM)->rotation << std::endl;
+    }
     return 0;
 }

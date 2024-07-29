@@ -47,3 +47,7 @@ void Vector2::deserialize(Archive& a)
 {
     a >> &x >> &y;
 }
+
+Vector2::operator std::string() const {
+    return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+}

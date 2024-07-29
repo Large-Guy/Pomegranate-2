@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <ecs_typedefs.h>
 #include <cstring>
+#include <component.h>
 
 struct Group;
 
@@ -37,19 +38,11 @@ struct VectorComparison {
 struct ArchetypeNode{
     Archetype* add;
     Archetype* remove;
+    ArchetypeNode();
 };
 
 struct ComponentLocation {
     size_t column;
-};
-
-struct Column {
-    component_id component;
-    size_t componentSize;
-    size_t componentCount;
-    void* data;
-    void resize(size_t size);
-    void remove(size_t row);
 };
 
 struct Archetype {
@@ -58,7 +51,7 @@ private:
     entity_type _type;
     std::unordered_set<component_id> _typeSet;
     std::unordered_map<component_id, ArchetypeNode> _nodes;
-    std::vector<Column> _components;
+    std::vector<ComponentList> _components;
 
     static std::unordered_map<entity_type, Archetype*, VectorHash, VectorComparison> _archetypeIndex;
     static std::unordered_map<component_id,std::unordered_map<archetype_id, ComponentLocation>> _componentIndex;

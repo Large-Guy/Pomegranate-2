@@ -12,6 +12,7 @@ struct Vector2 : public Serializable {
     Vector2 operator-(const Vector2& v);
     Vector2 operator*(const Vector2& v);
     Vector2 operator/(const Vector2& v);
+    explicit operator std::string() const;
 
     void serialize(Archive& a) const override;
     void deserialize(Archive& a) override;

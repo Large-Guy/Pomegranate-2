@@ -5,19 +5,9 @@
 std::unordered_map<entity_type, Archetype*, VectorHash, VectorComparison> Archetype::_archetypeIndex;
 std::unordered_map<component_id,std::unordered_map<archetype_id, ComponentLocation>> Archetype::_componentIndex;
 
-void Column::resize(size_t size) {
-    data = realloc(data, componentSize * size);
-    componentCount = size;
-}
-
-void Column::remove(size_t row) {
-    //Remove that row of data from the void*
-    void* new_data = malloc(componentSize * (componentCount - 1));
-    memcpy(new_data, data, componentSize * row);
-    memcpy((char*)new_data + componentSize * row, (char*)data + componentSize * (row + 1), componentSize * (componentCount - row - 1));
-    free(data);
-    data = new_data;
-    componentCount--;
+ArchetypeNode::ArchetypeNode() {
+    add = nullptr;
+    remove = nullptr;
 }
 
 Archetype::Archetype(entity_type type) {
@@ -27,7 +17,7 @@ Archetype::Archetype(entity_type type) {
     for(auto& c : _type)
     {
         Archetype::_componentIndex[c][_id].column = _components.size();
-        _components.push_back({c,0,{}});
+        _components.emplace_back(c);
     }
 }
 
@@ -41,6 +31,12 @@ Archetype* Archetype::addComponent(component_id component) {
         if(archetype == nullptr)
         {
             archetype = new Archetype(type);
+        }
+        for (auto& t : _type) {
+            size_t my_component_column = Archetype::_componentIndex[t][_id].column;
+            size_t size = _components[my_component_column].componentSize;
+            size_t component_column = Archetype::_componentIndex[t][archetype->_id].column;
+            archetype->_components[component_column].setComponentSize(size);
         }
         node.add = archetype;
     }
