@@ -6,6 +6,7 @@
 #include <window.h>
 #include <GLFW/glfw3.h>
 #include <chrono>
+#include <event_manager.h>
 
 struct Transform : public Serializable
 {
@@ -45,11 +46,27 @@ struct Name
     const char* name;
 };
 
+void update(void* data)
+{
+    float dt = *(float*)data;
+    std::cout << "Update function event called, dt: " << dt << std::endl;
+}
+
 int main() {
 
+    //Component IDs
 #define TRANSFORM 0
 #define VELOCITY 1
 #define NAME 2
+
+    //Event IDs
+    const event_id UPDATE = Event::getEventId("update");
+    Event::on(UPDATE,[&](void* data){
+        float dt = *(float*)data;
+        std::cout << "Update lambda event called, dt: " << dt << std::endl;
+    });
+
+    Event::on("update",update);
 
     Graphics::init();
 
@@ -63,11 +80,17 @@ int main() {
 
     Shader shader("assets/shaders/default2d/vertex.glsl","assets/shaders/default2d/fragment.glsl");
 
-    float t = 0;
+    float deltaTime = 0;
+
+    auto lastTime = std::chrono::high_resolution_clock::now();
+    auto currentTime = std::chrono::high_resolution_clock::now();
 
     while(window.isOpen())
     {
         window.pollEvents();
+
+        //Update
+        Event::call(UPDATE,&deltaTime);
 
         window.draw.begin();
         window.draw.clear();
@@ -76,7 +99,9 @@ int main() {
 
         window.draw.end();
 
-        t += 0.01f;
+        currentTime = std::chrono::high_resolution_clock::now();
+        deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
+        lastTime = currentTime;
     }
 
 

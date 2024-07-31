@@ -12,7 +12,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/core)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/math)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/ecs)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/graphics/glfw)
-
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/events)
 
 set(SOURCE_FILES
     ${SOURCE_DIR}/main.cpp
@@ -29,6 +29,7 @@ target_link_libraries(PomegranateEngine PomegranateCore)
 target_link_libraries(PomegranateEngine PomegranateMath)
 target_link_libraries(PomegranateEngine PomegranateECS)
 target_link_libraries(PomegranateEngine PomegranateGraphicsGLFW)
+target_link_libraries(PomegranateEngine PomegranateEvents)
 
 
 
