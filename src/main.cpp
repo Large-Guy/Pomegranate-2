@@ -7,11 +7,31 @@
 #include <GLFW/glfw3.h>
 #include <chrono>
 
-struct Transform
+struct Transform : public Serializable
 {
     Vector2 position;
     Vector2 scale;
     float rotation;
+
+    Transform& operator=(const Transform& other)
+    {
+        position = other.position;
+        scale = other.scale;
+        rotation = other.rotation;
+        return *this;
+    }
+
+    void serialize(Archive& a) const override {
+        a << position;
+        a << scale;
+        a << rotation;
+    }
+
+    void deserialize(Archive& a) override {
+        a >> &position;
+        a >> &scale;
+        a >> &rotation;
+    }
 };
 
 struct Velocity
@@ -53,24 +73,7 @@ int main() {
         window.draw.clear();
         window.draw.setShader(&shader);
         pomegranate_n.bind(1);
-        shader.set("NORMAL",pomegranate_n);
-        shader.set("TIME",t);
-        shader.set("USE_NORMAL_MAP",true);
-        window.draw.drawTexture(pomegranate,Vector2(0   ,0),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(-256,0),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(-512,0),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(512 ,0),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(256 ,0),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(0   ,256),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(-256,256),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(-512,256),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(512 ,256),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(256 ,256),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(0   ,-256),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(-256,-256),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(-512,-256),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(512 ,-256),Vector2(256,256),t);
-        window.draw.drawTexture(pomegranate,Vector2(256 ,-256),Vector2(256,256),t);
+
         window.draw.end();
 
         t += 0.01f;
