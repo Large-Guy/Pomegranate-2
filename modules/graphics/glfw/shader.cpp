@@ -6,10 +6,34 @@ Shader::Shader() {
     id = 0;
 }
 
-Shader::Shader(const std::string& vertexSource, const std::string& fragmentSource)
+Shader::Shader(const std::string& vertex, const std::string& fragment)
 {
-    this->vertexSource = vertexSource;
-    this->fragmentSource = fragmentSource;
+    //Create a shader program
+    std::string vertexShaderSource;
+    std::string fragmentShaderSource;
+
+    //Load from file
+    std::ifstream vertexShaderFile("assets/shaders/default2d/vertex.glsl");
+    std::ifstream fragmentShaderFile("assets/shaders/default2d/fragment.glsl");
+
+    if (vertexShaderFile.is_open()) {
+        std::string line;
+        while (getline(vertexShaderFile, line)) {
+            vertexShaderSource += line + "\n";
+        }
+        vertexShaderFile.close();
+    }
+
+    if (fragmentShaderFile.is_open()) {
+        std::string line;
+        while (getline(fragmentShaderFile, line)) {
+            fragmentShaderSource += line + "\n";
+        }
+        fragmentShaderFile.close();
+    }
+
+    this->vertexSource = vertexShaderSource;
+    this->fragmentSource = fragmentShaderSource;
     id = glCreateProgram();
     compileShader(vertexSource, GL_VERTEX_SHADER);
     compileShader(fragmentSource, GL_FRAGMENT_SHADER);

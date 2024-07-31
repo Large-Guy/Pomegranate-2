@@ -5,7 +5,7 @@
 #include <iostream>
 #include <texture.h>
 
-class GraphicsCore {
+class Graphics {
 private:
     static int _viewportWidth;
     static int _viewportHeight;

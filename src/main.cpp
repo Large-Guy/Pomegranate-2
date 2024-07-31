@@ -22,7 +22,7 @@ struct Velocity
 
 struct Name
 {
-    std::string name;
+    const char* name;
 };
 
 int main() {
@@ -30,25 +30,52 @@ int main() {
 #define TRANSFORM 0
 #define VELOCITY 1
 #define NAME 2
-    Group group;
 
-    Entity* e1 = new Entity();
-    e1->addComponent<Name>(NAME,{"Hello World!"});
-    e1->addComponent<Transform>(TRANSFORM);
+    Graphics::init();
 
-    Entity* e2 = new Entity();
-    e2->addComponent<Name>(NAME,{"This is Entity 2"});
-    e2->addComponent<Transform>(TRANSFORM);
+    Window window;
+    window.setTitle("Pomegranate Engine");
+    window.setSize(800, 600);
+    window.open();
 
-    std::vector<Entity*> entities = {e1,e2};
+    Texture2D pomegranate("assets/images/pomegranate.png","pomegranate");
+    Texture2D pomegranate_n("assets/images/pomegranate_n.png","pomegranate_n");
 
-    for(auto e : entities) {
-        std::cout << "Name" << std::endl;
-        std::cout << e->getComponent<Name>(NAME)->name << std::endl;
-        std::cout << "Transform" << std::endl;
-        std::cout << (std::string)e->getComponent<Transform>(TRANSFORM)->position << std::endl;
-        std::cout << (std::string)e->getComponent<Transform>(TRANSFORM)->scale << std::endl;
-        std::cout << e->getComponent<Transform>(TRANSFORM)->rotation << std::endl;
+    Shader shader("assets/shaders/default2d/vertex.glsl","assets/shaders/default2d/fragment.glsl");
+
+    float t = 0;
+
+    while(window.isOpen())
+    {
+        window.pollEvents();
+
+        window.draw.begin();
+        window.draw.clear();
+        window.draw.setShader(&shader);
+        pomegranate_n.bind(1);
+        shader.set("NORMAL",pomegranate_n);
+        shader.set("TIME",t);
+        shader.set("USE_NORMAL_MAP",true);
+        window.draw.drawTexture(pomegranate,Vector2(0   ,0),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(-256,0),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(-512,0),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(512 ,0),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(256 ,0),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(0   ,256),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(-256,256),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(-512,256),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(512 ,256),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(256 ,256),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(0   ,-256),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(-256,-256),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(-512,-256),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(512 ,-256),Vector2(256,256),t);
+        window.draw.drawTexture(pomegranate,Vector2(256 ,-256),Vector2(256,256),t);
+        window.draw.end();
+
+        t += 0.01f;
     }
+
+
     return 0;
 }

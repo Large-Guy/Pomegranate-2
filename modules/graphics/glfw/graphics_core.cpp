@@ -1,9 +1,9 @@
 #include "graphics_core.h"
 
-int GraphicsCore::_viewportWidth = 800;
-int GraphicsCore::_viewportHeight = 600;
+int Graphics::_viewportWidth = 800;
+int Graphics::_viewportHeight = 600;
 
-void GraphicsCore::init() {
+void Graphics::init() {
     if (!glfwInit()) {
         std::cout << "Failed to initialize GLFW" << std::endl;
         //Get error
@@ -16,7 +16,7 @@ void GraphicsCore::init() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 }
 
-void GraphicsCore::setRenderTexture(Texture2D *texture) {
+void Graphics::setRenderTexture(Texture2D *texture) {
     if(texture == nullptr)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -31,16 +31,16 @@ void GraphicsCore::setRenderTexture(Texture2D *texture) {
     _viewportHeight = texture->getHeight();
 }
 
-void GraphicsCore::setViewport(int width, int height) {
+void Graphics::setViewport(int width, int height) {
     glViewport(0, 0, width, height);
     _viewportWidth = width;
     _viewportHeight = height;
 }
 
-int GraphicsCore::getViewportWidth() {
+int Graphics::getViewportWidth() {
     return _viewportWidth;
 }
 
-int GraphicsCore::getViewportHeight() {
+int Graphics::getViewportHeight() {
     return _viewportHeight;
 }

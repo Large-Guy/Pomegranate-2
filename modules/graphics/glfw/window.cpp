@@ -92,7 +92,7 @@ void Window::Draw::drawTexture(Texture2D& texture, Vector2 position, Vector2 siz
     Matrix3x3 modelMatrix = Matrix3x3::makeTransform(position, size, rotation);
 
     _currentShader->use();
-    _currentShader->set("SCREEN_RESOLUTION", Vector2((float)GraphicsCore::getViewportWidth(), (float)GraphicsCore::getViewportHeight()));
+    _currentShader->set("SCREEN_RESOLUTION", Vector2((float)Graphics::getViewportWidth(), (float)Graphics::getViewportHeight()));
     _currentShader->set("TEXTURE", texture);
     _currentShader->set("MODEL_MATRIX", modelMatrix);
     _currentShader->set("Z_INDEX", _z_index);
