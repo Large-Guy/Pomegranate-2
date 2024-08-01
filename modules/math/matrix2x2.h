@@ -3,8 +3,8 @@
 #include<vector2.h>
 
 struct Matrix2x2 : public Serializable {
-    Vector2 x;
-    Vector2 y;
+    Vector2 x = Vector2();
+    Vector2 y = Vector2();
 
     Matrix2x2();
     Matrix2x2(const Vector2& x, const Vector2& y);

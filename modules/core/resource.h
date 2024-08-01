@@ -5,10 +5,10 @@
 
 class Resource : public Serializable {
 private:
-    std::string _name;
-    std::string _path;
-    uint _id;
-    bool _runtime;
+    std::string _name = "";
+    std::string _path = "";
+    uint _id = 0;
+    bool _runtime = false;
     static uint resourceCount;
 public:
     explicit Resource(std::string path = "", std::string name = "");

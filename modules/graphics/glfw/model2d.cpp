@@ -3,9 +3,9 @@
 Model2D::Model2D() {
     this->_vertices = std::vector<Vertex2D>();
     this->_indices = std::vector<unsigned int>();
-    this->_VAO = -1;
-    this->_VBO = -1;
-    this->_EBO = -1;
+    this->_VAO = 0;
+    this->_VBO = 0;
+    this->_EBO = 0;
 }
 
 std::vector<Vertex2D> Model2D::getVertices() const {
@@ -34,7 +34,7 @@ void Model2D::addIndex(uint index) {
 
 void Model2D::regenerateBuffers() {
     //Clear previous buffers
-    if(this->_VAO != -1) {
+    if(this->_VAO != 0) {
         glDeleteVertexArrays(1, &this->_VAO);
         glDeleteBuffers(1, &this->_VBO);
         glDeleteBuffers(1, &this->_EBO);
@@ -81,6 +81,8 @@ void Model2D::regenerateBuffers() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
+
+
 
 void Model2D::draw() const {
     glBindVertexArray(this->_VAO);

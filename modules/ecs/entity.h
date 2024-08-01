@@ -21,14 +21,14 @@ class Entity
 private:
     void moveEntityArchetype(Archetype* current, size_t row, Archetype* next, component_id component);
 public:
-    entity_id _id;
+    entity_id _id = 0;
     static std::unordered_map<entity_id, EntityRecord> _entityIndex;
 
     Entity();
     ~Entity();
 
     bool hasComponent(component_id component) const;
-    template <typename T> void addComponent(component_id component);
+    template <typename T> T* addComponent(component_id component);
     template <typename T> void addComponent(component_id component, T init);
     template <typename T> T* getComponent(component_id component);
 
@@ -36,7 +36,7 @@ public:
 };
 
 template<typename T>
-void Entity::addComponent(component_id component) {
+T* Entity::addComponent(component_id component) {
     EntityRecord& eRecord = Entity::_entityIndex[this->_id]; //Get current record
     Archetype* new_archetype = eRecord.archetype->addComponent(component); //Find the new archetype of the entity with new component
     moveEntityArchetype(eRecord.archetype,eRecord.row,new_archetype,component); //Move the archetype
@@ -45,6 +45,7 @@ void Entity::addComponent(component_id component) {
         list.setComponentSize(sizeof(Component<T>));
     }
     ((Component<T>*)list.add())[0] = Component<T>{};
+    return &(((Component<T>*)list.get(list.componentCount-1))[0]._data);
 }
 
 template<typename T>
@@ -63,7 +64,7 @@ template <typename T> T*
 Entity::getComponent(component_id component) {
     EntityRecord& eRecord = Entity::_entityIndex[this->_id];
     Archetype*& archetype = eRecord.archetype;
-    std::unordered_map<archetype_id,ComponentLocation> archetypes = Archetype::_componentIndex[component];
+    std::unordered_map<archetype_id,ComponentLocation>& archetypes = Archetype::_componentIndex[component];
     if(archetypes.count(archetype->_id) == 0) {
         return nullptr;
     }

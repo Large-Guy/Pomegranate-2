@@ -8,11 +8,19 @@
 #include <chrono>
 #include <event_manager.h>
 
+#define TRANSFORM 0
+#define VELOCITY 1
+#define NAME 2
+#define PLAYER 3
+#define SPRITE 4
+
+Window window;
+
 struct Transform : public Serializable
 {
-    Vector2 position;
-    Vector2 scale;
-    float rotation;
+    Vector2 position = Vector2(0,0);
+    Vector2 scale = Vector2(1,1);
+    float rotation = 0;
 
     Transform& operator=(const Transform& other)
     {
@@ -35,53 +43,205 @@ struct Transform : public Serializable
     }
 };
 
-struct Velocity
+struct Velocity : public Serializable
 {
-    Vector2 linearVelocity;
-    float angularVelocity;
+    Vector2 linearVelocity = Vector2(0,0);
+    float angularVelocity = 0;
+
+    Vector2 linearAcceleration = Vector2(0,0);
+    float angularAcceleration = 0;
+
+    Velocity& operator=(const Velocity& other)
+    {
+        linearVelocity = other.linearVelocity;
+        angularVelocity = other.angularVelocity;
+        linearAcceleration = other.linearAcceleration;
+        angularAcceleration = other.angularAcceleration;
+        return *this;
+    }
+
+    void serialize(Archive& a) const override {
+        a << linearVelocity;
+        a << angularVelocity;
+        a << linearAcceleration;
+        a << angularAcceleration;
+    }
+
+    void deserialize(Archive& a) override {
+        a >> &linearVelocity;
+        a >> &angularVelocity;
+        a >> &linearAcceleration;
+        a >> &angularAcceleration;
+    }
 };
 
-struct Name
+struct Name : public Serializable
 {
-    const char* name;
+    std::string name = "";
+
+    Name()
+    {
+        name = "";
+    }
+
+    Name& operator=(const Name& other)
+    {
+        if(!other.name.empty())
+            name = other.name;
+        return *this;
+    }
+
+    void serialize(Archive& a) const override {
+        a << name;
+    }
+
+    void deserialize(Archive& a) override {
+        a >> &name;
+    }
 };
 
-void update(void* data)
+struct Player : public Serializable
+{
+    float speed = 0;
+    float deceleration = 0;
+
+    Player& operator=(const Player& other)
+    {
+        speed = other.speed;
+        deceleration = other.deceleration;
+        return *this;
+    }
+
+    void serialize(Archive& a) const override {
+        a << speed;
+        a << deceleration;
+    }
+
+    void deserialize(Archive& a) override {
+        a >> &speed;
+        a >> &deceleration;
+    }
+};
+
+struct Sprite : public Serializable
+{
+    Texture2D* texture = nullptr;
+
+    Sprite& operator=(const Sprite& other)
+    {
+        texture = other.texture;
+        return *this;
+    }
+
+    void serialize(Archive& a) const override {
+        a << texture;
+    }
+
+    void deserialize(Archive& a) override {
+        a >> texture;
+    }
+};
+
+void player_update(void* data)
 {
     float dt = *(float*)data;
-    std::cout << "Update function event called, dt: " << dt << std::endl;
+
+    Group* group = Group::getGroup("main");
+    group->each({PLAYER},[&](Entity* e){
+        auto* velocity = e->getComponent<Velocity>(VELOCITY);
+        auto* player = e->getComponent<Player>(PLAYER);
+
+
+        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_W) == GLFW_PRESS)
+        {
+            velocity->linearAcceleration = velocity->linearAcceleration + Vector2(0,player->speed);
+        }
+        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_S) == GLFW_PRESS)
+        {
+            velocity->linearAcceleration = velocity->linearAcceleration + Vector2(0,-player->speed);
+        }
+        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_A) == GLFW_PRESS)
+        {
+            velocity->linearAcceleration = velocity->linearAcceleration + Vector2(-player->speed,0);
+        }
+        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_D) == GLFW_PRESS)
+        {
+            velocity->linearAcceleration = velocity->linearAcceleration + Vector2(player->speed,0);
+        }
+
+
+        velocity->linearAcceleration = velocity->linearAcceleration - velocity->linearVelocity * player->deceleration;
+    });
+}
+
+void physics_update(void* data)
+{
+    float dt = *(float*)data;
+
+    Group* group = Group::getGroup("main");
+    group->each({TRANSFORM,VELOCITY},[&](Entity* e){
+        auto* transform = e->getComponent<Transform>(TRANSFORM);
+        auto* velocity = e->getComponent<Velocity>(VELOCITY);
+
+        velocity->linearVelocity = velocity->linearVelocity + velocity->linearAcceleration * dt;
+        velocity->angularVelocity = velocity->angularVelocity + velocity->angularAcceleration * dt;
+
+        transform->position = transform->position + velocity->linearVelocity * dt;
+        transform->rotation = transform->rotation + velocity->angularVelocity * dt;
+
+        velocity->linearAcceleration = Vector2(0,0);
+        velocity->angularAcceleration = 0;
+    });
+}
+
+void sprite_draw(void* data)
+{
+    Group* group = Group::getGroup("main");
+    group->each({TRANSFORM,SPRITE},[&](Entity* e){
+        auto* transform = e->getComponent<Transform>(TRANSFORM);
+        auto* sprite = e->getComponent<Sprite>(SPRITE);
+
+        if(sprite->texture != nullptr) {
+            std::cout << "Drawing sprite" << std::endl;
+            window.draw.drawTexture(sprite->texture, transform->position, transform->scale, transform->rotation);
+        }
+    });
 }
 
 int main() {
 
-    //Component IDs
-#define TRANSFORM 0
-#define VELOCITY 1
-#define NAME 2
-
-    //Event IDs
-    const event_id UPDATE = Event::getEventId("update");
-    Event::on(UPDATE,[&](void* data){
-        float dt = *(float*)data;
-        std::cout << "Update lambda event called, dt: " << dt << std::endl;
-    });
-
-    Event::on("update",update);
-
     Graphics::init();
-
-    Window window;
     window.setTitle("Pomegranate Engine");
     window.setSize(800, 600);
     window.open();
 
-    Texture2D pomegranate("assets/images/pomegranate.png","pomegranate");
-    Texture2D pomegranate_n("assets/images/pomegranate_n.png","pomegranate_n");
+    //Event IDs
+    const event_id UPDATE = Event::getEventId("update");
+    const event_id RENDER = Event::getEventId("render");
+    Event::on(UPDATE,player_update);
+    Event::on(UPDATE,physics_update);
+    Event::on(RENDER,sprite_draw);
 
-    Shader shader("assets/shaders/default2d/vertex.glsl","assets/shaders/default2d/fragment.glsl");
+    //Main group
+    Group mainGroup;
+    mainGroup.setName("main");
 
+    auto* texture = new Texture2D("assets/images/pomegranate.png","batman");
+    //Entity
+    {
+        Entity *entity = new Entity();
+        entity->addComponent<Name>(NAME);
+        entity->addComponent<Transform>(TRANSFORM)->scale = Vector2(128, 128);
+        entity->addComponent<Velocity>(VELOCITY);
+        entity->addComponent<Sprite>(SPRITE)->texture = texture;
+        auto *player = entity->addComponent<Player>(PLAYER);
+        player->speed = 7000;
+        player->deceleration = 10;
+        mainGroup.addEntity(entity);
+    }
+    
+    //Delta time
     float deltaTime = 0;
-
     auto lastTime = std::chrono::high_resolution_clock::now();
     auto currentTime = std::chrono::high_resolution_clock::now();
 
@@ -92,10 +252,12 @@ int main() {
         //Update
         Event::call(UPDATE,&deltaTime);
 
+
+        //Render
         window.draw.begin();
+        window.draw.setColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
         window.draw.clear();
-        window.draw.setShader(&shader);
-        pomegranate_n.bind(1);
+        Event::call(RENDER,&deltaTime);
 
         window.draw.end();
 

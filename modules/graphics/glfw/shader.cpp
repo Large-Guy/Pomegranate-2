@@ -113,6 +113,6 @@ void Shader::set(const char *name, const Matrix4x4 &value) const {
     glUniformMatrix4fv(glGetUniformLocation(id, name), 1, GL_FALSE, values);
 }
 
-void Shader::set(const char *name, const Texture2D &value) const {
-    glUniform1i(glGetUniformLocation(id, name), value.getBindSlot());
+void Shader::set(const char *name, Texture2D *value) const {
+    glUniform1i(glGetUniformLocation(id, name), value->getBindSlot());
 }

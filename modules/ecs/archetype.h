@@ -36,22 +36,22 @@ struct VectorComparison {
     }
 };
 struct ArchetypeNode{
-    Archetype* add;
-    Archetype* remove;
+    Archetype* add = nullptr;
+    Archetype* remove = nullptr;
     ArchetypeNode();
 };
 
 struct ComponentLocation {
-    size_t column;
+    size_t column = 0;
 };
 
 struct Archetype {
 private:
-    archetype_id _id;
-    entity_type _type;
-    std::unordered_set<component_id> _typeSet;
-    std::unordered_map<component_id, ArchetypeNode> _nodes;
-    std::vector<ComponentList> _components;
+    archetype_id _id = 0;
+    entity_type _type = {};
+    std::unordered_set<component_id> _typeSet = {};
+    std::unordered_map<component_id, ArchetypeNode> _nodes = {};
+    std::vector<ComponentList> _components = {};
 
     static std::unordered_map<entity_type, Archetype*, VectorHash, VectorComparison> _archetypeIndex;
     static std::unordered_map<component_id,std::unordered_map<archetype_id, ComponentLocation>> _componentIndex;

@@ -5,9 +5,9 @@
 #include <cmath>
 
 struct Matrix3x3 : public Serializable {
-    Vector3 x;
-    Vector3 y;
-    Vector3 z;
+    Vector3 x = Vector3();
+    Vector3 y = Vector3();
+    Vector3 z = Vector3();
 
     Matrix3x3();
     Matrix3x3(const Vector3& x, const Vector3& y, const Vector3& z);

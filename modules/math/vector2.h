@@ -3,7 +3,7 @@
 #include "serializable.h"
 
 struct Vector2 : public Serializable {
-    float x, y;
+    float x = 0, y = 0;
     Vector2();
     Vector2(float v);
     Vector2(float x, float y);

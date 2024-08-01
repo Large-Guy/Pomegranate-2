@@ -6,6 +6,7 @@
 typedef unsigned int component_id;
 typedef unsigned int entity_id;
 typedef unsigned int archetype_id;
+typedef unsigned int group_id;
 typedef std::vector<component_id> entity_type;
 
 

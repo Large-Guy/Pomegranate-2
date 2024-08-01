@@ -12,9 +12,9 @@
 
 class Shader {
 private:
-    GLuint id;
-    std::string vertexSource;
-    std::string fragmentSource;
+    GLuint id = 0;
+    std::string vertexSource = "";
+    std::string fragmentSource = "";
     void compileShader(const std::string& source, GLenum type);
 public:
     Shader();
@@ -30,7 +30,7 @@ public:
     void set(const char* name, const Matrix2x2& value) const;
     void set(const char* name, const Matrix3x3& value) const;
     void set(const char* name, const Matrix4x4& value) const;
-    void set(const char* name, const Texture2D& value) const;
+    void set(const char* name, Texture2D* value) const;
 };
 
 

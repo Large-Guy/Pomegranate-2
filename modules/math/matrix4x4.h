@@ -5,10 +5,10 @@
 #include <cmath>
 
 struct Matrix4x4 : public Serializable {
-    Vector4 x;
-    Vector4 y;
-    Vector4 z;
-    Vector4 w;
+    Vector4 x = Vector4();
+    Vector4 y = Vector4();
+    Vector4 z = Vector4();
+    Vector4 w = Vector4();
 
     Matrix4x4();
     Matrix4x4(const Vector4& x, const Vector4& y, const Vector4& z, const Vector4& w);

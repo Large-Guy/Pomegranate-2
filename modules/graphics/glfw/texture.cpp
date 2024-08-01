@@ -5,7 +5,7 @@
 #endif
 #include <stb_image.h>
 
-Texture2D::Texture2D(std::string path, std::string name) : Resource(path, name) {
+Texture2D::Texture2D(const std::string& path, std::string name) : Resource(path, name) {
     _id = -1;
 
     if(path.empty()) {
@@ -21,8 +21,18 @@ Texture2D::Texture2D(std::string path, std::string name) : Resource(path, name) 
     }
 }
 
+Texture2D::Texture2D(int width, int height, int channels) {
+    _id = -1;
+    _width = width;
+    _height = height;
+    _channels = channels;
+    _data = new unsigned char[width * height * channels];
+    apply();
+}
+
 Texture2D::~Texture2D() {
     glDeleteTextures(1, &_id);
+    stbi_image_free(_data);
 }
 
 void Texture2D::reload() {
@@ -134,13 +144,4 @@ Vector4 Texture2D::getPixel(int x, int y) const {
         return {_data[index] / 255.0f, _data[index + 1] / 255.0f, _data[index + 2] / 255.0f, _channels == 4 ? _data[index + 3] / 255.0f : 1.0f};
     }
     return {0, 0, 0, 0};
-}
-
-Texture2D::Texture2D(int width, int height, int channels) {
-    _id = -1;
-    _width = width;
-    _height = height;
-    _channels = channels;
-    _data = new unsigned char[width * height * channels];
-    apply();
 }

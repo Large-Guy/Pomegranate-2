@@ -8,9 +8,9 @@
 
 class Model2D : public Serializable {
 private:
-    std::vector<Vertex2D> _vertices;
-    std::vector<uint> _indices;
-    uint _VAO, _VBO, _EBO;
+    std::vector<Vertex2D> _vertices = {};
+    std::vector<uint> _indices = {};
+    uint _VAO = 0, _VBO = 0, _EBO = 0;
 public:
     Model2D();
     [[nodiscard]] std::vector<Vertex2D> getVertices() const;

@@ -15,10 +15,10 @@ public:
 
 struct ComponentList
 {
-    component_id type;
-    void* data;
-    size_t componentSize;
-    size_t componentCount;
+    component_id type = 0;
+    void* data = nullptr;
+    size_t componentSize = 0;
+    size_t componentCount = 0;
     ComponentList(component_id type);
     void setComponentSize(size_t size);
     void resize(size_t new_size);

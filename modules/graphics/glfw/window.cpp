@@ -87,8 +87,8 @@ void Window::Draw::clear() const {
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 
-void Window::Draw::drawTexture(Texture2D& texture, Vector2 position, Vector2 size, float rotation) {
-    texture.bind(0);
+void Window::Draw::drawTexture(Texture2D* texture, Vector2 position, Vector2 size, float rotation) {
+    texture->bind(0);
     Matrix3x3 modelMatrix = Matrix3x3::makeTransform(position, size, rotation);
 
     _currentShader->use();
@@ -96,7 +96,7 @@ void Window::Draw::drawTexture(Texture2D& texture, Vector2 position, Vector2 siz
     _currentShader->set("TEXTURE", texture);
     _currentShader->set("MODEL_MATRIX", modelMatrix);
     _currentShader->set("Z_INDEX", _z_index);
-    _rect.draw();
+    _rect->draw();
 }
 
 void Window::Draw::setColor(Vector4 color) {
@@ -122,38 +122,38 @@ void Window::Draw::setZIndex(float z_index) {
 
 void Window::Draw::init() {
     _color = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-
+    _rect = new Model2D();
     //Create a rectangle model
-    _rect.addVertex({
+    _rect->addVertex({
                             {-0.5,-0.5},
                             {1.0},
                             {0.0,0.0}
                     });
-    _rect.addVertex({
+    _rect->addVertex({
                             {-0.5,0.5},
                             {1.0},
                             {0.0,1.0}
     });
-    _rect.addVertex({
+    _rect->addVertex({
                             {0.5,0.5},
                             {1.0},
                             {1.0,1.0}
     });
-    _rect.addVertex({
+    _rect->addVertex({
                             {0.5,-0.5},
                             {1.0},
                             {1.0,0.0}
     });
 
-    _rect.addIndex(2);
-    _rect.addIndex(1);
-    _rect.addIndex(0);
+    _rect->addIndex(2);
+    _rect->addIndex(1);
+    _rect->addIndex(0);
 
-    _rect.addIndex(3);
-    _rect.addIndex(2);
-    _rect.addIndex(0);
+    _rect->addIndex(3);
+    _rect->addIndex(2);
+    _rect->addIndex(0);
 
-    _rect.regenerateBuffers();
+    _rect->regenerateBuffers();
 
     //Create a shader program
     std::string vertexShaderSource;

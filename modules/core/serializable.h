@@ -12,8 +12,8 @@ struct Archive;
 
 struct Archive {
 private:
-    std::vector<char> _data;
-    int _index;
+    std::vector<char> _data = {};
+    int _index = 0;
 public:
     Archive();
     Archive& operator<<(long i);
@@ -51,6 +51,7 @@ public:
 
 class Serializable {
 public:
+    virtual ~Serializable() = default;
     virtual void serialize(Archive&) const;
     virtual void deserialize(Archive&);
 };

@@ -8,16 +8,18 @@
 
 class Texture2D : public Resource {
 private:
-    GLuint _id;
-    int _width;
-    int _height;
-    int _channels;
-    unsigned char* _data;
-    uint _slot;
+    GLuint _id = 0;
+    int _width = 0;
+    int _height = 0;
+    int _channels = 0;
+    unsigned char* _data = nullptr;
+    uint _slot = 0;
 public:
-    explicit Texture2D(std::string path, std::string name = "");
+    explicit Texture2D(const std::string& path, std::string name = "");
     Texture2D(int width, int height, int channels = 4);
-    ~Texture2D();
+    Texture2D(const Texture2D& other) = delete;
+    Texture2D& operator=(const Texture2D& other) = delete;
+    ~Texture2D() override;
     void reload() override;
     void bind(uint slot = 0);
     bool apply();

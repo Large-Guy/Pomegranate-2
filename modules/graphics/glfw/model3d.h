@@ -8,9 +8,9 @@
 
 class Model3D : public Serializable {
 private:
-    std::vector<Vertex3D> _vertices;
-    std::vector<uint> _indices;
-    uint _VAO, _VBO, _EBO;
+    std::vector<Vertex3D> _vertices = {};
+    std::vector<uint> _indices = {};
+    uint _VAO = 0, _VBO = 0, _EBO = 0;
 public:
     Model3D();
     [[nodiscard]] std::vector<Vertex3D> getVertices() const;

@@ -20,7 +20,9 @@ Entity::~Entity() {
 
 bool Entity::hasComponent(component_id component) const {
     EntityRecord& eRecord = Entity::_entityIndex[this->_id];
-    std::unordered_map<archetype_id, ComponentLocation> archetypes = Archetype::_componentIndex[component];
+    if(Archetype::_componentIndex.count(component) == 0)
+        return false;
+    std::unordered_map<archetype_id, ComponentLocation>& archetypes = Archetype::_componentIndex[component];
     return archetypes.count(eRecord.archetype->_id);
 }
 
