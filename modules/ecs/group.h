@@ -19,15 +19,18 @@ public:
     void setName(const std::string& name);
 
     template<typename Func> void each(const std::vector<component_id>& components,Func&& func) {
-        for (Entity* entity: _entities) {
+        for(int i = 0; i < _entities.size(); i++) {
+            Entity* entity = _entities[i];
             bool hasComponents = true;
-            for (component_id component: components) {
-                if (!entity->hasComponent(component)) {
+            for(int j = 0; j < components.size(); j++) {
+                if(!entity->hasComponent(components[j])) {
                     hasComponents = false;
                     break;
                 }
             }
-            func(entity);
+            if(hasComponents) {
+                func(entity);
+            }
         }
     }
 

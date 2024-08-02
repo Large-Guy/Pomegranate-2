@@ -148,8 +148,10 @@ void player_update(void* data)
 {
     float dt = *(float*)data;
 
+    std::vector<Entity*> addQueue;
+
     Group* group = Group::getGroup("main");
-    group->each({PLAYER},[&](Entity* e){
+    group->each({PLAYER,TRANSFORM,VELOCITY},[&](Entity* e){
         auto* velocity = e->getComponent<Velocity>(VELOCITY);
         auto* player = e->getComponent<Player>(PLAYER);
 
@@ -169,6 +171,20 @@ void player_update(void* data)
         if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_D) == GLFW_PRESS)
         {
             velocity->linearAcceleration = velocity->linearAcceleration + Vector2(player->speed,0);
+        }
+
+        if(glfwGetMouseButton(window.getGLFWwindow(),GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+        {
+            Entity *entity = new Entity();
+            auto* transform = entity->addComponent<Transform>(TRANSFORM);
+            transform->position = e->getComponent<Transform>(TRANSFORM)->position;
+            transform->scale = Vector2(64,64);
+            auto* sprite = entity->addComponent<Sprite>(SPRITE);
+            sprite->texture = e->getComponent<Sprite>(SPRITE)->texture;
+            sprite->normalMap = e->getComponent<Sprite>(SPRITE)->normalMap;
+            auto* velocity = entity->addComponent<Velocity>(VELOCITY);
+            velocity->linearVelocity = Vector2(1000,0);
+            group->addEntity(entity);
         }
 
 
@@ -202,7 +218,6 @@ void sprite_draw(void* data)
     group->each({TRANSFORM,SPRITE},[&](Entity* e){
         auto* transform = e->getComponent<Transform>(TRANSFORM);
         auto* sprite = e->getComponent<Sprite>(SPRITE);
-
         if(sprite->texture != nullptr) {
             sprite->normalMap->bind(1);
             window.draw.getShader()->set("NORMAL", sprite->normalMap);
@@ -232,6 +247,7 @@ int main() {
 
     auto* texture = new Texture2D("assets/images/pomegranate.png","pomegranate");
     auto* texture_n = new Texture2D("assets/images/pomegranate_n.png","pomegranate_n");
+
     //Entity
     {
         Entity *entity = new Entity();

@@ -14,6 +14,15 @@ struct EntityRecord
 {
     Archetype* archetype;
     size_t row;
+
+    EntityRecord() = default;
+    EntityRecord(Archetype* archetype, size_t row) : archetype(archetype), row(row) {}
+
+    //Copy and move
+    EntityRecord(const EntityRecord& other) = default;
+    EntityRecord(EntityRecord&& other) noexcept = default;
+    EntityRecord& operator=(const EntityRecord& other) = default;
+    EntityRecord& operator=(EntityRecord&& other) noexcept = default;
 };
 
 class Entity
@@ -23,6 +32,7 @@ private:
 public:
     entity_id _id = 0;
     static std::unordered_map<entity_id, EntityRecord> _entityIndex;
+    static entity_id _entityCount;
 
     Entity();
     ~Entity();

@@ -3,15 +3,23 @@
 #include <utility>
 
 std::unordered_map<entity_id, EntityRecord> Entity::_entityIndex;
+entity_id Entity::_entityCount = 0;
 
 Entity::Entity() {
-    this->_id = Entity::_entityIndex.size();
+    this->_id = Entity::_entityCount++;
     Archetype*& archetype = Archetype::_archetypeIndex[{}];
     if(archetype == nullptr)
     {
         archetype = new Archetype({});
     }
-    Entity::_entityIndex[this->_id] = {archetype,0};
+    if(Entity::_entityIndex.count(this->_id) == 0) {
+        std::cout << "Created entity: " << this->_id << std::endl;
+        Entity::_entityIndex[this->_id] = {archetype,0};
+    }
+    else
+    {
+        throw std::runtime_error("The Fuck");
+    }
 }
 
 Entity::~Entity() {
