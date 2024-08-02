@@ -160,26 +160,7 @@ void Window::Draw::init() {
     std::string fragmentShaderSource;
 
     //Load from file
-    std::ifstream vertexShaderFile("assets/shaders/default2d/vertex.glsl");
-    std::ifstream fragmentShaderFile("assets/shaders/default2d/fragment.glsl");
-
-    if (vertexShaderFile.is_open()) {
-        std::string line;
-        while (getline(vertexShaderFile, line)) {
-            vertexShaderSource += line + "\n";
-        }
-        vertexShaderFile.close();
-    }
-
-    if (fragmentShaderFile.is_open()) {
-        std::string line;
-        while (getline(fragmentShaderFile, line)) {
-            fragmentShaderSource += line + "\n";
-        }
-        fragmentShaderFile.close();
-    }
-
-    _shader = new Shader(vertexShaderSource, fragmentShaderSource);
+    _shader = new Shader("assets/shaders/default2d/vertex.glsl", "assets/shaders/default2d/fragment.glsl");
     _currentShader = _shader;
 
     glEnable(GL_BLEND);
@@ -190,5 +171,9 @@ void Window::Draw::init() {
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+}
+
+Shader *Window::Draw::getShader() const {
+    return _currentShader;
 }
 

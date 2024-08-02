@@ -126,10 +126,12 @@ struct Player : public Serializable
 struct Sprite : public Serializable
 {
     Texture2D* texture = nullptr;
+    Texture2D* normalMap = nullptr;
 
     Sprite& operator=(const Sprite& other)
     {
         texture = other.texture;
+        normalMap = other.normalMap;
         return *this;
     }
 
@@ -202,7 +204,9 @@ void sprite_draw(void* data)
         auto* sprite = e->getComponent<Sprite>(SPRITE);
 
         if(sprite->texture != nullptr) {
-            std::cout << "Drawing sprite" << std::endl;
+            sprite->normalMap->bind(1);
+            window.draw.getShader()->set("NORMAL", sprite->normalMap);
+            window.draw.getShader()->set("USE_NORMAL_MAP", 1);
             window.draw.drawTexture(sprite->texture, transform->position, transform->scale, transform->rotation);
         }
     });
@@ -226,24 +230,29 @@ int main() {
     Group mainGroup;
     mainGroup.setName("main");
 
-    auto* texture = new Texture2D("assets/images/pomegranate.png","batman");
+    auto* texture = new Texture2D("assets/images/pomegranate.png","pomegranate");
+    auto* texture_n = new Texture2D("assets/images/pomegranate_n.png","pomegranate_n");
     //Entity
     {
         Entity *entity = new Entity();
         entity->addComponent<Name>(NAME);
         entity->addComponent<Transform>(TRANSFORM)->scale = Vector2(128, 128);
         entity->addComponent<Velocity>(VELOCITY);
-        entity->addComponent<Sprite>(SPRITE)->texture = texture;
+        auto* sprite = entity->addComponent<Sprite>(SPRITE);
+        sprite->texture = texture;
+        sprite->normalMap = texture_n;
         auto *player = entity->addComponent<Player>(PLAYER);
-        player->speed = 7000;
-        player->deceleration = 10;
+        player->speed = 10000;
+        player->deceleration = 15;
         mainGroup.addEntity(entity);
     }
-    
+
     //Delta time
     float deltaTime = 0;
     auto lastTime = std::chrono::high_resolution_clock::now();
     auto currentTime = std::chrono::high_resolution_clock::now();
+
+    float timePassed = 0;
 
     while(window.isOpen())
     {
@@ -255,8 +264,9 @@ int main() {
 
         //Render
         window.draw.begin();
-        window.draw.setColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+        window.draw.setColor(Vector4(0.1f, 0.1f, 0.1f, 0.1f));
         window.draw.clear();
+        window.draw.getShader()->set("TIME",timePassed);
         Event::call(RENDER,&deltaTime);
 
         window.draw.end();
@@ -264,8 +274,9 @@ int main() {
         currentTime = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
         lastTime = currentTime;
+        timePassed += deltaTime;
     }
 
-
+    delete texture;
     return 0;
 }

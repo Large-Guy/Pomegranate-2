@@ -39,7 +39,7 @@ public:
         void clear() const;
         void drawTexture(Texture2D* texture, Vector2 position, Vector2 size, float rotation = 0.0f);
 
-
+        Shader* getShader() const;
         friend class Window;
     };
 

@@ -13,8 +13,8 @@ Shader::Shader(const std::string& vertex, const std::string& fragment)
     std::string fragmentShaderSource;
 
     //Load from file
-    std::ifstream vertexShaderFile("assets/shaders/default2d/vertex.glsl");
-    std::ifstream fragmentShaderFile("assets/shaders/default2d/fragment.glsl");
+    std::ifstream vertexShaderFile(vertex);
+    std::ifstream fragmentShaderFile(fragment);
 
     if (vertexShaderFile.is_open()) {
         std::string line;
