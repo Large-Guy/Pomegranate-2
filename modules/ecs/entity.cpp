@@ -12,14 +12,7 @@ Entity::Entity() {
     {
         archetype = new Archetype({});
     }
-    if(Entity::_entityIndex.count(this->_id) == 0) {
-        std::cout << "Created entity: " << this->_id << std::endl;
-        Entity::_entityIndex[this->_id] = {archetype,0};
-    }
-    else
-    {
-        throw std::runtime_error("The Fuck");
-    }
+    Entity::_entityIndex[this->_id] = {archetype,0};
 }
 
 Entity::~Entity() {

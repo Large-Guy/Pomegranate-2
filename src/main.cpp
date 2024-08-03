@@ -182,8 +182,8 @@ void player_update(void* data)
             auto* sprite = entity->addComponent<Sprite>(SPRITE);
             sprite->texture = e->getComponent<Sprite>(SPRITE)->texture;
             sprite->normalMap = e->getComponent<Sprite>(SPRITE)->normalMap;
-            auto* velocity = entity->addComponent<Velocity>(VELOCITY);
-            velocity->linearVelocity = Vector2(1000,0);
+            auto* vel = entity->addComponent<Velocity>(VELOCITY);
+            vel->linearVelocity = velocity->linearVelocity;
             group->addEntity(entity);
         }
 
