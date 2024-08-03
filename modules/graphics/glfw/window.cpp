@@ -125,22 +125,22 @@ void Window::Draw::init() {
     _rect = new Model2D();
     //Create a rectangle model
     _rect->addVertex({
-                            {-0.5,-0.5},
+                            {-1.0,-1.0},
                             {1.0},
                             {0.0,0.0}
                     });
     _rect->addVertex({
-                            {-0.5,0.5},
+                            {-1.0,1.0},
                             {1.0},
                             {0.0,1.0}
     });
     _rect->addVertex({
-                            {0.5,0.5},
+                            {1.0,1.0},
                             {1.0},
                             {1.0,1.0}
     });
     _rect->addVertex({
-                            {0.5,-0.5},
+                            {1.0,-1.0},
                             {1.0},
                             {1.0,0.0}
     });
