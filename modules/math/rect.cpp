@@ -15,6 +15,17 @@ Rect::Rect(float x, float y, float w, float h) {
     size = Vector2(w, h);
 }
 
+Rect::Rect(const Rect &other) {
+    position = other.position;
+    size = other.size;
+}
+
+Rect &Rect::operator=(const Rect &other) {
+    position = other.position;
+    size = other.size;
+    return *this;
+}
+
 Vector2 Rect::center() const {
     return this->position + (this->size * 0.5f);
 }

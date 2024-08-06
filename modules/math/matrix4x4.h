@@ -22,7 +22,7 @@ struct Matrix4x4 : public Serializable {
     [[nodiscard]] Matrix4x4 rotateY(float angle) const;
     [[nodiscard]] Matrix4x4 rotateZ(float angle) const;
 
-    static Matrix4x4 makeTransform(Vector3 pos, Vector3 scale, Vector3 rotation);
+    static Matrix4x4 createTransform(Vector3 pos, Vector3 scale, Vector3 rotation);
 
     void serialize(Archive& a) const override;
     void deserialize(Archive& a) override;

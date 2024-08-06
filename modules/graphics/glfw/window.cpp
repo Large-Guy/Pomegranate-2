@@ -89,7 +89,7 @@ void Window::Draw::clear() const {
 
 void Window::Draw::drawTexture(Texture2D* texture, Vector2 position, Vector2 size, float rotation) {
     texture->bind(0);
-    Matrix3x3 modelMatrix = Matrix3x3::makeTransform(position, size, rotation);
+    Matrix3x3 modelMatrix = Matrix3x3::createTransform(position, size, rotation);
 
     _currentShader->use();
     _currentShader->set("SCREEN_RESOLUTION", Vector2((float)Graphics::getViewportWidth(), (float)Graphics::getViewportHeight()));
@@ -155,7 +155,7 @@ void Window::Draw::init() {
 
     _rect->regenerateBuffers();
 
-    //Create a shader program
+    //Create a tileMapShader program
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
 

@@ -8,6 +8,14 @@ Model3D::Model3D() {
     this->_EBO = 0;
 }
 
+Model3D::~Model3D() {
+    if(this->_VAO != 0) {
+        glDeleteVertexArrays(1, &this->_VAO);
+        glDeleteBuffers(1, &this->_VBO);
+        glDeleteBuffers(1, &this->_EBO);
+    }
+}
+
 std::vector<Vertex3D> Model3D::getVertices() const {
     return this->_vertices;
 }

@@ -116,6 +116,6 @@ Matrix4x4 Matrix4x4::rotateZ(float angle) const {
     );
 }
 
-Matrix4x4 Matrix4x4::makeTransform(Vector3 pos, Vector3 scale, Vector3 rotation) {
+Matrix4x4 Matrix4x4::createTransform(Vector3 pos, Vector3 scale, Vector3 rotation) {
     return Matrix4x4().scale(scale).rotateX(rotation.x).rotateY(rotation.y).rotateZ(rotation.z).translate(pos);
 }

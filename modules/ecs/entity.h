@@ -39,7 +39,6 @@ public:
 
     bool hasComponent(component_id component) const;
     template <typename T> T* addComponent(component_id component);
-    template <typename T> void addComponent(component_id component, T init);
     template <typename T> T* getComponent(component_id component);
 
     friend class Group;
@@ -54,20 +53,8 @@ T* Entity::addComponent(component_id component) {
     if(!list.hasSize()) {
         list.setComponentSize(sizeof(Component<T>));
     }
-    ((Component<T>*)list.add())[0] = Component<T>{};
+    new ((Component<T>*)list.add()) Component<T>();
     return &(((Component<T>*)list.get(list.componentCount-1))[0]._data);
-}
-
-template<typename T>
-void Entity::addComponent(component_id component, T init) {
-    EntityRecord& eRecord = Entity::_entityIndex[this->_id]; //Get current record
-    Archetype* new_archetype = eRecord.archetype->addComponent(component); //Find the new archetype of the entity with new component
-    moveEntityArchetype(eRecord.archetype,eRecord.row,new_archetype,component); //Move the archetype
-    ComponentList& list = new_archetype->_components[Archetype::_componentIndex[component][new_archetype->_id].column];
-    if(!list.hasSize()) {
-        list.setComponentSize(sizeof(Component<T>));
-    }
-    ((Component<T>*)list.add())[0] = {init};
 }
 
 template <typename T> T*

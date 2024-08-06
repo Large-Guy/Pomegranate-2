@@ -13,6 +13,7 @@ private:
     uint _VAO = 0, _VBO = 0, _EBO = 0;
 public:
     Model3D();
+    ~Model3D();
     [[nodiscard]] std::vector<Vertex3D> getVertices() const;
     [[nodiscard]] std::vector<uint> getIndices() const;
     void setVertices(const std::vector<Vertex3D>& vertices);

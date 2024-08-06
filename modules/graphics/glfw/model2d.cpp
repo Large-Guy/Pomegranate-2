@@ -8,6 +8,14 @@ Model2D::Model2D() {
     this->_EBO = 0;
 }
 
+Model2D::~Model2D() {
+    if(this->_VAO != 0) {
+        glDeleteVertexArrays(1, &this->_VAO);
+        glDeleteBuffers(1, &this->_VBO);
+        glDeleteBuffers(1, &this->_EBO);
+    }
+}
+
 std::vector<Vertex2D> Model2D::getVertices() const {
     return this->_vertices;
 }

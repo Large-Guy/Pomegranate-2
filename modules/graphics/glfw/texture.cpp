@@ -94,7 +94,7 @@ int Texture2D::getHeight() const {
 }
 
 bool Texture2D::apply() {
-    if(_id != -1)
+    if(_id != 0)
     {
         glDeleteTextures(1, &_id);
     }

@@ -82,6 +82,6 @@ Matrix3x3 Matrix3x3::rotate(float angle) const {
     );
 }
 
-Matrix3x3 Matrix3x3::makeTransform(Vector2 pos, Vector2 scale, float angle) {
+Matrix3x3 Matrix3x3::createTransform(Vector2 pos, Vector2 scale, float angle) {
     return Matrix3x3().scale(std::move(scale)).rotate(angle).translate(std::move(pos));
 }

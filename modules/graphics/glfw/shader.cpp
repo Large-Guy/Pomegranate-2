@@ -8,7 +8,7 @@ Shader::Shader() {
 
 Shader::Shader(const std::string& vertex, const std::string& fragment)
 {
-    //Create a shader program
+    //Create a tileMapShader program
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
 
@@ -65,7 +65,7 @@ void Shader::compileShader(const std::string& source, GLenum type)
         std::vector<GLchar> infoLog(infoLogLength);
         glGetShaderInfoLog(shader, infoLogLength, NULL, infoLog.data());
         std::cerr << "Shader compilation failed:\n" << infoLog.data() << std::endl;
-        // Handle compilation failure, e.g., delete shader and exit
+        // Handle compilation failure, e.g., delete tileMapShader and exit
     }
     glAttachShader(id, shader);
     glDeleteShader(shader);

@@ -6,7 +6,10 @@
 
 template <typename T> class Component {
 public:
-    T _data;
+    T _data = T();
+    Component(){
+        _data = T();
+    }
     Component<T>& operator=(const T& data) {
         this->_data = data;
         return *this;

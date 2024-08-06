@@ -8,6 +8,7 @@ struct Vector4 : public Serializable {
     Vector4();
     Vector4(float v);
     Vector4(float x, float y, float z, float w = 0.0f);
+    Vector4(const Vector4& other);
 
     Vector4 operator+(const Vector4& v) const;
     Vector4 operator-(const Vector4& v) const;
@@ -21,6 +22,7 @@ struct Vector4 : public Serializable {
     void operator/=(const Vector4& v);
     void operator*=(float v);
     void operator/=(float v);
+    Vector4& operator=(const Vector4& v);
 
     [[nodiscard]] float dot(const Vector4& v) const;
     [[nodiscard]] float length() const;

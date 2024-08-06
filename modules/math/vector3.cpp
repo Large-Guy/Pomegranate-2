@@ -21,6 +21,13 @@ Vector3::Vector3(float x, float y, float z)
     this->z = z;
 }
 
+Vector3::Vector3(const Vector3& v)
+{
+    x = v.x;
+    y = v.y;
+    z = v.z;
+}
+
 Vector3 Vector3::operator+(const Vector3& v) const
 {
     return Vector3(x + v.x, y + v.y, z + v.z);
@@ -91,6 +98,14 @@ void Vector3::operator/=(float v)
     x /= v;
     y /= v;
     z /= v;
+}
+
+Vector3& Vector3::operator=(const Vector3& v)
+{
+    x = v.x;
+    y = v.y;
+    z = v.z;
+    return *this;
 }
 
 float Vector3::dot(const Vector3& v) const

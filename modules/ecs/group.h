@@ -13,6 +13,9 @@ private:
     std::vector<Entity*> _entities = {};
 public:
 
+    Group();
+    explicit Group(const std::string& name);
+    ~Group();
     void addEntity(Entity* entity);
     void removeEntity(Entity* entity);
     Entity* getEntity(entity_id id);
@@ -34,7 +37,7 @@ public:
         }
     }
 
-    static Group* getGroup(const std::string& name) {
+    static Group* find(const std::string& name) {
         if (_groupIndex.find(name) == _groupIndex.end()) {
             return nullptr;
         }

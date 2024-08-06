@@ -19,7 +19,7 @@ struct Matrix3x3 : public Serializable {
     [[nodiscard]] Matrix3x3 scale(Vector2 scale) const;
     [[nodiscard]] Matrix3x3 rotate(float angle) const;
 
-    static Matrix3x3 makeTransform(Vector2 pos, Vector2 scale, float angle);
+    static Matrix3x3 createTransform(Vector2 pos, Vector2 scale, float angle);
 
     void serialize(Archive& a) const override;
     void deserialize(Archive& a) override;

@@ -9,6 +9,9 @@ struct Rect : public Serializable {
     Rect();
     Rect(Vector2 position, Vector2 size);
     Rect(float x, float y, float w, float h);
+    Rect(const Rect& other);
+
+    Rect& operator=(const Rect& other);
 
     [[nodiscard]] Vector2 center() const;
     [[nodiscard]] Vector2 min() const;
