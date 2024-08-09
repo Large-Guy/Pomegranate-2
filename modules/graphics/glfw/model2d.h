@@ -14,8 +14,8 @@ private:
 public:
     Model2D();
     ~Model2D();
-    [[nodiscard]] std::vector<Vertex2D> getVertices() const;
-    [[nodiscard]] std::vector<uint> getIndices() const;
+    [[nodiscard]] std::vector<Vertex2D>& getVertices();
+    [[nodiscard]] std::vector<uint>& getIndices();
     void setVertices(const std::vector<Vertex2D>& vertices);
     void setIndices(const std::vector<uint>& indices);
     void addVertex(const Vertex2D& vertex);

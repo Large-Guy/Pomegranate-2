@@ -33,7 +33,7 @@ void Entity::moveEntityArchetype(Archetype *current, size_t row, Archetype *next
     {
         void* data = (char*)c.data + c.componentSize * row; //Retrieve the data location in the component list
         void* new_loc = next->_components[Archetype::_componentIndex[c.type][next->_id].column].add(); //Get the location
-        memcpy(new_loc,data,c.componentSize); //Copy the data to the new location
+        memmove(new_loc,data,c.componentSize); //Move the data to the new location
         current->_components[Archetype::_componentIndex[c.type][current->_id].column].remove(row); //Remove the data from the current column
     }
     Entity::_entityIndex[this->_id] = {next,new_row}; //Change the archetype

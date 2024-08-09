@@ -16,11 +16,11 @@ Model2D::~Model2D() {
     }
 }
 
-std::vector<Vertex2D> Model2D::getVertices() const {
+std::vector<Vertex2D>& Model2D::getVertices() {
     return this->_vertices;
 }
 
-std::vector<unsigned int> Model2D::getIndices() const {
+std::vector<unsigned int>& Model2D::getIndices() {
     return this->_indices;
 }
 

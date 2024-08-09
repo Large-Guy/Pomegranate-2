@@ -23,6 +23,7 @@ struct Vector2 : public Serializable {
     void operator*=(float v);
     void operator/=(float v);
     Vector2& operator=(const Vector2& v);
+    bool operator==(const Vector2& v) const;
 
     [[nodiscard]] float dot(const Vector2& v) const;
     [[nodiscard]] float length() const;

@@ -97,6 +97,11 @@ Vector2& Vector2::operator=(const Vector2& v)
     return *this;
 }
 
+bool Vector2::operator==(const Vector2& v) const
+{
+    return x == v.x && y == v.y;
+}
+
 float Vector2::dot(const Vector2 &v) const {
     return x * v.x + y * v.y;
 }

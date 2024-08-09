@@ -12,7 +12,7 @@ void main()
     
     
     vec2 pos = aPos;
-    pos = (MODEL_MATRIX * vec3(pos, 1.0)).xy / (SCREEN_RESOLUTION * 0.1);
+    pos = (MODEL_MATRIX * vec3(pos, 1.0)).xy / (SCREEN_RESOLUTION);
     
     //Convert to pixel coordinates based on screen resolution
     //pos.x /= aspect;
