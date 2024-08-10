@@ -4,7 +4,7 @@ TileMap::TileMap() {
     width = 0;
     height = 0;
     tiles = nullptr;
-    models = std::unordered_map<Texture2D*, std::shared_ptr<Model2D>>();
+    models = std::unordered_map<Texture2D*, Model2D*>();
     changes = false;
     shader = nullptr;
 }

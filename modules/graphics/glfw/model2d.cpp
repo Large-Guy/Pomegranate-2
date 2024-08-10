@@ -6,6 +6,8 @@ Model2D::Model2D() {
     this->_VAO = 0;
     this->_VBO = 0;
     this->_EBO = 0;
+    this->_buildIndexCount = 0;
+    this->_buildVertexCount = 0;
 }
 
 Model2D::~Model2D() {
@@ -48,6 +50,8 @@ void Model2D::regenerateBuffers() {
         glDeleteBuffers(1, &this->_EBO);
     }
 
+    _buildVertexCount = _vertices.size();
+    _buildIndexCount = _indices.size();
 
     std::vector<float> vertices;
     for (auto& vertex : this->_vertices) {
@@ -72,7 +76,7 @@ void Model2D::regenerateBuffers() {
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->_indices.size() * sizeof(unsigned int), this->_indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), _indices.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0); // Position (stride 7)
     glEnableVertexAttribArray(0);
@@ -94,7 +98,7 @@ void Model2D::regenerateBuffers() {
 
 void Model2D::draw() const {
     glBindVertexArray(this->_VAO);
-    glDrawElements(GL_TRIANGLES, this->_indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, _buildIndexCount, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
 

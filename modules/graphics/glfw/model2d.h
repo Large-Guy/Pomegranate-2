@@ -11,6 +11,8 @@ private:
     std::vector<Vertex2D> _vertices = {};
     std::vector<uint> _indices = {};
     uint _VAO = 0, _VBO = 0, _EBO = 0;
+    int _buildVertexCount = 0;
+    int _buildIndexCount = 0;
 public:
     Model2D();
     ~Model2D();

@@ -19,6 +19,8 @@ int main() {
     window.setSize(800, 600);
     window.open();
 
+    glfwSwapInterval(0);
+
     Texture2D* batman = new Texture2D("assets/images/batman.png");
     Texture2D* pomegranate = new Texture2D("assets/images/pomegranate.png");
 
@@ -46,11 +48,11 @@ int main() {
 
     auto* transform = map->addComponent<Transform2D>(TRANSFORM_2D);
     transform->position = Vector2(-800,-600);
-    transform->scale = Vector2(16);
+    transform->scale = Vector2(2);
     transform->rotation = 0;
 
     TileMap* tileMap = map->addComponent<TileMap>(TILE_MAP);
-    tileMap->resize(128,128);
+    tileMap->resize(512,512);
     for(int y = 0; y < 600; y++) {
         for(int x = 0; x < 800; x++) {
             tileMap->setTile(x, y, 1);
@@ -79,9 +81,9 @@ int main() {
         //Convert to pixel coordinates based on bottom left corner
         posY = (double)window.getHeight() - posY;
 
-        for(int y = -2; y < 2; y++) {
-            for(int x = -2; x < 2; x++) {
-                map->getComponent<TileMap>(TILE_MAP)->setTile((int)posX / 8 + x, (int)posY / 8 + y, 2);
+        for(int y = -1; y < 1; y++) {
+            for(int x = -1; x < 1; x++) {
+                map->getComponent<TileMap>(TILE_MAP)->setTile((int)posX / 2 + x, (int)posY / 2 + y, 2);
             }
         }
 

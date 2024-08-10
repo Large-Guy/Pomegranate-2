@@ -7,6 +7,7 @@
 #include <shader.h>
 #include <unordered_map>
 #include <memory>
+#include <thread>
 
 typedef unsigned int tile_id;
 
@@ -14,9 +15,12 @@ typedef unsigned int tile_id;
 struct TileMap : public Serializable {
     int width = 0, height = 0;
     tile_id* tiles = nullptr;
-    std::unordered_map<Texture2D*, std::shared_ptr<Model2D>> models = {};
+    std::unordered_map<Texture2D*, Model2D*> models = {};
     bool changes = false;
     Shader* shader = nullptr;
+    std::thread* generationThread = nullptr;
+    bool generationRunning = false;
+    bool modelNeedsBuilding = false;
 
     TileMap();
     void resize(int width, int height);
