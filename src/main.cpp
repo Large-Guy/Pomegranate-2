@@ -3,6 +3,7 @@
 #include<rect.h>
 #include<group.h>
 #include<event_manager.h>
+#include<noise2d.h>
 
 
 //Game
@@ -16,7 +17,7 @@ int main() {
 
     Window window;
     window.setTitle("Pomegranate Engine");
-    window.setSize(800, 600);
+    window.setSize(1080, 720);
     window.open();
 
     glfwSwapInterval(0);
@@ -47,18 +48,23 @@ int main() {
     tileSet->addTile(Tile{Rect(0,0,1,1), Vector2(0,0),pomegranate});
 
     auto* transform = map->addComponent<Transform2D>(TRANSFORM_2D);
-    transform->position = Vector2(-800,-600);
-    transform->scale = Vector2(2);
+    transform->position = Vector2(0,0);
+    transform->scale = Vector2(32);
     transform->rotation = 0;
 
     TileMap* tileMap = map->addComponent<TileMap>(TILE_MAP);
-    tileMap->resize(512,512);
-    for(int y = 0; y < 600; y++) {
-        for(int x = 0; x < 800; x++) {
-            tileMap->setTile(x, y, 1);
+    tileMap->shader = tileMapShader;
+
+    //Generate a basic world
+    Noise2D noise = Noise2D();
+    for (int y = 0; y < 1024; ++y) {
+        for (int x = 0; x < 1024; ++x) {
+            float n = noise.sample(Vector2(x,y)*0.1);
+            if(n > 0.5) {
+                tileMap->setTile(Vector2i(x,y),0);
+            }
         }
     }
-    tileMap->shader = tileMapShader;
 
     world.addEntity(map);
 
@@ -81,10 +87,19 @@ int main() {
         //Convert to pixel coordinates based on bottom left corner
         posY = (double)window.getHeight() - posY;
 
-        for(int y = -1; y < 1; y++) {
-            for(int x = -1; x < 1; x++) {
-                map->getComponent<TileMap>(TILE_MAP)->setTile((int)posX / 2 + x, (int)posY / 2 + y, 2);
-            }
+        auto* mapTransform = map->getComponent<Transform2D>(TRANSFORM_2D);
+
+        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_W) == GLFW_PRESS) {
+            mapTransform->position.y -= 5000 * deltaTime;
+        }
+        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_S) == GLFW_PRESS) {
+            mapTransform->position.y += 5000 * deltaTime;
+        }
+        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_A) == GLFW_PRESS) {
+            mapTransform->position.x += 5000 * deltaTime;
+        }
+        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_D) == GLFW_PRESS) {
+            mapTransform->position.x -= 5000 * deltaTime;
         }
 
         std::cout << "Mouse Pos: " << posX << ", " << posY << std::endl;
@@ -102,6 +117,7 @@ int main() {
         lastTime = currentTime;
 
         std::cout << "FPS: " << 1.0 / deltaTime << std::endl;
+        std::cout << "Draw Calls: " << Graphics::getDrawCalls() << std::endl;
     }
 
     return 0;

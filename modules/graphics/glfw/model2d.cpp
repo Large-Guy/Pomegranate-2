@@ -100,6 +100,7 @@ void Model2D::draw() const {
     glBindVertexArray(this->_VAO);
     glDrawElements(GL_TRIANGLES, _buildIndexCount, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
+    Graphics::drawCall();
 }
 
 void Model2D::serialize(Archive &a) const {

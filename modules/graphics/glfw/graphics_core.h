@@ -9,12 +9,17 @@ class Graphics {
 private:
     static int _viewportWidth;
     static int _viewportHeight;
+    static int _drawCalls;
 public:
+    static Texture2D* pomegranateTexture;
     static void init();
     static void setRenderTexture(Texture2D* texture);
     static void setViewport(int width, int height);
     [[nodiscard]] static int getViewportWidth();
     [[nodiscard]] static int getViewportHeight();
+    static void drawCall();
+    [[nodiscard]] static int getDrawCalls();
+    static void clearDrawCalls();
 };
 
 

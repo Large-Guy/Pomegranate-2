@@ -4,6 +4,22 @@
 
 Window::Window() {
     _window = nullptr;
+
+    //Get image data from pomegranate_png unsigned char array using stb_image
+    unsigned char* data = pomegranate_png;
+    int width, height, channels;
+    stbi_uc* image = stbi_load_from_memory(data, sizeof(pomegranate_png), &width, &height, &channels, 0);
+
+    if(image == nullptr)
+    {
+        std::cerr << "Failed to load image" << std::endl;
+    }
+
+    //Set the window icon
+    icon = new GLFWimage();
+    icon->width = width;
+    icon->height = height;
+    icon->pixels = image;
 }
 
 Window::~Window() {
@@ -19,6 +35,28 @@ void Window::setSize(int width, int height) {
 
 void Window::setTitle(const char* title) {
     this->_title = title;
+}
+
+void Window::setIcon(const char *path) {
+    //Get image data from path using stb_image
+    int width, height, channels;
+    stbi_uc* image = stbi_load(path, &width, &height, &channels, 0);
+
+    if(image == nullptr)
+    {
+        std::cerr << "Failed to load image" << std::endl;
+    }
+
+    if(icon != nullptr)
+    {
+        delete icon;
+    }
+
+    //Set the window icon
+    icon = new GLFWimage();
+    icon->width = width;
+    icon->height = height;
+    icon->pixels = image;
 }
 
 void Window::open() {
@@ -38,6 +76,9 @@ void Window::open() {
     {
         std::cerr << "Failed to initialize GLAD" << std::endl;
     }
+
+
+    glfwSetWindowIcon(_window, 1, icon);
 
     draw._window = _window;
     draw.init();
@@ -75,6 +116,7 @@ GLFWwindow *Window::getGLFWwindow() const {
 void Window::Draw::begin() {
     glfwMakeContextCurrent(_window);
     _color = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+    Graphics::clearDrawCalls();
 }
 
 void Window::Draw::end() {

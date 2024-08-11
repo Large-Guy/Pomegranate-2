@@ -93,6 +93,19 @@ int Texture2D::getHeight() const {
     return _height;
 }
 
+int Texture2D::getChannels() const {
+    return _channels;
+}
+
+unsigned char* Texture2D::getData() const {
+    return _data;
+}
+
+void Texture2D::setData(unsigned char* data) {
+    _data = data;
+    apply();
+}
+
 bool Texture2D::apply() {
     if(_id != 0)
     {

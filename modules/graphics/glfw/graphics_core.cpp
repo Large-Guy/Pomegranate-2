@@ -2,6 +2,8 @@
 
 int Graphics::_viewportWidth = 800;
 int Graphics::_viewportHeight = 600;
+int Graphics::_drawCalls = 0;
+Texture2D* Graphics::pomegranateTexture = nullptr;
 
 void Graphics::init() {
     if (!glfwInit()) {
@@ -43,4 +45,16 @@ int Graphics::getViewportWidth() {
 
 int Graphics::getViewportHeight() {
     return _viewportHeight;
+}
+
+void Graphics::drawCall() {
+    _drawCalls++;
+}
+
+int Graphics::getDrawCalls() {
+    return _drawCalls;
+}
+
+void Graphics::clearDrawCalls() {
+    _drawCalls = 0;
 }

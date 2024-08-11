@@ -2,64 +2,78 @@
 
 void tileMapGenerate(TileMap* tileMap,TileSet* tileSet)
 {
-    for(auto& model : tileMap->models) {
-        model.second->getVertices().clear();
-        model.second->getIndices().clear();
-    }
+    for(auto& dirty : tileMap->dirty)
+    {
+        chunk_id chunk = dirty.first;
+        for(auto& tile : dirty.second)
+        {
+            Tile& tileData = tileSet->getTile(tile);
+            if(tileMap->models.find(chunk) == tileMap->models.end()) {
+                tileMap->models.insert({});
+            }
+            if(tileMap->models[chunk].find(tile) == tileMap->models[chunk].end())
+            {
+                tileMap->models[chunk][tile] = new Model2D();
+            }
+            Model2D*& model = tileMap->models[chunk][tile];
+            if(model == nullptr)
+            {
+                model = new Model2D();
+            }
 
-    for (int y = 0; y < tileMap->height; y++) {
-        for (int x = 0; x < tileMap->width; x++) {
-            unsigned int tile = tileMap->getTile(x, y);
+            std::vector<Vertex2D>& vertices = model->getVertices();
+            std::vector<unsigned int>& indices = model->getIndices();
+            vertices.clear();
+            indices.clear();
 
-            if (tile == 0) continue;
+            vertices.resize(tileMap->tiles[chunk][tile].size() * 4);
+            indices.resize(tileMap->tiles[chunk][tile].size() * 6);
 
-            tile -= 1;
-            if (tileSet->inBounds(tile)) {
-                Tile &tileData = tileSet->getTile(tile);
-                if(tileMap->models.find(tileData.texture) == tileMap->models.end()) {
-                    tileMap->models[tileData.texture] = new Model2D();
-                }
-                Model2D* model = tileMap->models[tileData.texture];
+            int vertexCount = 0;
+            int indiciesCount = 0;
 
-                std::vector<Vertex2D>& vertices = model->getVertices();
-                std::vector<unsigned int>& indices = model->getIndices();
+            for(auto& position : tileMap->tiles[chunk][tile])
+            {
 
                 Rect rect = tileData.rect;
                 Vector2 origin = tileData.origin;
                 //Render tile
 
-                unsigned int i = vertices.size();
-                indices.insert(indices.end(), {i + 2, i + 1, i, i + 3, i + 2, i});
+                unsigned int i = vertexCount;
+                indices[indiciesCount] = i + 2;
+                indices[indiciesCount + 1] = i + 1;
+                indices[indiciesCount + 2] = i;
+                indices[indiciesCount + 3] = i + 3;
+                indices[indiciesCount + 4] = i + 2;
+                indices[indiciesCount + 5] = i;
 
-                vertices.push_back({
-                                           {(float) x,(float) y},
+                vertices[vertexCount] = {
+                                           {(float) position.x,(float) position.y},
                                            {1.0f},
                                            {rect.position.x, rect.position.y}
-                                   });
-                vertices.push_back({
-                                           {(float) x,(float) y + 1},
+                                   };
+                vertices[vertexCount+1] = {
+                                           {(float) position.x,(float) position.y + 1},
                                            {1.0f},
                                            {rect.position.x, rect.position.y + rect.size.y}
-                                   });
-                vertices.push_back({
-                                           {(float) x + 1,(float) y + 1},
+                                   };
+                vertices[vertexCount+2] = {
+                                           {(float) position.x + 1,(float) position.y + 1},
                                            {1.0f},
                                            {rect.position.x + rect.size.x, rect.position.y + rect.size.y}
-                                   });
-                vertices.push_back({
-                                           {(float) x + 1,(float) y},
+                                   };
+                vertices[vertexCount+3] = {
+                                           {(float) position.x + 1,(float) position.y},
                                            {1.0f},
                                            {rect.position.x + rect.size.x, rect.position.y}
-                                   });
+                                   };
+                vertexCount += 4;
+                indiciesCount += 6;
             }
         }
     }
 
-
-
     tileMap->modelNeedsBuilding = true;
-    tileMap->changes = false;
-    tileMap->generationRunning = false;
 }
 
 void tileMapRender(void*)
@@ -76,39 +90,44 @@ void tileMapRender(void*)
 
         auto* tileMap = entity->getComponent<TileMap>(TILE_MAP);
 
-
-        if(!tileMap->generationRunning && tileMap->changes) {
-            tileMap->generationRunning = true;
-            if(tileMap->generationThread != nullptr)
-            {
-                if(tileMap->generationThread->joinable())
-                    tileMap->generationThread->join();
-                delete tileMap->generationThread;
-            }
-            tileMap->generationThread = new std::thread(tileMapGenerate,tileMap,tileSet);
-        }
-
-        if(tileMap->modelNeedsBuilding && !tileMap->generationRunning) {
-            for(auto& model : tileMap->models) {
-                model.second->regenerateBuffers();
+        if(tileMap->modelNeedsBuilding) {
+            for(auto& chunk : tileMap->dirty) {
+                for(auto& tile : chunk.second)
+                {
+                    if(tileMap->models[chunk.first][tile] != nullptr)
+                        tileMap->models[chunk.first][tile]->regenerateBuffers();
+                    else
+                        std::cout << "Model null" << std::endl;
+                }
             }
             tileMap->modelNeedsBuilding = false;
+            tileMap->dirty.clear();
         }
 
-        for (auto &model: tileMap->models) {
-            if (tileMap->shader == nullptr) throw std::runtime_error("TileMap shader is null");
-            model.first->bind(0);
-            tileMap->shader->use();
-            tileMap->shader->set("SCREEN_RESOLUTION", Vector2((float) Graphics::getViewportWidth(),
-                                                              (float) Graphics::getViewportHeight()));
-            tileMap->shader->set("TEXTURE", model.first);
-            if (transform != nullptr) {
-                tileMap->shader->set("MODEL_MATRIX", transform->getMatrix());
-            } else {
-                tileMap->shader->set("MODEL_MATRIX", Matrix3x3::createTransform(Vector2(0, 0), Vector2(64, 64), 0));
+        if(!tileMap->dirty.empty()) {
+            tileMapGenerate(tileMap,tileSet);
+        }
+
+        for (auto &chunk: tileMap->models) {
+            for(auto& model : chunk.second) {
+                if (tileMap->shader == nullptr) throw std::runtime_error("TileMap shader is null");
+                Texture2D* texture = tileSet->getTile(model.first).texture;
+                texture->bind(0);
+                tileMap->shader->use();
+                tileMap->shader->set("SCREEN_RESOLUTION", Vector2((float) Graphics::getViewportWidth(),
+                                                                  (float) Graphics::getViewportHeight()));
+                tileMap->shader->set("TEXTURE", texture);
+                if (transform != nullptr) {
+                    tileMap->shader->set("MODEL_MATRIX", transform->getMatrix().translate(Vector2(chunk.first.x * CHUNK_SIZE * transform->scale.x,chunk.first.y * CHUNK_SIZE * transform->scale.y)));
+                } else {
+                    tileMap->shader->set("MODEL_MATRIX", Matrix3x3::createTransform(Vector2(0, 0), Vector2(64, 64), 0));
+                }
+                tileMap->shader->set("Z_INDEX", 0.0f);
+                if(model.second != nullptr)
+                    model.second->draw();
+                else
+                    std::cout << "Model null" << std::endl;
             }
-            tileMap->shader->set("Z_INDEX", 0.0f);
-            model.second->draw();
         }
     });
 }

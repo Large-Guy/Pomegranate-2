@@ -10,6 +10,8 @@
 #include <model2d.h>
 #include <shader.h>
 #include <graphics_core.h>
+#include <pomegranate_image.h>
+#include <stb_image.h>
 
 
 class Window {
@@ -18,6 +20,7 @@ private:
     int _width = 0, _height = 0;
     const char* _title = "";
     bool _open = false;
+    GLFWimage* icon = nullptr;
 public:
 
     class Draw {
@@ -49,6 +52,7 @@ public:
     ~Window();
     void setSize(int width, int height);
     void setTitle(const char* title);
+    void setIcon(const char* path);
     void open();
     void close();
     void pollEvents();

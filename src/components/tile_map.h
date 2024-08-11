@@ -6,27 +6,29 @@
 #include <model2d.h>
 #include <shader.h>
 #include <unordered_map>
+#include <unordered_set>
 #include <memory>
 #include <thread>
+#include <vector2i.h>
 
 typedef unsigned int tile_id;
+typedef Vector2i chunk_id;
+
+#define CHUNK_SIZE 64
 
 #define TILE_MAP 1
 struct TileMap : public Serializable {
-    int width = 0, height = 0;
-    tile_id* tiles = nullptr;
-    std::unordered_map<Texture2D*, Model2D*> models = {};
-    bool changes = false;
+    std::unordered_map<chunk_id, std::unordered_map<tile_id,std::vector<Vector2i>>> tiles = {};
+    std::unordered_map<chunk_id, std::unordered_map<Vector2i, tile_id>> getTiles = {};
+    std::unordered_map<chunk_id, std::unordered_map<tile_id, Model2D*>> models = {};
+    std::unordered_map<chunk_id, std::unordered_set<tile_id>> dirty = {};
     Shader* shader = nullptr;
-    std::thread* generationThread = nullptr;
-    bool generationRunning = false;
     bool modelNeedsBuilding = false;
 
     TileMap();
-    void resize(int width, int height);
-    bool inBounds(int x, int y);
-    void setTile(int x, int y, unsigned int tile);
-    tile_id getTile(int x, int y);
+    void setTile(Vector2i pos, unsigned int tile);
+    void removeTile(Vector2i pos);
+    tile_id getTile(Vector2i pos);
 
     void serialize(Archive& a) const override;
     void deserialize(Archive& a) override;

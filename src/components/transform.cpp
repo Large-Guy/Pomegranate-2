@@ -16,8 +16,9 @@ Transform2D::Transform2D(const Vector2& position, const Vector2& scale, float ro
 
 Matrix3x3 Transform2D::getMatrix()
 {
-    if(position == _position && scale == _scale && rotation == _rotation)
+    if(position == _position && scale == _scale && rotation == _rotation) {
         return _matrix;
+    }
     else
     {
         _position = position;

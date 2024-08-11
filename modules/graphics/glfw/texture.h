@@ -28,7 +28,10 @@ public:
     [[nodiscard]] uint getBindSlot() const;
     [[nodiscard]] int getWidth() const;
     [[nodiscard]] int getHeight() const;
+    [[nodiscard]] int getChannels() const;
+    [[nodiscard]] unsigned char* getData() const;
 
+    void setData(unsigned char* data);
     void setPixel(int x, int y, Vector4 color);
     [[nodiscard]] Vector4 getPixel(int x, int y) const;
 
