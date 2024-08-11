@@ -1,5 +1,7 @@
 #include "tile_map.h"
 
+component_id COMPONENT_TILE_MAP = 0;
+
 TileMap::TileMap() {
     tiles = std::unordered_map<chunk_id, std::unordered_map<tile_id,std::vector<Vector2i>>>();
     getTiles = std::unordered_map<chunk_id, std::unordered_map<Vector2i, tile_id>>();

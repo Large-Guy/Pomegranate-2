@@ -1,5 +1,7 @@
 #include "tile_set.h"
 
+component_id COMPONENT_TILE_SET = 0;
+
 void TileSet::addTile(const Tile &tile) {
     tiles.push_back(tile);
 }

@@ -10,13 +10,15 @@
 #include <memory>
 #include <thread>
 #include <vector2i.h>
+#include <component.h>
 
 typedef unsigned int tile_id;
 typedef Vector2i chunk_id;
 
 #define CHUNK_SIZE 64
 
-#define TILE_MAP 1
+extern component_id COMPONENT_TILE_MAP;
+
 struct TileMap : public Serializable {
     std::unordered_map<chunk_id, std::unordered_map<tile_id,std::vector<Vector2i>>> tiles = {};
     std::unordered_map<chunk_id, std::unordered_map<Vector2i, tile_id>> getTiles = {};

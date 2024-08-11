@@ -39,6 +39,7 @@ public:
 
     bool hasComponent(component_id component) const;
     template <typename T> T* addComponent(component_id component);
+    template <typename T> T* addComponent(std::string component);
     template <typename T> T* getComponent(component_id component);
 
     friend class Group;
@@ -46,6 +47,20 @@ public:
 
 template<typename T>
 T* Entity::addComponent(component_id component) {
+    EntityRecord& eRecord = Entity::_entityIndex[this->_id]; //Get current record
+    Archetype* new_archetype = eRecord.archetype->addComponent(component); //Find the new archetype of the entity with new component
+    moveEntityArchetype(eRecord.archetype,eRecord.row,new_archetype,component); //Move the archetype
+    ComponentList& list = new_archetype->_components[Archetype::_componentIndex[component][new_archetype->_id].column];
+    if(!list.hasSize()) {
+        list.setComponentSize(sizeof(Component<T>));
+    }
+    new ((Component<T>*)list.add()) Component<T>();
+    return &(((Component<T>*)list.get(list.componentCount-1))[0]._data);
+}
+
+template<typename T>
+T* Entity::addComponent(std::string component_name) {
+    component_id component = Components::get(component_name);
     EntityRecord& eRecord = Entity::_entityIndex[this->_id]; //Get current record
     Archetype* new_archetype = eRecord.archetype->addComponent(component); //Find the new archetype of the entity with new component
     moveEntityArchetype(eRecord.archetype,eRecord.row,new_archetype,component); //Move the archetype

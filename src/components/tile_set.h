@@ -2,8 +2,10 @@
 #define POMEGRANATEENGINE_TILE_SET_H
 #include <serializable.h>
 #include "tile.h"
+#include <component.h>
 
-#define TILE_SET 0
+extern component_id COMPONENT_TILE_SET;
+
 struct TileSet : public Serializable {
     std::vector<Tile> tiles = {};
 

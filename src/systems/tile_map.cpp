@@ -80,15 +80,15 @@ void tileMapRender(void*)
 {
     Group* group = Group::find("world");
     if(group == nullptr) return;
-    group->each({TILE_SET,TILE_MAP}, [&](Entity* entity){
-        auto* tileSet = entity->getComponent<TileSet>(TILE_SET);
+    group->each({COMPONENT_TILE_SET,COMPONENT_TILE_MAP}, [&](Entity* entity){
+        auto* tileSet = entity->getComponent<TileSet>(COMPONENT_TILE_SET);
 
         Transform2D* transform = nullptr;
-        if(entity->hasComponent(TRANSFORM_2D))
-            transform = entity->getComponent<Transform2D>(TRANSFORM_2D);
+        if(entity->hasComponent(COMPONENT_TRANSFORM_2D))
+            transform = entity->getComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
 
 
-        auto* tileMap = entity->getComponent<TileMap>(TILE_MAP);
+        auto* tileMap = entity->getComponent<TileMap>(COMPONENT_TILE_MAP);
 
         if(tileMap->modelNeedsBuilding) {
             for(auto& chunk : tileMap->dirty) {

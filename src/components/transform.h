@@ -3,8 +3,10 @@
 #include <serializable.h>
 #include <vector2.h>
 #include <matrix3x3.h>
+#include <component.h>
 
-#define TRANSFORM_2D 3
+extern component_id COMPONENT_TRANSFORM_2D;
+
 struct Transform2D : public Serializable {
 private:
     Matrix3x3 _matrix = Matrix3x3();

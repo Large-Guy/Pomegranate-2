@@ -3,6 +3,18 @@
 #include <iostream>
 #include <cstring>
 #include <ecs_typedefs.h>
+#include <unordered_map>
+
+class Components {
+    static component_id _componentCount;
+    static std::unordered_map<std::string, component_id> _componentIndex;
+    static std::unordered_map<component_id, std::string> _componentNames;
+public:
+    static component_id cRegister();
+    static component_id cRegister(const std::string& name);
+    static component_id get(const std::string& name);
+    static std::string get(component_id id);
+};
 
 template <typename T> class Component {
 public:

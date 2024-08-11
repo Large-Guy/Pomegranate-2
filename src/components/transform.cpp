@@ -1,5 +1,7 @@
 #include "transform.h"
 
+component_id COMPONENT_TRANSFORM_2D = 0;
+
 Transform2D::Transform2D()
 {
     position = Vector2();

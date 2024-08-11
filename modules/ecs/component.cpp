@@ -1,5 +1,38 @@
 #include "component.h"
 
+component_id Components::_componentCount = 1;
+std::unordered_map<std::string, component_id> Components::_componentIndex = {};
+std::unordered_map<component_id, std::string> Components::_componentNames = {};
+
+component_id Components::cRegister() {
+    return _componentCount++;
+}
+
+component_id Components::cRegister(const std::string &name) {
+    if(!_componentIndex.empty() && _componentIndex.count(name) > 0)
+    {
+        return _componentIndex[name];
+    }
+    _componentIndex[name] = _componentCount;
+    _componentNames[_componentCount] = name;
+    return _componentCount++;
+}
+
+component_id Components::get(const std::string &name) {
+    if(!_componentIndex.empty() && _componentIndex.count(name) > 0)
+        return _componentIndex[name];
+    else
+        throw std::runtime_error("Nonexistent component!");
+}
+
+std::string Components::get(component_id id) {
+    if(!_componentIndex.empty() && _componentNames.count(id) == 0)
+    {
+        throw std::runtime_error("Nonexistent component!");
+    }
+    return _componentNames[id];
+}
+
 ComponentList::ComponentList(component_id type) {
     this->componentSize = 0;
     this->componentCount = 0;

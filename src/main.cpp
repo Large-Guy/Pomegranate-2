@@ -12,6 +12,9 @@
 
 int main() {
     //Initailize Graphics
+    COMPONENT_TILE_MAP = Components::cRegister("TileMap");
+    COMPONENT_TILE_SET = Components::cRegister("TileSet");
+    COMPONENT_TRANSFORM_2D = Components::cRegister("Transform2D");
 
     Graphics::init();
 
@@ -41,18 +44,18 @@ int main() {
     //Create entities
 
 
-    Entity* map = new Entity();
+    auto* map = new Entity();
 
-    TileSet* tileSet = map->addComponent<TileSet>(TILE_SET);
+    auto* tileSet = map->addComponent<TileSet>(COMPONENT_TILE_SET);
     tileSet->addTile(Tile{Rect(0,0,1,1), Vector2(0,0),batman});
     tileSet->addTile(Tile{Rect(0,0,1,1), Vector2(0,0),pomegranate});
 
-    auto* transform = map->addComponent<Transform2D>(TRANSFORM_2D);
+    auto* transform = map->addComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
     transform->position = Vector2(0,0);
     transform->scale = Vector2(32);
     transform->rotation = 0;
 
-    TileMap* tileMap = map->addComponent<TileMap>(TILE_MAP);
+    auto* tileMap = map->addComponent<TileMap>(COMPONENT_TILE_MAP);
     tileMap->shader = tileMapShader;
 
     //Generate a basic world
@@ -87,7 +90,7 @@ int main() {
         //Convert to pixel coordinates based on bottom left corner
         posY = (double)window.getHeight() - posY;
 
-        auto* mapTransform = map->getComponent<Transform2D>(TRANSFORM_2D);
+        auto* mapTransform = map->getComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
 
         if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_W) == GLFW_PRESS) {
             mapTransform->position.y -= 5000 * deltaTime;
