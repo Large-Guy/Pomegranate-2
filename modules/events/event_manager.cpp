@@ -1,27 +1,16 @@
 #include "event_manager.h"
 
-std::unordered_map<event_id, std::vector<std::function<void(void*)>>> Event::_events;
+std::unordered_map<event_id, std::vector<EventFunction>> Event::_events;
 std::unordered_map<std::string, event_id> Event::_eventIndex;
 event_id Event::_eventCounter = 0;
 
-void Event::on(event_id id, const std::function<void(void*)>& callback) {
+void Event::on(event_id id, EventFunction callback) {
     Event::_events[id].push_back(callback);
 }
 
-void Event::on(const std::string& name, const std::function<void(void*)>& callback) {
+void Event::on(const std::string& name, EventFunction callback) {
     event_id id = Event::getEventId(name);
     Event::_events[id].push_back(callback);
-}
-
-void Event::call(event_id id, void* data) {
-    for(auto& callback : Event::_events[id]) {
-        callback(data);
-    }
-}
-
-void Event::call(const std::string& name, void* data) {
-    event_id id = Event::getEventId(name);
-    Event::call(id,data);
 }
 
 event_id Event::createEvent() {

@@ -9,6 +9,9 @@
 //Game
 #include "systems/tile_map.h"
 
+void testFunction(int x, int y) {
+    std::cout << "Test Function: " << x << ", " << y << std::endl;
+}
 
 int main() {
     //Initailize Graphics
@@ -71,7 +74,7 @@ int main() {
 
     world.addEntity(map);
 
-    Event::on(EVENT_RENDER, tileMapRender);
+    Event::on(EVENT_RENDER, EventFunction(std::function<void(float)>(tileMapRender)));
 
     //Calculate delta time
     double lastTime = glfwGetTime();
@@ -111,7 +114,7 @@ int main() {
         window.draw.begin();
         window.draw.setColor(Vector4{1.0,0.0,0.0,1.0});
         window.draw.clear();
-        Event::call(EVENT_RENDER, nullptr);
+        Event::call(EVENT_RENDER, (float)deltaTime);
         window.draw.end();
 
         //Calculate delta time
