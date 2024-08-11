@@ -76,9 +76,8 @@ void tileMapGenerate(TileMap* tileMap,TileSet* tileSet)
     tileMap->modelNeedsBuilding = true;
 }
 
-void tileMapRender(float dt)
+void tileMapRender()
 {
-    std::cout << "Delta Time: " << dt << std::endl;
     Group* group = Group::find("world");
     if(group == nullptr) return;
     group->each({COMPONENT_TILE_SET,COMPONENT_TILE_MAP}, [&](Entity* entity){

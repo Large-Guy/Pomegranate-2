@@ -9,6 +9,6 @@
 #include "../components/tile.h"
 #include "../components/transform.h"
 
-extern void tileMapRender(float dt);
+extern void tileMapRender();
 
 #endif //POMEGRANATEENGINE_TILE_MAP_SYSTEM_H

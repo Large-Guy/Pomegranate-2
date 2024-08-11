@@ -9,8 +9,23 @@
 //Game
 #include "systems/tile_map.h"
 
-void testFunction(int x, int y) {
-    std::cout << "Test Function: " << x << ", " << y << std::endl;
+void moveTileMap(float deltaTime) {
+    Group::find("world")->each({COMPONENT_TILE_MAP,COMPONENT_TRANSFORM_2D}, [&](Entity* entity){
+        auto* mapTransform = entity->getComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
+
+        if(glfwGetKey(glfwGetCurrentContext(),GLFW_KEY_W) == GLFW_PRESS) {
+            mapTransform->position.y -= 5000 * deltaTime;
+        }
+        if(glfwGetKey(glfwGetCurrentContext(),GLFW_KEY_S) == GLFW_PRESS) {
+            mapTransform->position.y += 5000 * deltaTime;
+        }
+        if(glfwGetKey(glfwGetCurrentContext(),GLFW_KEY_A) == GLFW_PRESS) {
+            mapTransform->position.x += 5000 * deltaTime;
+        }
+        if(glfwGetKey(glfwGetCurrentContext(),GLFW_KEY_D) == GLFW_PRESS) {
+            mapTransform->position.x -= 5000 * deltaTime;
+        }
+    });
 }
 
 int main() {
@@ -39,14 +54,10 @@ int main() {
     const event_id EVENT_UPDATE = Event::getEventId("update");
 
     //Create groups
-
     Group world = Group("world");
-
     Group actors = Group("actors");
 
     //Create entities
-
-
     auto* map = new Entity();
 
     auto* tileSet = map->addComponent<TileSet>(COMPONENT_TILE_SET);
@@ -63,8 +74,8 @@ int main() {
 
     //Generate a basic world
     Noise2D noise = Noise2D();
-    for (int y = 0; y < 1024; ++y) {
-        for (int x = 0; x < 1024; ++x) {
+    for (int y = 0; y < 256; ++y) {
+        for (int x = 0; x < 256; ++x) {
             float n = noise.sample(Vector2(x,y)*0.1);
             if(n > 0.5) {
                 tileMap->setTile(Vector2i(x,y),0);
@@ -74,7 +85,8 @@ int main() {
 
     world.addEntity(map);
 
-    Event::on(EVENT_RENDER, EventFunction(std::function<void(float)>(tileMapRender)));
+    Event::on(EVENT_UPDATE, EventFunction(std::function<void(float)>(moveTileMap)));
+    Event::on(EVENT_RENDER, EventFunction(std::function<void()>(tileMapRender)));
 
     //Calculate delta time
     double lastTime = glfwGetTime();
@@ -82,34 +94,8 @@ int main() {
 
     while(window.isOpen())
     {
-        window.pollEvents();
-
         //Update
-        Event::call(EVENT_UPDATE, nullptr);
-
-        //Get mouse pos
-        double posX, posY;
-        glfwGetCursorPos(window.getGLFWwindow(),&posX,&posY);
-        //Convert to pixel coordinates based on bottom left corner
-        posY = (double)window.getHeight() - posY;
-
-        auto* mapTransform = map->getComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
-
-        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_W) == GLFW_PRESS) {
-            mapTransform->position.y -= 5000 * deltaTime;
-        }
-        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_S) == GLFW_PRESS) {
-            mapTransform->position.y += 5000 * deltaTime;
-        }
-        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_A) == GLFW_PRESS) {
-            mapTransform->position.x += 5000 * deltaTime;
-        }
-        if(glfwGetKey(window.getGLFWwindow(),GLFW_KEY_D) == GLFW_PRESS) {
-            mapTransform->position.x -= 5000 * deltaTime;
-        }
-
-        std::cout << "Mouse Pos: " << posX << ", " << posY << std::endl;
-
+        Event::call(EVENT_UPDATE, (float)deltaTime);
 
         window.draw.begin();
         window.draw.setColor(Vector4{1.0,0.0,0.0,1.0});
@@ -124,6 +110,8 @@ int main() {
 
         std::cout << "FPS: " << 1.0 / deltaTime << std::endl;
         std::cout << "Draw Calls: " << Graphics::getDrawCalls() << std::endl;
+
+        window.pollEvents();
     }
 
     return 0;

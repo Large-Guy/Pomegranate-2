@@ -5,3 +5,8 @@ modular and extensible design, with a continued focus on cleanliness, performanc
 designed that individual components can be swapped out for custom implementations, and that the engine can be easily
 extended with new features. The engine will be designed to also be as lightweight as possible and to be as fast as
 possible. With the new design, the engine will be much more cross-platform as well. (Hopefully)
+
+## Some Credits
+
+The ECS is based off Sander Merten's [Flecs](https://github.com/SanderMertens/flecs). The event system is based off of
+ [UMG](http://untitledmodgame.com/). You can find his blog [here](http://untitledmodgame.com/blog/buses/).
