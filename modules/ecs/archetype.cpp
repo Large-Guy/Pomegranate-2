@@ -2,7 +2,7 @@
 
 #include <utility>
 
-std::unordered_map<entity_type, Archetype*, VectorHash, VectorComparison> Archetype::_archetypeIndex = {};
+std::unordered_map<entity_type, Archetype*, SetHash, SetComparison> Archetype::_archetypeIndex = {};
 std::unordered_map<component_id,std::unordered_map<archetype_id, ComponentLocation>> Archetype::_componentIndex = {};
 
 ArchetypeNode::ArchetypeNode() {
@@ -26,7 +26,7 @@ Archetype* Archetype::addComponent(component_id component) {
     if(node.add == nullptr)
     {
         entity_type type = _type;
-        type.push_back(component);
+        type.emplace(component);
         Archetype*& archetype = Archetype::_archetypeIndex[type];
         if(archetype == nullptr)
         {

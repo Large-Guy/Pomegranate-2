@@ -97,8 +97,8 @@ int main() {
 
         //Generate a basic world
         Noise2D noise = Noise2D();
-        for (int y = -0; y < 256; ++y) {
-            for (int x = -0; x < 256; ++x) {
+        for (int y = -256; y < 256; ++y) {
+            for (int x = -256; x < 256; ++x) {
                 float n = noise.sample(Vector2(x, y) * 0.1);
                 if (n > 0.5) {
                     tileMap->setTile(Vector2i(x, y), 0);
