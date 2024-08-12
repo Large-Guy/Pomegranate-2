@@ -12,7 +12,7 @@ Entity::Entity() {
     {
         archetype = new Archetype({});
     }
-    Entity::_entityIndex[this->_id] = {archetype,0};
+    Entity::_entityIndex[this->_id] = {archetype,0,this};
 }
 
 Entity::~Entity() {
@@ -36,5 +36,5 @@ void Entity::moveEntityArchetype(Archetype *current, size_t row, Archetype *next
         memmove(new_loc,data,c.componentSize); //Move the data to the new location
         current->_components[Archetype::_componentIndex[c.type][current->_id].column].remove(row); //Remove the data from the current column
     }
-    Entity::_entityIndex[this->_id] = {next,new_row}; //Change the archetype
+    Entity::_entityIndex[this->_id] = {next,new_row,this}; //Change the archetype
 }

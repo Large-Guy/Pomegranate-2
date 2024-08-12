@@ -9,14 +9,16 @@
 #include "component.h"
 
 struct Group;
+class Entity;
 
 struct EntityRecord
 {
     Archetype* archetype;
     size_t row;
+    Entity* entity;
 
     EntityRecord() = default;
-    EntityRecord(Archetype* archetype, size_t row) : archetype(archetype), row(row) {}
+    EntityRecord(Archetype* archetype, size_t row, Entity* entity) : archetype(archetype), row(row), entity(entity) {}
 
     //Copy and move
     EntityRecord(const EntityRecord& other) = default;

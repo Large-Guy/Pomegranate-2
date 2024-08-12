@@ -9,7 +9,7 @@ void tileMapGenerate(TileMap* tileMap,TileSet* tileSet)
         {
             Tile& tileData = tileSet->getTile(tile);
             if(tileMap->models.find(chunk) == tileMap->models.end()) {
-                tileMap->models.insert({});
+                tileMap->models[chunk] = {};
             }
             if(tileMap->models[chunk].find(tile) == tileMap->models[chunk].end())
             {

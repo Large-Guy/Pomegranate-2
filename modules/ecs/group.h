@@ -18,8 +18,6 @@ public:
     ~Group();
     void addEntity(Entity* entity);
     void removeEntity(Entity* entity);
-    Entity* getEntity(entity_id id);
-    void setName(const std::string& name);
 
     template<typename Func> void each(const std::vector<component_id>& components,Func&& func) {
         for(int i = 0; i < _entities.size(); i++) {
