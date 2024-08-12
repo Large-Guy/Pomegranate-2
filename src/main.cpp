@@ -7,24 +7,45 @@
 
 
 //Game
-#include "systems/tile_map.h"
+#include "systems/s_tile_map.h"
+#include "systems/s_camera.h"
 
-void moveTileMap(float deltaTime) {
-    Group::find("world")->each({COMPONENT_TILE_MAP,COMPONENT_TRANSFORM_2D}, [&](Entity* entity){
-        auto* mapTransform = entity->getComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
+void moveCamera(float deltaTime) {
+    Group* actors = Group::find("actors");
 
-        if(glfwGetKey(glfwGetCurrentContext(),GLFW_KEY_W) == GLFW_PRESS) {
-            mapTransform->position.y -= 5000 * deltaTime;
+    actors->each({COMPONENT_CAMERA, COMPONENT_TRANSFORM_2D}, [&](Entity* entity) {
+        Camera* camera = entity->getComponent<Camera>(COMPONENT_CAMERA);
+        Transform2D* transform = entity->getComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
+
+        if(glfwGetKey(Window::current()->getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS)
+        {
+            transform->position.y -= 2048.0f * deltaTime;
         }
-        if(glfwGetKey(glfwGetCurrentContext(),GLFW_KEY_S) == GLFW_PRESS) {
-            mapTransform->position.y += 5000 * deltaTime;
+        if(glfwGetKey(Window::current()->getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS)
+        {
+            transform->position.y += 2048.0f * deltaTime;
         }
-        if(glfwGetKey(glfwGetCurrentContext(),GLFW_KEY_A) == GLFW_PRESS) {
-            mapTransform->position.x += 5000 * deltaTime;
+        if(glfwGetKey(Window::current()->getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS)
+        {
+            transform->position.x += 2048.0f * deltaTime;
         }
-        if(glfwGetKey(glfwGetCurrentContext(),GLFW_KEY_D) == GLFW_PRESS) {
-            mapTransform->position.x -= 5000 * deltaTime;
+        if(glfwGetKey(Window::current()->getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS)
+        {
+            transform->position.x -= 2048.0f * deltaTime;
         }
+        if(glfwGetKey(Window::current()->getGLFWwindow(), GLFW_KEY_Q) == GLFW_PRESS)
+        {
+            transform->scale.x += 1.0f * deltaTime;
+            transform->scale.y += 1.0f * deltaTime;
+        }
+        if(glfwGetKey(Window::current()->getGLFWwindow(), GLFW_KEY_E) == GLFW_PRESS)
+        {
+            transform->scale.x -= 1.0f * deltaTime;
+            transform->scale.y -= 1.0f * deltaTime;
+        }
+
+        //Get mouse scroll for zoom
+
     });
 }
 
@@ -33,6 +54,7 @@ int main() {
     COMPONENT_TILE_MAP = Components::cRegister("TileMap");
     COMPONENT_TILE_SET = Components::cRegister("TileSet");
     COMPONENT_TRANSFORM_2D = Components::cRegister("Transform2D");
+    COMPONENT_CAMERA = Components::cRegister("Camera");
 
     Graphics::init();
 
@@ -58,35 +80,51 @@ int main() {
     Group actors = Group("actors");
 
     //Create entities
-    auto* map = new Entity();
+    {
+        auto *map = new Entity();
 
-    auto* tileSet = map->addComponent<TileSet>(COMPONENT_TILE_SET);
-    tileSet->addTile(Tile{Rect(0,0,1,1), Vector2(0,0),batman});
-    tileSet->addTile(Tile{Rect(0,0,1,1), Vector2(0,0),pomegranate});
+        auto *tileSet = map->addComponent<TileSet>(COMPONENT_TILE_SET);
+        tileSet->addTile(Tile{Rect(0, 0, 1, 1), Vector2(0, 0), batman});
+        tileSet->addTile(Tile{Rect(0, 0, 1, 1), Vector2(0, 0), pomegranate});
 
-    auto* transform = map->addComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
-    transform->position = Vector2(0,0);
-    transform->scale = Vector2(32);
-    transform->rotation = 0;
+        auto *transform = map->addComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
+        transform->position = Vector2(0, 0);
+        transform->scale = Vector2(32.0f);
+        transform->rotation = 0;
 
-    auto* tileMap = map->addComponent<TileMap>(COMPONENT_TILE_MAP);
-    tileMap->shader = tileMapShader;
+        auto *tileMap = map->addComponent<TileMap>(COMPONENT_TILE_MAP);
+        tileMap->shader = tileMapShader;
 
-    //Generate a basic world
-    Noise2D noise = Noise2D();
-    for (int y = 0; y < 256; ++y) {
-        for (int x = 0; x < 256; ++x) {
-            float n = noise.sample(Vector2(x,y)*0.1);
-            if(n > 0.5) {
-                tileMap->setTile(Vector2i(x,y),0);
+        //Generate a basic world
+        Noise2D noise = Noise2D();
+        for (int y = -0; y < 256; ++y) {
+            for (int x = -0; x < 256; ++x) {
+                float n = noise.sample(Vector2(x, y) * 0.1);
+                if (n > 0.5) {
+                    tileMap->setTile(Vector2i(x, y), 0);
+                }
             }
         }
+
+        world.addEntity(map);
+    }
+    {
+        auto *camera = new Entity();
+
+        auto *transform = camera->addComponent<Transform2D>(COMPONENT_TRANSFORM_2D);
+        transform->position = Vector2(0, 0);
+        transform->scale = Vector2(1.0f);
+        transform->rotation = 0;
+
+        auto *cameraComponent = camera->addComponent<Camera>(COMPONENT_CAMERA);
+        cameraComponent->makeCurrent();
+
+        actors.addEntity(camera);
     }
 
-    world.addEntity(map);
-
-    Event::on(EVENT_UPDATE, EventFunction(std::function<void(float)>(moveTileMap)));
+    Event::on(EVENT_UPDATE, EventFunction(std::function<void(float)>(moveCamera)));
     Event::on(EVENT_RENDER, EventFunction(std::function<void()>(tileMapRender)));
+    Event::on(EVENT_RENDER, EventFunction(std::function<void()>(cameraRender)));
 
     //Calculate delta time
     double lastTime = glfwGetTime();

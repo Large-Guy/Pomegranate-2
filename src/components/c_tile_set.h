@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_TILE_SET_H
-#define POMEGRANATEENGINE_TILE_SET_H
+#ifndef POMEGRANATEENGINE_C_TILE_SET_H
+#define POMEGRANATEENGINE_C_TILE_SET_H
 #include <serializable.h>
 #include "tile.h"
 #include <component.h>
@@ -18,4 +18,4 @@ struct TileSet : public Serializable {
 };
 
 
-#endif //POMEGRANATEENGINE_TILE_SET_H
+#endif //POMEGRANATEENGINE_C_TILE_SET_H

@@ -21,6 +21,7 @@ private:
     const char* _title = "";
     bool _open = false;
     GLFWimage* icon = nullptr;
+    static Window* _currentWindow;
 public:
 
     class Draw {
@@ -31,6 +32,9 @@ public:
         Model2D* _rect = nullptr;
         Shader* _shader = nullptr;
         Shader* _currentShader = nullptr;
+        Vector2 _cameraPosition = Vector2(0.0f);
+        Vector2 _cameraSize = Vector2(1.0f);
+        float _cameraRotation = 0.0f;
         void init();
     public:
         void begin();
@@ -41,8 +45,9 @@ public:
         void setColor(const Vector3& color, float a = 1.0);
         void clear() const;
         void drawTexture(Texture2D* texture, Vector2 position, Vector2 size, float rotation = 0.0f);
-
-        Shader* getShader() const;
+        void setCamera(Vector2 position, Vector2 size, float rotation = 0.0f);
+        [[nodiscard]] Matrix3x3 getCameraMatrix() const;
+        [[nodiscard]] Shader* getShader() const;
         friend class Window;
     };
 
@@ -56,10 +61,12 @@ public:
     void open();
     void close();
     void pollEvents();
+    void makeCurrent();
     [[nodiscard]] bool isOpen() const;
     [[nodiscard]] int getWidth() const;
     [[nodiscard]] int getHeight() const;
     [[nodiscard]] GLFWwindow* getGLFWwindow() const;
+    [[nodiscard]] static Window* current();
 };
 
 

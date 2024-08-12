@@ -20,6 +20,7 @@ struct Matrix3x3 : public Serializable {
     [[nodiscard]] Matrix3x3 rotate(float angle) const;
 
     static Matrix3x3 createTransform(Vector2 pos, Vector2 scale, float angle);
+    static Matrix3x3 createOrthographic(float left, float right, float bottom, float top);
 
     void serialize(Archive& a) const override;
     void deserialize(Archive& a) override;

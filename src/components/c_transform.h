@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_TRANSFORM_H
-#define POMEGRANATEENGINE_TRANSFORM_H
+#ifndef POMEGRANATEENGINE_C_TRANSFORM_H
+#define POMEGRANATEENGINE_C_TRANSFORM_H
 #include <serializable.h>
 #include <vector2.h>
 #include <matrix3x3.h>
@@ -27,4 +27,4 @@ public:
     void deserialize(Archive& a) override;
 };
 
-#endif //POMEGRANATEENGINE_TRANSFORM_H
+#endif //POMEGRANATEENGINE_C_TRANSFORM_H

@@ -21,19 +21,23 @@ set(SOURCE_FILES
 )
 
 set(OBJECT_SOURCE_FILES
-    ${SOURCE_DIR}/components/tile_map.h
-    ${SOURCE_DIR}/components/tile_map.cpp
-    ${SOURCE_DIR}/components/tile_set.h
-    ${SOURCE_DIR}/components/tile_set.cpp
+    ${SOURCE_DIR}/components/c_tile_map.h
+    ${SOURCE_DIR}/components/c_tile_map.cpp
+    ${SOURCE_DIR}/components/c_tile_set.h
+    ${SOURCE_DIR}/components/c_tile_set.cpp
     ${SOURCE_DIR}/components/tile.h
     ${SOURCE_DIR}/components/tile.cpp
-    ${SOURCE_DIR}/components/transform.h
-    ${SOURCE_DIR}/components/transform.cpp
+    ${SOURCE_DIR}/components/c_transform.h
+    ${SOURCE_DIR}/components/c_transform.cpp
+    ${SOURCE_DIR}/components/c_camera.h
+    ${SOURCE_DIR}/components/c_camera.cpp
 )
 
 set(SYSTEM_SOURCE_FILES
-    ${SOURCE_DIR}/systems/tile_map.h
-    ${SOURCE_DIR}/systems/tile_map.cpp
+    ${SOURCE_DIR}/systems/s_tile_map.h
+    ${SOURCE_DIR}/systems/s_tile_map.cpp
+    ${SOURCE_DIR}/systems/s_camera.h
+    ${SOURCE_DIR}/systems/s_camera.cpp
 )
 
 # Set include directories

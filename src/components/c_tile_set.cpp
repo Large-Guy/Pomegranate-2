@@ -1,4 +1,4 @@
-#include "tile_set.h"
+#include "c_tile_set.h"
 
 component_id COMPONENT_TILE_SET = 0;
 

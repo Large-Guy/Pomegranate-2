@@ -85,3 +85,11 @@ Matrix3x3 Matrix3x3::rotate(float angle) const {
 Matrix3x3 Matrix3x3::createTransform(Vector2 pos, Vector2 scale, float angle) {
     return Matrix3x3().scale(std::move(scale)).rotate(angle).translate(std::move(pos));
 }
+
+Matrix3x3 Matrix3x3::createOrthographic(float left, float right, float bottom, float top) {
+    return Matrix3x3(
+        2.0f / (right - left), 0.0f, 0.0f,
+        0.0f, 2.0f / (top - bottom), 0.0f,
+        -(right + left) / (right - left), -(top + bottom) / (top - bottom), 1.0f
+    );
+}

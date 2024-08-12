@@ -1,4 +1,4 @@
-#include "transform.h"
+#include "c_transform.h"
 
 component_id COMPONENT_TRANSFORM_2D = 0;
 

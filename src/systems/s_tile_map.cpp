@@ -1,4 +1,4 @@
-#include "tile_map.h"
+#include "s_tile_map.h"
 
 void tileMapGenerate(TileMap* tileMap,TileSet* tileSet)
 {
@@ -32,6 +32,8 @@ void tileMapGenerate(TileMap* tileMap,TileSet* tileSet)
             int vertexCount = 0;
             int indiciesCount = 0;
 
+            Vector2 chunkOffset = Vector2((float)chunk.x,(float)chunk.y)*CHUNK_SIZE;
+
             for(auto& position : tileMap->tiles[chunk][tile])
             {
 
@@ -48,22 +50,22 @@ void tileMapGenerate(TileMap* tileMap,TileSet* tileSet)
                 indices[indiciesCount + 5] = i;
 
                 vertices[vertexCount] = {
-                                           {(float) position.x,(float) position.y},
+                                           Vector2{(float) position.x,(float) position.y} + chunkOffset,
                                            {1.0f},
                                            {rect.position.x, rect.position.y}
                                    };
                 vertices[vertexCount+1] = {
-                                           {(float) position.x,(float) position.y + 1},
+                        Vector2{(float) position.x,(float) position.y + 1} + chunkOffset,
                                            {1.0f},
                                            {rect.position.x, rect.position.y + rect.size.y}
                                    };
                 vertices[vertexCount+2] = {
-                                           {(float) position.x + 1,(float) position.y + 1},
+                        Vector2{(float) position.x + 1,(float) position.y + 1} + chunkOffset,
                                            {1.0f},
                                            {rect.position.x + rect.size.x, rect.position.y + rect.size.y}
                                    };
                 vertices[vertexCount+3] = {
-                                           {(float) position.x + 1,(float) position.y},
+                        Vector2{(float) position.x + 1,(float) position.y} + chunkOffset,
                                            {1.0f},
                                            {rect.position.x + rect.size.x, rect.position.y}
                                    };
@@ -118,10 +120,11 @@ void tileMapRender()
                                                                   (float) Graphics::getViewportHeight()));
                 tileMap->shader->set("TEXTURE", texture);
                 if (transform != nullptr) {
-                    tileMap->shader->set("MODEL_MATRIX", transform->getMatrix().translate(Vector2(chunk.first.x * CHUNK_SIZE * transform->scale.x,chunk.first.y * CHUNK_SIZE * transform->scale.y)));
+                    tileMap->shader->set("MODEL_MATRIX", transform->getMatrix());
                 } else {
                     tileMap->shader->set("MODEL_MATRIX", Matrix3x3::createTransform(Vector2(0, 0), Vector2(64, 64), 0));
                 }
+                tileMap->shader->set("VIEW_MATRIX", Window::current()->draw.getCameraMatrix());
                 tileMap->shader->set("Z_INDEX", 0.0f);
                 if(model.second != nullptr)
                     model.second->draw();

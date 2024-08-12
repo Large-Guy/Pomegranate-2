@@ -1,4 +1,4 @@
-#include "tile_map.h"
+#include "c_tile_map.h"
 
 component_id COMPONENT_TILE_MAP = 0;
 

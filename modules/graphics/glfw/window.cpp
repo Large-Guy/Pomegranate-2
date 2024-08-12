@@ -2,6 +2,8 @@
 
 #include <utility>
 
+Window* Window::_currentWindow = nullptr;
+
 Window::Window() {
     _window = nullptr;
 
@@ -82,6 +84,9 @@ void Window::open() {
 
     draw._window = _window;
     draw.init();
+    makeCurrent();
+
+    Graphics::setViewport(_width, _height);
 }
 
 void Window::close() {
@@ -109,8 +114,17 @@ void Window::pollEvents() {
     }
 }
 
+void Window::makeCurrent() {
+    glfwMakeContextCurrent(_window);
+    Window::_currentWindow = this;
+}
+
 GLFWwindow *Window::getGLFWwindow() const {
     return _window;
+}
+
+Window *Window::current() {
+    return _currentWindow;
 }
 
 void Window::Draw::begin() {
@@ -137,8 +151,15 @@ void Window::Draw::drawTexture(Texture2D* texture, Vector2 position, Vector2 siz
     _currentShader->set("SCREEN_RESOLUTION", Vector2((float)Graphics::getViewportWidth(), (float)Graphics::getViewportHeight()));
     _currentShader->set("TEXTURE", texture);
     _currentShader->set("MODEL_MATRIX", modelMatrix);
+    _currentShader->set("VIEW_MATRIX", getCameraMatrix());
     _currentShader->set("Z_INDEX", _z_index);
     _rect->draw();
+}
+
+void Window::Draw::setCamera(Vector2 position, Vector2 size, float rotation) {
+    _cameraPosition = position;
+    _cameraSize = size;
+    _cameraRotation = rotation;
 }
 
 void Window::Draw::setColor(Vector4 color) {
@@ -213,6 +234,15 @@ void Window::Draw::init() {
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+}
+
+Matrix3x3 Window::Draw::getCameraMatrix() const {
+    Vector2 position = _cameraPosition;
+    //Adjust to screen pixel coordinates
+    position.x = position.x / (float)Graphics::getViewportWidth() * _cameraSize.x;
+    position.y = position.y / (float)Graphics::getViewportHeight() * _cameraSize.y;
+
+    return Matrix3x3::createOrthographic(0.0f, (float)Graphics::getViewportWidth(), 0.0f, (float)Graphics::getViewportHeight()).scale(_cameraSize).rotate(_cameraRotation).translate(position);
 }
 
 Shader *Window::Draw::getShader() const {

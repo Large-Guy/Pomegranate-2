@@ -44,6 +44,20 @@ public:
     template <typename T> T* addComponent(std::string component);
     template <typename T> T* getComponent(component_id component);
 
+    template<typename Func> static void each(const std::vector<component_id>& components,Func&& func) {
+        for(auto& [id,record] : _entityIndex) {
+            bool hasComponents = true;
+            for(auto& component : components) {
+                if(!record.entity->hasComponent(component)) {
+                    hasComponents = false;
+                    continue;
+                }
+            }
+            if(hasComponents)
+                func(record.entity);
+        }
+    }
+
     friend class Group;
 };
 
