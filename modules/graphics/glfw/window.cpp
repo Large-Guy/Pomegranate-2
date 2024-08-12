@@ -242,7 +242,7 @@ Matrix3x3 Window::Draw::getCameraMatrix() const {
     position.x = position.x / (float)Graphics::getViewportWidth() * _cameraSize.x;
     position.y = position.y / (float)Graphics::getViewportHeight() * _cameraSize.y;
 
-    return Matrix3x3::createOrthographic(0.0f, (float)Graphics::getViewportWidth(), 0.0f, (float)Graphics::getViewportHeight()).scale(_cameraSize).rotate(_cameraRotation).translate(position);
+    return Matrix3x3::createOrthographic(-(float)Graphics::getViewportWidth()/2, (float)Graphics::getViewportWidth()/2, -(float)Graphics::getViewportHeight()/2, (float)Graphics::getViewportHeight()/2).scale(_cameraSize).rotate(_cameraRotation).translate(position);
 }
 
 Shader *Window::Draw::getShader() const {
