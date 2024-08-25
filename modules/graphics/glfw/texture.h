@@ -6,6 +6,15 @@
 #include <vector4.h>
 #include <vector2.h>
 
+enum class TextureFilter {
+    TEXTURE_FILTER_NEAREST = GL_NEAREST,
+    TEXTURE_FILTER_LINEAR = GL_LINEAR,
+    TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST,
+    TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,
+    TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,
+    TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR
+};
+
 class Texture2D : public Resource {
 private:
     GLuint _id = 0;
@@ -15,6 +24,7 @@ private:
     unsigned char* _data = nullptr;
     uint _slot = 0;
 public:
+    TextureFilter filter = TextureFilter::TEXTURE_FILTER_LINEAR;
     explicit Texture2D(const std::string& path, std::string name = "");
     Texture2D(int width, int height, int channels = 4);
     Texture2D(const Texture2D& other) = delete;
