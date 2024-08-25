@@ -2,12 +2,15 @@
 #define POMEGRANATEENGINE_ECS_TYPEDEFS_H
 #include <vector>
 #include <unordered_set>
+#include <unordered_map>
 
-typedef unsigned int component_id;
-typedef unsigned int entity_id;
-typedef unsigned int archetype_id;
-typedef unsigned int group_id;
-typedef std::unordered_set<component_id> entity_type;
+struct ArchetypeRecord;
+typedef unsigned int ComponentID;
+typedef unsigned int EntityID;
+typedef unsigned int ArchetypeID;
+typedef unsigned int GroupID;
+typedef std::unordered_set<ComponentID> Type;
+typedef std::unordered_map<ArchetypeID, ArchetypeRecord> ArchetypeMap;
 
 
 #endif //POMEGRANATEENGINE_ECS_TYPEDEFS_H

@@ -5,6 +5,28 @@
 #include "ecs_typedefs.h"
 #include <cstring>
 #include "component.h"
+#include "ecs.h"
 
+struct Archetype;
+
+struct ArchetypeRecord {
+    size_t column;
+};
+
+struct ArchetypeEdge{
+    Archetype* add;
+    Archetype* remove;
+};
+
+struct Archetype {
+    ArchetypeID id;
+    Type type;
+    std::vector<ComponentList> components;
+    std::unordered_map<ComponentID, ArchetypeEdge> edges;
+    static Archetype* getArchetype(const Type& type);
+
+    Archetype* addComponent(ComponentID component);
+    void removeRow(size_t row);
+};
 
 #endif //POMEGRANATEENGINE_ARCHETYPE_H
