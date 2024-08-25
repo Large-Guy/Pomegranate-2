@@ -2,10 +2,7 @@ set(POMEGRANATE_EVENTS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/event_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/event_manager.h
         ${CMAKE_CURRENT_SOURCE_DIR}/event_typedefs.h
-)
-
-set(POMEGRANATE_EVENTS_INCLUDE_DIRS
-        .
+        ${CMAKE_CURRENT_SOURCE_DIR}/events.h
 )
 
 add_library(PomegranateEvents ${POMEGRANATE_EVENTS_SOURCES})

@@ -1,0 +1,6 @@
+#ifndef POMEGRANATEENGINE_EVENTS_H
+#define POMEGRANATEENGINE_EVENTS_H
+
+#include "event_manager.h"
+
+#endif //POMEGRANATEENGINE_EVENTS_H

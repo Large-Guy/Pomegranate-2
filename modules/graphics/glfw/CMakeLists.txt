@@ -17,10 +17,7 @@ set(POMEGRANATE_GRAPHICS_GLFW_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/texture.h
         ${CMAKE_CURRENT_SOURCE_DIR}/glad.c
         ${CMAKE_CURRENT_SOURCE_DIR}/pomegranate_image.h
-)
-
-set(POMEGRANATE_GRAPHICS_GLFW_INCLUDE_DIRS
-        .
+        ${CMAKE_CURRENT_SOURCE_DIR}/graphics.h
 )
 
 add_library(PomegranateGraphicsGLFW ${POMEGRANATE_GRAPHICS_GLFW_SOURCES})

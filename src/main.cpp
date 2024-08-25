@@ -1,10 +1,6 @@
 #include<iostream>
-#include<window.h>
-#include<rect.h>
-#include<event_manager.h>
-#include<noise2d.h>
+#include <math/math.h>
 
 int main() {
-
     return 0;
 }

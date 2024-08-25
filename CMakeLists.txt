@@ -20,31 +20,11 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/main.cpp
 )
 
-set(OBJECT_SOURCE_FILES
-    ${SOURCE_DIR}/components/c_tile_map.h
-    ${SOURCE_DIR}/components/c_tile_map.cpp
-    ${SOURCE_DIR}/components/c_tile_set.h
-    ${SOURCE_DIR}/components/c_tile_set.cpp
-    ${SOURCE_DIR}/components/tile.h
-    ${SOURCE_DIR}/components/tile.cpp
-    ${SOURCE_DIR}/components/c_transform.h
-    ${SOURCE_DIR}/components/c_transform.cpp
-    ${SOURCE_DIR}/components/c_camera.h
-    ${SOURCE_DIR}/components/c_camera.cpp
-)
-
-set(SYSTEM_SOURCE_FILES
-    ${SOURCE_DIR}/systems/s_tile_map.h
-    ${SOURCE_DIR}/systems/s_tile_map.cpp
-    ${SOURCE_DIR}/systems/s_camera.h
-    ${SOURCE_DIR}/systems/s_camera.cpp
-)
-
 # Set include directories
-include_directories(${INCLUDE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/modules)
 
 # Set the executable
-add_executable(PomegranateEngine ${SOURCE_FILES} ${OBJECT_SOURCE_FILES} ${SYSTEM_SOURCE_FILES})
+add_executable(PomegranateEngine ${SOURCE_FILES})
 
 # Link the modules
 target_link_libraries(PomegranateEngine PomegranateCore)
