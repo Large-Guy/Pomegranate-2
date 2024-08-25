@@ -57,6 +57,89 @@ public:
         this->capacity = 0;
     }
 
+    List(size_t capacity)
+    {
+        this->elements = nullptr;
+        this->count = 0;
+        this->capacity = 0;
+        resize(capacity);
+    }
+
+    List(const List<T>& other)
+    {
+        this->elements = nullptr;
+        this->count = 0;
+        this->capacity = 0;
+        resize(other.capacity);
+        for(size_t i = 0; i < other.count; i++)
+        {
+            elements[i] = other.elements[i];
+        }
+        count = other.count;
+    }
+
+    List(List<T>&& other) noexcept
+    {
+        this->elements = other.elements;
+        this->count = other.count;
+        this->capacity = other.capacity;
+        other.elements = nullptr;
+        other.count = 0;
+        other.capacity = 0;
+    }
+
+    ~List()
+    {
+        delete[] elements;
+    }
+
+    List<T>& operator=(const List<T>& other)
+    {
+        if(this == &other)
+        {
+            return *this;
+        }
+        clear();
+        resize(other.capacity);
+        for(size_t i = 0; i < other.count; i++)
+        {
+            elements[i] = other.elements[i];
+        }
+        count = other.count;
+        return *this;
+    }
+
+    List<T>& operator=(List<T>&& other) noexcept
+    {
+        if(this == &other)
+        {
+            return *this;
+        }
+        clear();
+        this->elements = other.elements;
+        this->count = other.count;
+        this->capacity = other.capacity;
+        other.elements = nullptr;
+        other.count = 0;
+        other.capacity = 0;
+        return *this;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const List<T>& list)
+    {
+        os << "[";
+        for(size_t i = 0; i < list.count; i++)
+        {
+            os << list.elements[i];
+            if(i != list.count - 1)
+            {
+                os << ", ";
+            }
+        }
+        os << "]";
+        return os;
+    }
+
     inline bool inBounds(int i)
     {
         if(i >= count || i < 0)
@@ -185,6 +268,11 @@ public:
         return Iterator(elements + count);
     }
 
+    T* data()
+    {
+        return elements;
+    }
+
     //Serialization
 
     void serialize(Archive& archive) const override
@@ -197,7 +285,9 @@ public:
 
     void deserialize(Archive& archive) override
     {
-        archive >> &count;
+        size_t c;
+        archive >> &c;
+        resize(c);
         for(size_t i = 0; i < count; i++) {
             archive >> &elements[i];
         }
