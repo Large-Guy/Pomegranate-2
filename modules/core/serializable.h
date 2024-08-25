@@ -56,5 +56,18 @@ public:
     virtual void deserialize(Archive&);
 };
 
+#define SERIALIZE_TO_FILE(what,filename) \
+    { \
+        Archive a; \
+        a << (what);                       \
+        a.writeToFile(filename);         \
+    }
+
+#define DESERIALIZE_FROM_FILE(what,filename) \
+    { \
+        Archive a; \
+        a.readFromFile(filename); \
+        a >> &(what); \
+    }
 
 #endif //POMEGRANATEENGINE_SERIALIZABLE_H

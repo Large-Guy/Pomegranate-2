@@ -5,6 +5,8 @@ set(POMEGRANATE_CORE_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/resource.h
         ${CMAKE_CURRENT_SOURCE_DIR}/range.h
         ${CMAKE_CURRENT_SOURCE_DIR}/range.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/list.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/list.cpp
 )
 
 set(POMEGRANATE_CORE_INCLUDE_DIRS

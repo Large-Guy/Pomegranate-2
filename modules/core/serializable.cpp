@@ -347,7 +347,7 @@ void Archive::writeToFile(const char* filename) {
 
 void Archive::readFromFile(const char* filename) {
     // Open the file in binary mode
-    std::ifstream file(filename, std::ios::in | std::ios::binary);
+    std::ifstream file (filename, std::ios::in | std::ios::binary);
 
     // Check if file opened successfully
     if (!file.is_open()) {
@@ -355,16 +355,14 @@ void Archive::readFromFile(const char* filename) {
         return;
     }
 
-    // Get the file size
-    file.seekg(0, std::ios::end);
-    size_t file_size = file.tellg();
-    file.seekg(0, std::ios::beg); // Reset position to beginning
+    // Get the size of the file
+    file.seekg(0, file.end);
+    int size = file.tellg();
+    file.seekg(0, file.beg);
 
-    // Allocate memory for _data based on file size
-    _data.resize(file_size / sizeof(_data[0]));
-
-    // Read _data using read function
-    file.read(_data.data(), file_size);
+    // Read the file into _data
+    _data.resize(size);
+    file.read(_data.data(), size);
 
     // Close the file
     file.close();

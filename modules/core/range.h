@@ -2,16 +2,17 @@
 #define POMEGRANATEENGINE_RANGE_H
 #include <iterator>
 #include <vector>
+#include "list.h"
 
-class Range {
+class range {
 private:
     int _start;
     int _end;
     int _step;
 public:
-    Range(int end);
-    Range(int start, int end);
-    Range(int start, int end, int step);
+    range(int end);
+    range(int start, int end);
+    range(int start, int end, int step);
     struct iterator {
         int current;
         int step;
@@ -20,7 +21,8 @@ public:
         bool operator!=(const iterator& other) const;
         int operator*() const;
     };
-    explicit operator std::vector<int>() const;
+    operator std::vector<int>() const;
+    operator List<int>() const;
     iterator begin() const;
     iterator end() const;
 };
