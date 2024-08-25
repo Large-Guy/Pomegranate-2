@@ -1,7 +1,7 @@
 #ifndef POMEGRANATEENGINE_RESOURCE_H
 #define POMEGRANATEENGINE_RESOURCE_H
 #include<string>
-#include<serializable.h>
+#include<core/serializable.h>
 
 class Resource : public Serializable {
 private:

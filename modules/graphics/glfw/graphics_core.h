@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <texture.h>
+#include "texture.h"
 
 class Graphics {
 private:

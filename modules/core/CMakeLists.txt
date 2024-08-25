@@ -6,7 +6,7 @@ set(POMEGRANATE_CORE_SOURCES
 )
 
 set(POMEGRANATE_CORE_INCLUDE_DIRS
-        .
+        ../
 )
 
 add_library(PomegranateCore ${POMEGRANATE_CORE_SOURCES})

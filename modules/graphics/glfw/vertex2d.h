@@ -1,8 +1,8 @@
 #ifndef POMEGRANATEENGINE_VERTEX2D_H
 #define POMEGRANATEENGINE_VERTEX2D_H
-#include <vector3.h>
-#include <vector2.h>
-#include <serializable.h>
+#include <math/vector3.h>
+#include <math/vector2.h>
+#include <core/serializable.h>
 
 struct Vertex2D : public Serializable {
     Vector2 position = Vector2();

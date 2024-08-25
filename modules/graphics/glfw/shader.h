@@ -2,13 +2,13 @@
 #define POMEGRANATEENGINE_SHADER_H
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <vector2.h>
-#include <vector3.h>
-#include <vector4.h>
-#include <matrix2x2.h>
-#include <matrix3x3.h>
-#include <matrix4x4.h>
-#include <texture.h>
+#include <math/vector2.h>
+#include <math/vector3.h>
+#include <math/vector4.h>
+#include <math/matrix2x2.h>
+#include <math/matrix3x3.h>
+#include <math/matrix4x4.h>
+#include <graphics/glfw/texture.h>
 
 class Shader {
 private:

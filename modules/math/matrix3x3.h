@@ -1,7 +1,7 @@
 #ifndef POMEGRANATEENGINE_MATRIX3X3_H
 #define POMEGRANATEENGINE_MATRIX3X3_H
-#include <vector3.h>
-#include <vector2.h>
+#include "vector3.h"
+#include "vector2.h"
 #include <cmath>
 
 struct Matrix3x3 : public Serializable {

@@ -2,7 +2,7 @@
 #define POMEGRANATEENGINE_NOISE2D_H
 #include <cmath>
 #include <algorithm>
-#include <vector2.h>
+#include "vector2.h"
 
 class Noise2D {
 private:

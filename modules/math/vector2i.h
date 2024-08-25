@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_VECTOR2I_H
 #define POMEGRANATEENGINE_VECTOR2I_H
-#include "serializable.h"
+#include <core/serializable.h>
 #include <cmath>
 
 class Vector2i : public Serializable {

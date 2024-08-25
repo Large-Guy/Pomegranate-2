@@ -1,7 +1,7 @@
 #ifndef POMEGRANATEENGINE_MATRIX4X4_H
 #define POMEGRANATEENGINE_MATRIX4X4_H
-#include <vector4.h>
-#include <vector3.h>
+#include "vector4.h"
+#include "vector3.h"
 #include <cmath>
 
 struct Matrix4x4 : public Serializable {

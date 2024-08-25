@@ -1,11 +1,11 @@
 #ifndef POMEGRANATEENGINE_MODEL2D_H
 #define POMEGRANATEENGINE_MODEL2D_H
 #include <vector>
-#include <vector3.h>
-#include <vertex2d.h>
+#include <math/vector3.h>
+#include "vertex2d.h"
 #include <glad/glad.h>
-#include <serializable.h>
-#include <graphics_core.h>
+#include <core/serializable.h>
+#include "graphics_core.h"
 
 class Model2D : public Serializable {
 private:

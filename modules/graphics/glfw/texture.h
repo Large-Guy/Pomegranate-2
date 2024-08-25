@@ -1,10 +1,10 @@
 #ifndef POMEGRANATEENGINE_TEXTURE_H
 #define POMEGRANATEENGINE_TEXTURE_H
-#include <resource.h>
+#include <core/resource.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <vector4.h>
-#include <vector2.h>
+#include <math/vector4.h>
+#include <math/vector2.h>
 
 enum class TextureFilter {
     TEXTURE_FILTER_NEAREST = GL_NEAREST,

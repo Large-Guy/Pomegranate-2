@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_MATRIX2X2_H
 #define POMEGRANATEENGINE_MATRIX2X2_H
-#include<vector2.h>
+#include"vector2.h"
 
 struct Matrix2x2 : public Serializable {
     Vector2 x = Vector2();

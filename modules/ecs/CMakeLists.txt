@@ -6,7 +6,11 @@ set(POMEGRANATE_ECS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/ecs_typedefs.h
         ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/component.h
-        ecs.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/ecs.h
+)
+
+set(POMEGRANATE_ECS_INCLUDE_DIRS
+        ../
 )
 
 add_library(PomegranateECS ${POMEGRANATE_ECS_SOURCES})

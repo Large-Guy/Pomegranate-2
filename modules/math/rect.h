@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_RECT_H
 #define POMEGRANATEENGINE_RECT_H
-#include <vector2.h>
+#include "vector2.h"
 
 struct Rect : public Serializable {
     Vector2 position = Vector2();

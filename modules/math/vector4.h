@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_VECTOR4_H
 #define POMEGRANATEENGINE_VECTOR4_H
-#include <serializable.h>
+#include <core/serializable.h>
 #include <cmath>
 
 struct Vector4 : public Serializable {

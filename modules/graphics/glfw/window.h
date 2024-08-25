@@ -4,14 +4,14 @@
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <vector2.h>
-#include <vector3.h>
-#include <vector4.h>
-#include <model2d.h>
-#include <shader.h>
-#include <graphics_core.h>
-#include <pomegranate_image.h>
-#include <stb_image.h>
+#include <math/vector2.h>
+#include <math/vector3.h>
+#include <math/vector4.h>
+#include "model2d.h"
+#include "shader.h"
+#include "graphics_core.h"
+#include "pomegranate_image.h"
+#include "stb_image.h"
 
 
 class Window {

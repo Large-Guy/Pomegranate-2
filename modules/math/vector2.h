@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_VEC2_H
 #define POMEGRANATEENGINE_VEC2_H
-#include "serializable.h"
+#include <core/serializable.h>
 #include <cmath>
 
 struct Vector2 : public Serializable {

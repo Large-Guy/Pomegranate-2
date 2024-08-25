@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_VECTOR3I_H
 #define POMEGRANATEENGINE_VECTOR3I_H
-#include <serializable.h>
+#include <core/serializable.h>
 #include <cmath>
 
 struct Vector3i : public Serializable {

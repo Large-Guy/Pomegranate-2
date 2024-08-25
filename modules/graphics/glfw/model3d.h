@@ -1,10 +1,10 @@
 #ifndef POMEGRANATEENGINE_MODEL3D_H
 #define POMEGRANATEENGINE_MODEL3D_H
 #include <vector>
-#include <vector3.h>
-#include <vertex3d.h>
+#include <math/vector3.h>
+#include <graphics/glfw/vertex3d.h>
 #include <glad/glad.h>
-#include <serializable.h>
+#include <core/serializable.h>
 
 class Model3D : public Serializable {
 private:

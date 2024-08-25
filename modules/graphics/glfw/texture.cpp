@@ -3,7 +3,7 @@
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #endif
-#include <stb_image.h>
+#include "stb_image.h"
 
 Texture2D::Texture2D(const std::string& path, std::string name) : Resource(path, name) {
     _id = -1;

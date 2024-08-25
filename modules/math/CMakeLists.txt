@@ -19,7 +19,11 @@ set(POMEGRANATE_MATH_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/noise2d.h
         ${CMAKE_CURRENT_SOURCE_DIR}/rect.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/rect.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/math.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/pmath.h
+)
+
+set(POMEGRANATE_MATH_INCLUDE_DIRS
+        ../
 )
 
 add_library(PomegranateMath ${POMEGRANATE_MATH_SOURCES})
