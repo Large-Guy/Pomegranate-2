@@ -123,7 +123,10 @@ Archive& Archive::operator<<(const Serializable& i) {
     i.serialize(a);
     // Get the bytes from the archive
     char* bytes = new char[a._data.size()];
-    a.getBytes(bytes, a._data.size());
+    for(int n = 0; n < a._data.size(); n++)
+    {
+        bytes[n] = a.getBytes()[n];
+    }
 
     // Push size of the object
     *this << a._data.size();
@@ -142,7 +145,10 @@ Archive& Archive::operator<<(const Serializable* i) {
     i->serialize(a);
     // Get the bytes from the archive
     char* bytes = new char[a._data.size()];
-    a.getBytes(bytes, a._data.size());
+    for(int n = 0; n < a._data.size(); n++)
+    {
+        bytes[n] = a.getBytes()[n];
+    }
 
     // Push size of the object
     *this << a._data.size();
@@ -178,6 +184,8 @@ Archive& Archive::operator>>(const ulong* i){
     *(ulong*)i = *(ulong*)c;
     // Remove the bytes from the _data
     _data.erase(_data.begin(), _data.begin() + sizeof(ulong));
+
+    delete[] c;
     return *this;
 }
 
@@ -234,7 +242,15 @@ Archive& Archive::operator>>(const ushort* i){
 }
 
 Archive& Archive::operator>>(const char* i){
-    // Convert char array to char
+    //Copy data to i
+    *(char*)i = _data[0];
+    // Remove the bytes from the _data
+    _data.erase(_data.begin(), _data.begin() + sizeof(char));
+    return *this;
+}
+
+Archive& Archive::operator>>(const char** i){
+    //Copy data to i
     *(char*)i = _data[0];
     // Remove the bytes from the _data
     _data.erase(_data.begin(), _data.begin() + sizeof(char));
@@ -320,12 +336,8 @@ size_t Archive::size(){
     return _data.size();
 }
 
-void Archive::getBytes(char* buffer, size_t size){
-    // Copy the _data to the buffer
-    for (int i = 0; i < size; i++)
-    {
-        buffer[i] = _data[i];
-    }
+char* Archive::getBytes(){
+    return _data.data();
 }
 
 void Archive::writeToFile(const char* filename) {
@@ -376,3 +388,18 @@ void Serializable::deserialize(Archive& a) {
     // Do nothing
 }
 
+void Serializable::toFile(const char* filename) const {
+    // Serialize the object
+    Archive a;
+    serialize(a);
+    // Write the archive to a file
+    a.writeToFile(filename);
+}
+
+void Serializable::fromFile(const char* filename) {
+    // Read the archive from a file
+    Archive a;
+    a.readFromFile(filename);
+    // Deserialize the object
+    deserialize(a);
+}

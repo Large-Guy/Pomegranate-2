@@ -6,13 +6,23 @@
 #include <graphics/glfw/graphics.h>
 #include <events/events.h>
 #include <core/list.h>
+#include <core/hash_table.h>
+
+size_t hash(Vector2 v)
+{
+    return v.x + v.y;
+}
 
 int main() {
-    List<int> list = range(0,16);
-    std::cout << list << std::endl;
-    SERIALIZE_TO_FILE(list, "list.bin");
-    List<int> list2;
-    DESERIALIZE_FROM_FILE(list2, "list.bin");
-    std::cout << list2 << std::endl;
+    HashTable<std::string, std::string> table = HashTable<std::string, std::string>();
+
+    table["hello"] = "Hello, ";
+    table["world"] = "World!";
+
+    table.toFile("table.bin");
+
+    table.fromFile("table.bin");
+
+    std::cout << table["hello"] << table["world"] << std::endl;
     return 0;
 }

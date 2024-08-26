@@ -37,6 +37,7 @@ public:
     Archive& operator>>(const short* i);
     Archive& operator>>(const ushort* i);
     Archive& operator>>(const char* i);
+    Archive& operator>>(const char** i);
     Archive& operator>>(const double* i);
     Archive& operator>>(const float* i);
     Archive& operator>>(const bool* i);
@@ -44,7 +45,7 @@ public:
     Archive& operator>>(const Serializable* i);
 
     size_t size();
-    void getBytes(char* buffer, size_t size);
+    char* getBytes();
     void writeToFile(const char* filename);
     void readFromFile(const char* filename);
 };
@@ -54,6 +55,8 @@ public:
     virtual ~Serializable() = default;
     virtual void serialize(Archive&) const;
     virtual void deserialize(Archive&);
+    void toFile(const char* filename) const;
+    void fromFile(const char* filename);
 };
 
 #define SERIALIZE_TO_FILE(what,filename) \
