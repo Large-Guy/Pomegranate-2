@@ -41,5 +41,12 @@ struct Vector3i : public Serializable {
     void deserialize(Archive& a) override;
 };
 
+template<>
+struct std::hash<Vector3i> {
+    size_t operator()(const Vector3i& v) const
+    {
+        return hash<int>()(v.x) ^ hash<int>()(v.y) ^ hash<int>()(v.z);
+    }
+};
 
 #endif //POMEGRANATEENGINE_VECTOR3I_H

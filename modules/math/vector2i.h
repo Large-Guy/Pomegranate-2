@@ -42,23 +42,12 @@ public:
     void deserialize(Archive& a) override;
 };
 
-template <>
-struct std::hash<Vector2i>
-{
-    std::size_t operator()(const Vector2i& k) const
+template<>
+struct std::hash<Vector2i> {
+    size_t operator()(const Vector2i& v) const
     {
-        using std::size_t;
-        using std::hash;
-        using std::string;
-
-        // Compute individual hash values for first,
-        // second and third and combine them using XOR
-        // and bit shifting:
-
-        return ((hash<int>()(k.x)
-                 ^ (hash<int>()(k.y) << 1)) >> 1);
+        return hash<int>()(v.x) ^ hash<int>()(v.y);
     }
 };
-
 
 #endif //POMEGRANATEENGINE_VECTOR2I_H

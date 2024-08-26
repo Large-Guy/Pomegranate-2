@@ -23,5 +23,12 @@ struct Rect : public Serializable {
     void deserialize(Archive& a) override;
 };
 
+template<>
+struct std::hash<Rect> {
+    size_t operator()(const Rect& r) const
+    {
+        return hash<Vector2>()(r.position) ^ hash<Vector2>()(r.size);
+    }
+};
 
 #endif //POMEGRANATEENGINE_RECT_H

@@ -40,5 +40,12 @@ struct Vector4i : public Serializable {
 
 };
 
+template<>
+struct std::hash<Vector4i> {
+    size_t operator()(const Vector4i& v) const
+    {
+        return hash<int>()(v.x) ^ hash<int>()(v.y) ^ hash<int>()(v.z) ^ hash<int>()(v.w);
+    }
+};
 
 #endif //POMEGRANATEENGINE_VECTOR4I_H

@@ -41,5 +41,12 @@ struct Vector2 : public Serializable {
     void deserialize(Archive& a) override;
 };
 
+template<>
+struct std::hash<Vector2> {
+    size_t operator()(const Vector2& v) const
+    {
+        return hash<float>()(v.x) ^ hash<float>()(v.y);
+    }
+};
 
 #endif //POMEGRANATEENGINE_VEC2_H

@@ -7,7 +7,7 @@
 struct Table : public Serializable {
 private:
     struct iKey {
-
+        virtual ~iKey() = default;
     };
     template<typename K, typename V, typename Hash = std::hash<K>>
     struct Key : public iKey {
@@ -17,8 +17,7 @@ private:
     std::unordered_map<size_t, iKey*> _data;
 public:
     Table();
-    Table(const Table& other);
-    Table& operator=(const Table& other);
+    ~Table();
 
     template<typename K, typename V, typename Hash = std::hash<K>>
     void set(const K& key, const V& value)

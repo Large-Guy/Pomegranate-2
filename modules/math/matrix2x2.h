@@ -17,5 +17,12 @@ struct Matrix2x2 : public Serializable {
     void deserialize(Archive& a) override;
 };
 
+template<>
+struct std::hash<Matrix2x2> {
+    size_t operator()(const Matrix2x2& m) const
+    {
+        return hash<Vector2>()(m.x) ^ hash<Vector2>()(m.y);
+    }
+};
 
 #endif //POMEGRANATEENGINE_MATRIX2X2_H

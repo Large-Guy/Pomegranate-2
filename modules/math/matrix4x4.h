@@ -28,5 +28,12 @@ struct Matrix4x4 : public Serializable {
     void deserialize(Archive& a) override;
 };
 
+template<>
+struct std::hash<Matrix4x4> {
+    size_t operator()(const Matrix4x4& m) const
+    {
+        return hash<Vector4>()(m.x) ^ hash<Vector4>()(m.y) ^ hash<Vector4>()(m.z) ^ hash<Vector4>()(m.w);
+    }
+};
 
 #endif //POMEGRANATEENGINE_MATRIX4X4_H

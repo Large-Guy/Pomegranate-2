@@ -26,5 +26,12 @@ struct Matrix3x3 : public Serializable {
     void deserialize(Archive& a) override;
 };
 
+template<>
+struct std::hash<Matrix3x3> {
+    size_t operator()(const Matrix3x3& m) const
+    {
+        return hash<Vector3>()(m.x) ^ hash<Vector3>()(m.y) ^ hash<Vector3>()(m.z);
+    }
+};
 
 #endif //POMEGRANATEENGINE_MATRIX3X3_H
