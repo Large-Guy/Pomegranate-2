@@ -7,6 +7,8 @@ set(POMEGRANATE_CORE_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/range.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/list.h
         ${CMAKE_CURRENT_SOURCE_DIR}/hash_table.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/table.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/table.cpp
 )
 
 set(POMEGRANATE_CORE_INCLUDE_DIRS
