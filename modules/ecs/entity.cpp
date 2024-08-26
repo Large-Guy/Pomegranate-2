@@ -47,6 +47,10 @@ bool Entity::hasComponent(EntityID entity, ComponentID component) {
     return archetype_map.count(archetype->id) != 0;
 }
 
+bool Entity::hasComponent(EntityID entity, const std::string &component) {
+    return hasComponent(entity,ECS::getComponentID(component));
+}
+
 void* Entity::getComponent(EntityID entity, ComponentID component) {
     EntityRecord* record = ECS::entity_index[entity];
     Archetype* archetype = record->archetype;
@@ -64,7 +68,11 @@ void* Entity::getComponent(EntityID entity, ComponentID component) {
     return archetype->components[a_record.column].get(record->row);
 }
 
-void Entity::addComponent(EntityID entity, ComponentID component) {
+void* Entity::getComponent(EntityID entity, const std::string &component) {
+    return getComponent(entity,ECS::getComponentID(component));
+}
+
+void* Entity::addComponent(EntityID entity, ComponentID component) {
     EntityRecord* record = ECS::entity_index[entity];
     Archetype* archetype = record->archetype;
     if(archetype == nullptr)
@@ -73,6 +81,11 @@ void Entity::addComponent(EntityID entity, ComponentID component) {
     }
     Archetype* next = archetype->addComponent(component);
     moveEntityArchetype(entity, next);
+    return getComponent(entity,component);
+}
+
+void* Entity::addComponent(EntityID entity, const std::string &component) {
+    return addComponent(entity,ECS::getComponentID(component));
 }
 
 Entity::Entity() {
@@ -101,11 +114,26 @@ bool Entity::hasComponent(ComponentID component) const {
     return hasComponent(id,component);
 }
 
+bool Entity::hasComponent(const std::string &component) const {
+    return hasComponent(id,ECS::getComponentID(component));
+}
+
 void *Entity::getComponent(ComponentID component) const {
     return getComponent(id,component);
 }
 
-void Entity::addComponent(ComponentID component) {
-    addComponent(id,component);
+void *Entity::getComponent(const std::string &component) const {
+    return getComponent(id,ECS::getComponentID(component));
 }
 
+void* Entity::addComponent(ComponentID component) const {
+    return addComponent(id,component);
+}
+
+void* Entity::addComponent(const std::string &component) const {
+    return addComponent(id,ECS::getComponentID(component));
+}
+
+Type Entity::getType() const {
+    return ECS::entity_index[id]->archetype->type;
+}

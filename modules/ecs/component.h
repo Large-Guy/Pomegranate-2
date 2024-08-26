@@ -4,6 +4,7 @@
 #include <cstring>
 #include "ecs_typedefs.h"
 #include <unordered_map>
+#include <core/serializable.h>
 
 struct ComponentList
 {
@@ -17,6 +18,28 @@ struct ComponentList
     void* get(size_t i) const;
     void remove(size_t i);
     void* add();
+};
+
+struct Component : public Serializable
+{
+private:
+    std::unordered_map<std::string, std::pair<size_t,void*>> _data;
+protected:
+    template<typename T>
+    void property(const std::string& name, void* data)
+    {
+        // Add the property to the _data
+        _data[name] = std::pair<size_t,void*>(typeid(T).hash_code(),data);
+    }
+public:
+    template<typename T>
+    T* get(const std::string& name)
+    {
+        // Get the property from the _data
+        return (T*)(_data[name].second);
+    }
+    size_t getPropertyType(const std::string& name);
+    std::vector<std::string> properties();
 };
 
 #endif //POMEGRANATEENGINE_COMPONENT_H

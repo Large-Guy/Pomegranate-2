@@ -5,7 +5,7 @@
 #include "ecs_typedefs.h"
 #include <cstring>
 #include "component.h"
-#include "ecs.h"
+#include "core.h"
 
 struct Archetype;
 

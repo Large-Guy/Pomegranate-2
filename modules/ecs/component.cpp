@@ -40,3 +40,18 @@ void ComponentList::remove(size_t i) {
     memmove(dest,src,element_size);
     count--;
 }
+
+size_t Component::getPropertyType(const std::string &name) {
+    return _data[name].first;
+}
+
+std::vector<std::string> Component::properties() {
+    // Get the keys from the _data
+    std::vector<std::string> keys;
+    keys.reserve(_data.size());
+    for (auto const& x : _data)
+    {
+        keys.push_back(x.first);
+    }
+    return keys;
+}

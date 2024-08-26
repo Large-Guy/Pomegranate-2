@@ -6,8 +6,10 @@ set(POMEGRANATE_ECS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/ecs_typedefs.h
         ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/component.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/ecs.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/ecs.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/core.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/group.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/group.h
 )
 
 set(POMEGRANATE_ECS_INCLUDE_DIRS
