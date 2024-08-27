@@ -28,6 +28,8 @@ public:
     static void* getComponent(EntityID entity, const std::string& component);
     static void* addComponent(EntityID entity, ComponentID component);
     static void* addComponent(EntityID entity, const std::string& component);
+    static void removeComponent(EntityID entity, ComponentID component);
+    static void removeComponent(EntityID entity, const std::string& component);
 
     EntityID id;
     Entity();
@@ -35,8 +37,9 @@ public:
     Entity(const Entity& entity);
 
     Entity& operator=(const Entity& entity);
+    bool operator==(const Entity& entity) const;
     explicit operator EntityID() const;
-
+    bool exists() const;
     [[nodiscard]] bool hasComponent(ComponentID component) const;
     [[nodiscard]] bool hasComponent(const std::string& component) const;
     [[nodiscard]] void* getComponent(ComponentID component) const;
@@ -67,7 +70,17 @@ public:
         new(loc) T(std::forward<Args>(args)...);
         return (T*)loc;
     }
+    void removeComponent(ComponentID component) const;
+    void removeComponent(const std::string& component) const;
     [[nodiscard]] Type getType() const;
 };
 
+template<>
+struct std::hash<Entity>
+{
+    std::size_t operator()(const Entity& entity) const
+    {
+        return std::hash<EntityID>()(entity.id);
+    }
+};
 #endif //POMEGRANATEENGINE_ENTITY_H

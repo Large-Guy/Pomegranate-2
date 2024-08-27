@@ -2,33 +2,8 @@
 #include <utility>
 #include <core/pomegranate.h>
 #include <ecs/ecs.h>
-#include <math/pmath.h>
-
-struct Transform : public Component
-{
-    Vector2 position;
-    Vector2 scale;
-    float rotation;
-    Transform(const Vector2& position, const Vector2& scale, float rotation)
-    {
-        this->position = position;
-        this->scale = scale;
-        this->rotation = rotation;
-        property<Vector2>("position", &this->position);
-        property<Vector2>("scale", &this->scale);
-        property<float>("rotation", &this->rotation);
-    }
-};
-
-struct Name : public Component
-{
-    std::string name;
-    Name(std::string name)
-    {
-        this->name = std::move(name);
-        property<std::string>("name", &this->name);
-    }
-};
+#include <math/math.h>
+#include <ecs/extensions/common/common.h>
 
 void printEntity(Entity e)
 {
@@ -47,6 +22,11 @@ void printEntity(Entity e)
                 auto* v = c->get<Vector2>(property);
                 std::cout << "(" << v->x << "," << v->y << ")";
             }
+            else if(c->getPropertyType(property) == typeid(Vector3).hash_code())
+            {
+                auto* v = c->get<Vector3>(property);
+                std::cout << "(" << v->x << "," << v->y << "," << v->z << ")";
+            }
             else if(c->getPropertyType(property) == typeid(float).hash_code())
             {
                 auto* f = c->get<float>(property);
@@ -64,13 +44,17 @@ void printEntity(Entity e)
 }
 
 int main() {
-    ECS::registerComponent<Name>("Name");
-    ECS::registerComponent<Transform>("Transform");
-    Entity e;
-    e.addComponent<Name>("Name","Player");
-    e.addComponent<Transform>("Transform",Vector2(0,0),Vector2(1,1),0);
-    printEntity(e);
+    registerCommonComponents();
+    Entity player;
+    player.addComponent<Name>("Name","Player");
+    player.addComponent<Transform3D>("Transform3D")->position = {1,2,3};
 
+    Entity camera;
+    camera.addComponent<Name>("Name","Camera");
+    camera.addComponent<Transform3D>("Transform3D")->position = {0,5,0};
 
+    Hierarchy::addChildTo(player,camera);
+
+    printEntity(camera);
     return 0;
 }

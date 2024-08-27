@@ -26,11 +26,15 @@ void Entity::moveEntityArchetype(EntityID entity, Archetype *new_archetype) {
     }
     for(auto& list : record->archetype->components)
     {
+        if(new_archetype->type.count(list.component) == 0)
+        {
+            continue;
+        }
         void* data_loc = list.get(record->row);
         ComponentList& new_list = new_archetype->components[ECS::component_index[list.component][new_archetype->id].column];
         void* new_data_loc = new_list.get(row);
         memcpy(new_data_loc,data_loc,list.element_size);
-        //TODO: Remove old data
+        list.remove(record->row);
     }
     record->archetype = new_archetype;
     record->row = row;
@@ -68,6 +72,21 @@ void* Entity::getComponent(EntityID entity, ComponentID component) {
     return archetype->components[a_record.column].get(record->row);
 }
 
+void Entity::removeComponent(EntityID entity, ComponentID component) {
+    EntityRecord* record = ECS::entity_index[entity];
+    Archetype* archetype = record->archetype;
+    if(archetype == nullptr)
+    {
+        throw std::runtime_error("Somethings gone wrong. Archetype isn't supposed to be null!");
+    }
+    Archetype* next = archetype->removeComponent(component);
+    moveEntityArchetype(entity, next);
+}
+
+void Entity::removeComponent(EntityID entity, const std::string &component) {
+    removeComponent(entity,ECS::getComponentID(component));
+}
+
 void* Entity::getComponent(EntityID entity, const std::string &component) {
     return getComponent(entity,ECS::getComponentID(component));
 }
@@ -89,7 +108,7 @@ void* Entity::addComponent(EntityID entity, const std::string &component) {
 }
 
 Entity::Entity() {
-    this->id = ECS::entity_index.size();
+    this->id = ECS::entity_index.size() + 1;
     ECS::entity_index[this->id] = new EntityRecord{Archetype::getArchetype({}),0};
 }
 
@@ -106,8 +125,16 @@ Entity& Entity::operator=(const Entity &entity) {
     return *this;
 }
 
+bool Entity::operator==(const Entity &entity) const {
+    return id == entity.id;
+}
+
 Entity::operator EntityID() const {
     return id;
+}
+
+bool Entity::exists() const {
+    return id != 0;
 }
 
 bool Entity::hasComponent(ComponentID component) const {
@@ -132,6 +159,14 @@ void* Entity::addComponent(ComponentID component) const {
 
 void* Entity::addComponent(const std::string &component) const {
     return addComponent(id,ECS::getComponentID(component));
+}
+
+void Entity::removeComponent(ComponentID component) const {
+    removeComponent(id,component);
+}
+
+void Entity::removeComponent(const std::string &component) const {
+    removeComponent(id,ECS::getComponentID(component));
 }
 
 Type Entity::getType() const {

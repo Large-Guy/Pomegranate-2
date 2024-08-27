@@ -5,12 +5,15 @@
 #include "ecs_typedefs.h"
 #include <unordered_map>
 #include <core/serializable.h>
+#include "core.h"
 
 struct ComponentList
 {
     ComponentID component;
     void* elements;
+    bool* occupied;
     size_t element_size;
+    size_t capacity;
     size_t count;
 
     explicit ComponentList(ComponentID component, size_t component_size);
@@ -18,6 +21,7 @@ struct ComponentList
     void* get(size_t i) const;
     void remove(size_t i);
     void* add();
+    bool has(size_t i) const;
 };
 
 struct Component : public Serializable

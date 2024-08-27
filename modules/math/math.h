@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_PMATH_H
-#define POMEGRANATEENGINE_PMATH_H
+#ifndef POMEGRANATEENGINE_MATH_H
+#define POMEGRANATEENGINE_MATH_H
 
 #include "matrix2x2.h"
 #include "matrix3x3.h"
@@ -14,4 +14,4 @@
 #include "vector4.h"
 #include "vector4i.h"
 
-#endif //POMEGRANATEENGINE_PMATH_H
+#endif //POMEGRANATEENGINE_MATH_H

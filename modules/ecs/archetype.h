@@ -11,6 +11,7 @@ struct Archetype;
 
 struct ArchetypeRecord {
     size_t column;
+    Archetype* archetype;
 };
 
 struct ArchetypeEdge{
@@ -26,6 +27,7 @@ struct Archetype {
     static Archetype* getArchetype(const Type& type);
 
     Archetype* addComponent(ComponentID component);
+    Archetype* removeComponent(ComponentID component);
     void removeRow(size_t row);
 };
 

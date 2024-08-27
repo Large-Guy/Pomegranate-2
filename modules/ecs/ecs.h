@@ -2,6 +2,7 @@
 #define POMEGRANATEENGINE_ECS_H
 
 #include "entity.h"
-#include "group.h"
+#include "component.h"
+#include "core_impl.h"
 
 #endif //POMEGRANATEENGINE_ECS_H

@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <string>
 #include "ecs_typedefs.h"
+#include <functional>
 
 struct EntityRecord;
 struct ArchetypeRecord;
@@ -26,11 +27,15 @@ public:
 
     static ComponentID registerComponent(const std::string& component,size_t size);
     template<typename T>
-    static ComponentID registerComponent(const std::string& component) {
-        return registerComponent(component, sizeof(T));
-    }
+    static ComponentID registerComponent(const std::string& component);
     static ComponentID getComponentID(const std::string& component);
     static std::string getComponentName(ComponentID component);
+
+    template <typename Args>
+    static void each(ComponentID component, std::function<void(Args*)> func);
+
+    template <typename Args>
+    static void each(const std::string& component, std::function<void(Args*)> func);
 };
 
 #endif //POMEGRANATEENGINE_CORE_H
