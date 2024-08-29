@@ -11,6 +11,7 @@ private:
     bool visible;
     bool close_requested;
     VkSurfaceKHR surface;
+    VkSwapchainKHR swapChain;
 public:
     PomegranateWindow();
     ~PomegranateWindow();

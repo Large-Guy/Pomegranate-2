@@ -18,31 +18,57 @@ PomegranateWindow::PomegranateWindow() {
     }
 
     glfwHideWindow(this->window);
+    if (glfwCreateWindowSurface(Graphics::instance, window, nullptr, &surface) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create window surface!");
+    }
 
-#ifdef _WIN32
-    VkWin32SurfaceCreateInfoKHR createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-    createInfo.hinstance = GetModuleHandle(nullptr);
-    createInfo.hwnd = glfwGetWin32Window(this->window);
-    if (vkCreateWin32SurfaceKHR(Graphics::instance, &createInfo, nullptr, &surface) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create window surface!");
+    Graphics::SwapChainSupportDetails swapChainSupport = Graphics::getSwapChainSupport(Graphics::physicalDevice,surface);
+
+    VkSurfaceFormatKHR surfaceFormat = Graphics::chooseSwapSurfaceFormat(swapChainSupport.formats);
+    VkPresentModeKHR presentMode = Graphics::chooseSwapPresentMode(swapChainSupport.presentModes);
+    VkExtent2D extent = Graphics::chooseSwapExtent(swapChainSupport.capabilities,window);
+
+    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+    if(swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
+    {
+        imageCount = swapChainSupport.capabilities.maxImageCount;
     }
-#elif __linux__
-    VkXlibSurfaceCreateInfoKHR createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
-    createInfo.dpy = glfwGetX11Display();
-    createInfo.window = glfwGetX11Window(this->window);
-    if (vkCreateXlibSurfaceKHR(Graphics::instance, &createInfo, nullptr, &surface) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create window surface!");
+
+    VkSwapchainCreateInfoKHR createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface = surface;
+    createInfo.minImageCount = imageCount;
+    createInfo.imageFormat = surfaceFormat.format;
+    createInfo.imageColorSpace = surfaceFormat.colorSpace;
+    createInfo.imageExtent = extent;
+    createInfo.imageArrayLayers = 1;
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    Graphics::QueueFamilies indices = Graphics::getQueueFamilies(Graphics::physicalDevice,surface);
+    uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(),indices.presentFamily.value()};
+
+    if(indices.graphicsFamily != indices.presentFamily) {
+        createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+        createInfo.queueFamilyIndexCount = 2;
+        createInfo.pQueueFamilyIndices = queueFamilyIndices;
     }
-#elif __APPLE__
-    VkMacOSSurfaceCreateInfoMVK createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK;
-    createInfo.pView = glfwGetCocoaWindow(this->window);
-    if (vkCreateMacOSSurfaceMVK(Graphics::instance, &createInfo, nullptr, &surface) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create window surface!");
+    else
+    {
+        createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        createInfo.queueFamilyIndexCount = 0;
+        createInfo.pQueueFamilyIndices = nullptr;
     }
-#endif
+
+    createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    createInfo.presentMode = presentMode;
+    createInfo.clipped = VK_TRUE;
+    createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+    if(vkCreateSwapchainKHR(Graphics::logicalDevice,&createInfo, nullptr,&swapChain) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create swap chain!");
+    }
 }
 
 PomegranateWindow::~PomegranateWindow() {

@@ -1,37 +1,69 @@
 #ifndef POMEGRANATEENGINE_CORE_H
 #define POMEGRANATEENGINE_CORE_H
+#ifdef _WIN32
+#define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-#ifdef _WIN32
 #define GLFW_EXPOSE_NATIVE_WIN32
-#elif __linux__
-#define GLFW_EXPOSE_NATIVE_X11
-#elif __APPLE__
-#define GLFW_EXPOSE_NATIVE_COCOA
-#endif
 #include <GLFW/glfw3native.h>
-
-#ifdef __linux__
+#elif __linux__
+#define VK_USE_PLATFORM_XLIB_KHR
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_X11
+#include <GLFW/glfw3native.h>
 #include <vulkan/vulkan_xlib.h>
+#elif __APPLE__
+#define VK_USE_PLATFORM_MACOS_MVK
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_COCOA
+#include <GLFW/glfw3native.h>
+//Include the vulkan header file for macOS
+#include <vulkan/vulkan_macos.h>
 #endif
 
 #include <iostream>
 #include <vector>
 #include <map>
 #include <optional>
+#include <set>
+#include <cstdint>
+#include <limits>
+#include <algorithm>
+
 class Graphics {
 public:
     struct QueueFamilies {
         std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
         bool isComplete() const;
     };
+
+    struct Queues {
+        VkQueue graphics;
+        VkQueue present;
+    };
+
+    struct SwapChainSupportDetails {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+    };
+
     static VkInstance instance;
     static VkPhysicalDevice physicalDevice;
     static VkDevice logicalDevice;
-    static VkQueue graphicsQueue;
+    static Queues queues;
+    static std::vector<const char*> deviceExtensions;
 
-    static bool isDeviceValid(VkPhysicalDevice device);
-    static QueueFamilies getQueueFamilies(VkPhysicalDevice device);
+    static bool isDeviceValid(VkPhysicalDevice device, VkSurfaceKHR surface);
+    static bool hasExtensionSupport(VkPhysicalDevice device);
+    static QueueFamilies getQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
+    static SwapChainSupportDetails getSwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
+    static VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    static VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    static VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
 public:
     static const char* getAPI();
     static void init();
