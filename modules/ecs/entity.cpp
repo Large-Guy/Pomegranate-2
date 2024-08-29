@@ -21,8 +21,8 @@ void Entity::moveEntityArchetype(EntityID entity, Archetype *new_archetype) {
     int row = 0;
     for(auto& list : new_archetype->components)
     {
-        list.add();
-        row = list.count - 1;
+        row = list.add();
+        std::cout << "Entity " << entity << " moved to row " << row << "\n";
     }
     for(auto& list : record->archetype->components)
     {

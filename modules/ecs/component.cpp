@@ -30,13 +30,13 @@ void ComponentList::resize(size_t new_size) {
     }
 }
 
-void* ComponentList::add() {
+size_t ComponentList::add() {
     if(count + 1 >= capacity) {
         capacity = count + 1;
         resize(capacity);
         //Mark the new slot as occupied
         occupied[count] = true;
-        return (void*)((char*)elements + element_size * (count++));
+        return count++;
     }
     else {
         //Find empty slot
@@ -44,7 +44,7 @@ void* ComponentList::add() {
             if (!occupied[i]) {
                 occupied[i] = true;
                 count++;
-                return (void *) ((char *) elements + element_size * i);
+                return i;
             }
         }
     }

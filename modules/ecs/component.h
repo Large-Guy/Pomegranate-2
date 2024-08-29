@@ -20,7 +20,7 @@ struct ComponentList
     void resize(size_t new_size);
     void* get(size_t i) const;
     void remove(size_t i);
-    void* add();
+    size_t add();
     bool has(size_t i) const;
 };
 
