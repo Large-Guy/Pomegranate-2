@@ -18,7 +18,7 @@ private:
 public:
     Archive();
     Archive& operator<<(long i);
-    Archive& operator<<(ulong i);
+    Archive& operator<<(unsigned long i);
     Archive& operator<<(int i);
     Archive& operator<<(uint i);
     Archive& operator<<(short i);
@@ -32,7 +32,7 @@ public:
     Archive& operator<<(const Serializable* i);
 
     Archive& operator>>(const long* i);
-    Archive& operator>>(const ulong* i);
+    Archive& operator>>(const unsigned long* i);
     Archive& operator>>(const int* i);
     Archive& operator>>(const uint* i);
     Archive& operator>>(const short* i);

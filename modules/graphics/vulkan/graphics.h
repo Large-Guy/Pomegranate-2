@@ -1,0 +1,7 @@
+#ifndef POMEGRANATEENGINE_GRAPHICS_H
+#define POMEGRANATEENGINE_GRAPHICS_H
+
+#include "core.h"
+#include "window.h"
+
+#endif //POMEGRANATEENGINE_GRAPHICS_H

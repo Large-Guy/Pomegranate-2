@@ -14,10 +14,10 @@ Archive& Archive::operator<<(long i){
     return *this;
 }
 
-Archive& Archive::operator<<(ulong i){
+Archive& Archive::operator<<(unsigned long i){
     // Convert ulong to char array
     char* c = (char*)&i;
-    for (int j = 0; j < sizeof(ulong); j++)
+    for (int j = 0; j < sizeof(unsigned long); j++)
     {
         _data.push_back(c[j]);
     }
@@ -106,7 +106,7 @@ Archive& Archive::operator<<(bool i){
 
 Archive& Archive::operator<<(const std::string& i){
     //Add the string size
-    *this << (ulong)i.size();
+    *this << (unsigned long)i.size();
 
     // Add the string to the _data
     for (int j = 0; j < i.size(); j++)
@@ -174,16 +174,16 @@ Archive& Archive::operator>>(const long* i){
     return *this;
 }
 
-Archive& Archive::operator>>(const ulong* i){
+Archive& Archive::operator>>(const unsigned long* i){
     // Convert char array to ulong
-    char* c = new char[sizeof(ulong)];
-    for (int j = 0; j < sizeof(ulong); j++)
+    char* c = new char[sizeof(unsigned long)];
+    for (int j = 0; j < sizeof(unsigned long); j++)
     {
         c[j] = _data[j];
     }
-    *(ulong*)i = *(ulong*)c;
+    *(unsigned long*)i = *(unsigned long*)c;
     // Remove the bytes from the _data
-    _data.erase(_data.begin(), _data.begin() + sizeof(ulong));
+    _data.erase(_data.begin(), _data.begin() + sizeof(unsigned long));
 
     delete[] c;
     return *this;

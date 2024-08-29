@@ -137,7 +137,8 @@ Vector3 Vector3::lerp(const Vector3& v, float t) const
 Vector3 Vector3::slerp(const Vector3& v, float t) const
 {
     float dot = normalized().dot(v.normalized());
-    dot = std::clamp(dot, -1.0f, 1.0f);
+    //Clamp
+    dot = fmaxf(fminf(dot, 1.0f), -1.0f);
     float theta = acosf(dot) * t;
     Vector3 relative = (v - *this * dot).normalized();
     return *this * cosf(theta) + relative * sinf(theta);

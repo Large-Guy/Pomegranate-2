@@ -121,7 +121,8 @@ Vector2i Vector2i::lerp(const Vector2i &v, float t) const {
 
 Vector2i Vector2i::slerp(const Vector2i &v, float t) const {
     int dot = normalized().dot(v.normalized());
-    dot = std::clamp(dot, -1, 1);
+    //Clamp
+    dot = fmaxf(-1.0f, fminf(1.0f, dot));
     int theta = acosf(dot) * t;
     Vector2i relative = (v - *this * dot).normalized();
     return *this * cosf(theta) + relative * sinf(theta);
