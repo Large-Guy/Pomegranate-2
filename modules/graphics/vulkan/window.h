@@ -2,7 +2,7 @@
 #define POMEGRANATEENGINE_WINDOW_H
 #include "core.h"
 
-class Window {
+class PomegranateWindow {
 private:
     int width, height;
     bool fullscreen;
@@ -10,9 +10,10 @@ private:
     GLFWwindow* window;
     bool visible;
     bool close_requested;
+    VkSurfaceKHR surface;
 public:
-    Window();
-    ~Window();
+    PomegranateWindow();
+    ~PomegranateWindow();
     void show();
     void hide();
     void setTitle(const std::string& new_title);

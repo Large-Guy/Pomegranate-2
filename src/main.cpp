@@ -5,7 +5,7 @@
 
 int main() {
     Graphics::init();
-    Window window;
+    PomegranateWindow window;
     window.show();
     window.setTitle("Pomegranate Engine - Vulkan");
     while(window.is_open())
@@ -13,5 +13,7 @@ int main() {
         window.poll();
 
     }
+
+    Graphics::terminate();
     return 0;
 }
