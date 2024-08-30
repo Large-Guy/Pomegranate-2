@@ -12,6 +12,10 @@ private:
     bool close_requested;
     VkSurfaceKHR surface;
     VkSwapchainKHR swapChain;
+    std::vector<VkImage> swapChainImages;
+    VkFormat swapChainImageFormat;
+    VkExtent2D swapChainExtent;
+    std::vector<VkImageView> swapChainImageViews;
 public:
     PomegranateWindow();
     ~PomegranateWindow();

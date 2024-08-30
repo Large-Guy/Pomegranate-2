@@ -1,0 +1,10 @@
+#ifndef POMEGRANATEENGINE_SHADER_H
+#define POMEGRANATEENGINE_SHADER_H
+
+
+class Shader {
+
+};
+
+
+#endif //POMEGRANATEENGINE_SHADER_H

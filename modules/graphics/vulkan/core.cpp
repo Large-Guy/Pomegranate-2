@@ -184,7 +184,6 @@ void Graphics::init() {
     if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create window surface!");
     }
-    glfwDestroyWindow(window);
 
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance,&deviceCount, nullptr);
@@ -248,6 +247,7 @@ void Graphics::init() {
     vkGetDeviceQueue(logicalDevice, indices.graphicsFamily.value(), 0, &queues.graphics);
     vkGetDeviceQueue(logicalDevice, indices.presentFamily.value(),0,&queues.present);
 
+    glfwDestroyWindow(window);
     std::cout << "Vulkan initialized!" << std::endl;
 }
 
