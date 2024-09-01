@@ -30,21 +30,21 @@ void Entity::moveEntityArchetype(EntityID entity, Archetype *new_archetype) {
     {
         row = list.add();
     }
+    new_archetype->entities[row] = entity;
     for(auto& list : record->archetype->components)
     {
         if(new_archetype->type.count(list.component) == 0)
         {
             continue;
         }
+
         void* data_loc = list.get(record->row);
         ComponentList& new_list = new_archetype->components[ECS::component_index[list.component][new_archetype->id].column];
         void* new_data_loc = new_list.get(row);
         memcpy(new_data_loc,data_loc,list.element_size);
         list.remove(record->row);
-        std::string old_data = *(std::string*)data_loc;
-        std::string new_data = *(std::string*)new_data_loc;
-        std::cout << "Moved " << old_data << " to " << new_data << std::endl;
     }
+    record->archetype->entities.erase(record->row);
     record->archetype = new_archetype;
     record->row = row;
 }

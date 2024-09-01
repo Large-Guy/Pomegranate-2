@@ -2,6 +2,7 @@
 #define POMEGRANATE_ENGINE_ECS_EXTENSIONS_COMMON_TRANSFORM2D_H
 #include<ecs/ecs.h>
 #include <math/math.h>
+#include "hierarchy.h"
 
 struct Transform2D : public Component
 {
@@ -17,7 +18,10 @@ public:
     float rotation;
     Transform2D();
     Transform2D(const Vector2& position, const Vector2& scale, float rotation);
-    [[nodiscard]] Matrix3x3 matrix();
+    static Vector2 getPosition(Entity& entity);
+    static Vector2 getScale(Entity& entity);
+    static float getRotation(Entity& entity);
+    static Matrix3x3 getMatrix(Entity& entity);
 };
 
 #endif //POMEGRANATE_ENGINE_ECS_EXTENSIONS_COMMON_TRANSFORM2D_H

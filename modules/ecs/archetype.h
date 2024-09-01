@@ -23,6 +23,7 @@ struct Archetype {
     ArchetypeID id;
     Type type;
     std::vector<ComponentList> components;
+    std::unordered_map<size_t,EntityID> entities;
     std::unordered_map<ComponentID, ArchetypeEdge> edges;
     static Archetype* getArchetype(const Type& type);
 

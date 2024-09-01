@@ -11,6 +11,30 @@ String::String(const char* value) {
     strcpy(this->value, value);
 }
 
+String::String(int value) {
+    this->length = snprintf(nullptr, 0, "%d", value);
+    this->value = new char[this->length];
+    sprintf(this->value, "%d", value);
+}
+
+String::String(float value) {
+    this->length = snprintf(nullptr, 0, "%f", value);
+    this->value = new char[this->length];
+    sprintf(this->value, "%f", value);
+}
+
+String::String(double value) {
+    this->length = snprintf(nullptr, 0, "%f", value);
+    this->value = new char[this->length];
+    sprintf(this->value, "%f", value);
+}
+
+String::String(bool value) {
+    this->length = snprintf(nullptr, 0, "%d", value);
+    this->value = new char[this->length];
+    sprintf(this->value, "%d", value);
+}
+
 String::String(const String& other) {
     this->length = other.length;
     this->value = new char[this->length];
@@ -75,6 +99,36 @@ String& String::operator+=(const String& other) {
 
 String& String::operator+=(const char* other) {
     return *this + other;
+}
+
+String& operator+(const char* lhs, String& rhs) {
+    char* newValue = new char[strlen(lhs) + rhs.length];
+    strcpy(newValue, lhs);
+    strcat(newValue, rhs.value);
+    delete[] rhs.value;
+    rhs.value = newValue;
+    rhs.length += strlen(lhs);
+    return rhs;
+}
+
+String& operator+=(const char* lhs, String& rhs) {
+    return lhs + rhs;
+}
+
+bool String::operator==(const String& other) const {
+    return strcmp(this->value, other.value) == 0;
+}
+
+bool String::operator==(const char* other) const {
+    return strcmp(this->value, other) == 0;
+}
+
+bool String::operator!=(const String& other) const {
+    return strcmp(this->value, other.value) != 0;
+}
+
+bool String::operator!=(const char* other) const {
+    return strcmp(this->value, other) != 0;
 }
 
 void String::serialize(Archive &a) const {

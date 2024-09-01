@@ -5,6 +5,7 @@
 #include "ecs_typedefs.h"
 #include <functional>
 
+struct Entity;
 struct EntityRecord;
 struct ArchetypeRecord;
 struct Archetype;
@@ -30,6 +31,12 @@ public:
 
     template <typename Args>
     static void each(const std::string& component, std::function<void(Args*)> func);
+
+    template <typename Args>
+    static void each(ComponentID component, std::function<void(Args*,Entity*)> func);
+
+    template <typename Args>
+    static void each(const std::string& component, std::function<void(Args*,Entity*)> func);
 };
 
 #endif //POMEGRANATE_ENGINE_CORE_H

@@ -47,11 +47,19 @@ int main() {
 
     registerCommonComponents();
 
-    Entity e = Entity::create();
-    e.addComponent<Name>("Name", "Entity");
+    //Create a bunch of entities with random names
+    for(int i = 0; i < 10; i++)
+    {
+        Entity e = Entity::create();
+        e.addComponent<Name>("Name", String("Entity ") + String(i));
+        e.addComponent<Transform2D>("Transform2D");
+    }
 
-    std::cout << "Entity: " << e.id << std::endl;
-    printEntity(e);
+    ECS::each<Name>("Name",[&](Name* name, Entity* entity){
+        std::cout << "EntityID: " << entity->id << std::endl;
+        std::cout << name->name << std::endl;
+    });
+
 
     return 0;
 }

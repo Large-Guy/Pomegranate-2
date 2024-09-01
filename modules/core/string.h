@@ -10,6 +10,10 @@ public:
 
     String();
     String(const char* value);
+    String(int value);
+    String(float value);
+    String(double value);
+    String(bool value);
     String(const String& other);
     ~String();
 
@@ -21,6 +25,13 @@ public:
     String& operator+(const char* other);
     String& operator+=(const String& other);
     String& operator+=(const char* other);
+    friend String& operator+(const char* lhs, String& rhs);
+    friend String& operator+=(const char* lhs, String& rhs);
+
+    [[nodiscard]] bool operator==(const String& other) const;
+    [[nodiscard]] bool operator==(const char* other) const;
+    [[nodiscard]] bool operator!=(const String& other) const;
+    [[nodiscard]] bool operator!=(const char* other) const;
 
     void serialize(Archive& a) const override;
     void deserialize(Archive& a) override;

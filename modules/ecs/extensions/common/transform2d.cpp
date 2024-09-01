@@ -20,14 +20,56 @@ Transform2D::Transform2D(const Vector2& position, const Vector2& scale, float ro
     property<float>("rotation", &this->rotation);
 }
 
-Matrix3x3 Transform2D::matrix() {
-    if(!this->_initalized || this->position != this->_position || this->scale != this->_scale || this->rotation != this->_rotation)
+Vector2 Transform2D::getPosition(Entity& entity) {
+    auto* transform = entity.getComponent<Transform2D>("Transform2D");
+    if(transform == nullptr)
     {
-        this->_initalized = true;
-        this->_position = this->position;
-        this->_scale = this->scale;
-        this->_rotation = this->rotation;
-        this->_matrix = Matrix3x3().scale(this->scale).rotate(this->rotation).translate(this->position);
+        return {};
     }
-    return this->_matrix;
+    auto* parent = entity.getComponent<Parent>("Parent");
+    if(parent != nullptr)
+    {
+        return getPosition(parent->parent) + transform->position;
+    }
+    return transform->position;
 }
+
+Vector2 Transform2D::getScale(Entity& entity) {
+    auto* transform = entity.getComponent<Transform2D>("Transform3D");
+    if(transform == nullptr)
+    {
+        return {};
+    }
+    auto* parent = entity.getComponent<Parent>("Parent");
+    if(parent != nullptr)
+    {
+        return getScale(parent->parent) * transform->scale;
+    }
+    return transform->scale;
+}
+
+float Transform2D::getRotation(Entity& entity) {
+    auto *transform = entity.getComponent<Transform2D>("Transform3D");
+    if (transform == nullptr) {
+        return {};
+    }
+    auto *parent = entity.getComponent<Parent>("Parent");
+    if (parent != nullptr) {
+        return getRotation(parent->parent) + transform->rotation;
+    }
+    return transform->rotation;
+}
+
+
+Matrix3x3 Transform2D::getMatrix(Entity& entity) {
+    auto* transform = entity.getComponent<Transform2D>("Transform3D");
+    if(transform == nullptr)
+    {
+        return {};
+    }
+    Vector2 position = getPosition(entity);
+    Vector2 scale = getScale(entity);
+    float rotation = getRotation(entity);
+    return Matrix3x3().rotate(rotation).scale(scale).translate(position);
+}
+
