@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_COMPONENT_H
-#define POMEGRANATEENGINE_COMPONENT_H
+#ifndef POMEGRANATE_ENGINE_ECS_COMPONENT_H
+#define POMEGRANATE_ENGINE_ECS_COMPONENT_H
 #include <iostream>
 #include <cstring>
 #include "ecs_typedefs.h"
@@ -55,4 +55,4 @@ public:
     static std::string getComponentName(ComponentID component);
 };
 
-#endif //POMEGRANATEENGINE_COMPONENT_H
+#endif //POMEGRANATE_ENGINE_COMPONENT_H

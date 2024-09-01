@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_HASH_TABLE_H
-#define POMEGRANATEENGINE_HASH_TABLE_H
+#ifndef POMEGRANATE_ENGINE_CORE_HASH_TABLE_H
+#define POMEGRANATE_ENGINE_CORE_HASH_TABLE_H
 #include "serializable.h"
 #include <functional>
 #include <unordered_map>
@@ -119,4 +119,4 @@ public:
         }
     }
 };
-#endif //POMEGRANATEENGINE_HASH_TABLE_H
+#endif //POMEGRANATE_ENGINE_HASH_TABLE_H

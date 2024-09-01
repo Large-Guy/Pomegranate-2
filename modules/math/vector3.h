@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_VECTOR3_H
-#define POMEGRANATEENGINE_VECTOR3_H
+#ifndef POMEGRANATE_ENGINE_MATH_VECTOR3_H
+#define POMEGRANATE_ENGINE_MATH_VECTOR3_H
 #include <core/serializable.h>
 #include <cmath>
 
@@ -49,4 +49,4 @@ struct std::hash<Vector3> {
     }
 };
 
-#endif //POMEGRANATEENGINE_VECTOR3_H
+#endif //POMEGRANATE_ENGINE_MATH_VECTOR3_H

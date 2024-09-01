@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_ENTITY_H
-#define POMEGRANATEENGINE_ENTITY_H
+#ifndef POMEGRANATE_ENGINE_ECS_ENTITY_H
+#define POMEGRANATE_ENGINE_ECS_ENTITY_H
 #include<string>
 #include<unordered_map>
 #include<vector>
@@ -85,4 +85,4 @@ struct std::hash<Entity>
         return std::hash<EntityID>()(entity.id);
     }
 };
-#endif //POMEGRANATEENGINE_ENTITY_H
+#endif //POMEGRANATE_ENGINE_ENTITY_H

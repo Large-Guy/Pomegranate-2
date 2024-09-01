@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_ECS_IMPL_H
-#define POMEGRANATEENGINE_ECS_IMPL_H
+#ifndef POMEGRANATE_ENGINE_ECS_CORE_IMPL_H
+#define POMEGRANATE_ENGINE_ECS_CORE_IMPL_H
 
 #include <ecs/ecs.h>
 
@@ -23,4 +23,4 @@ void ECS::each(const std::string& component, std::function<void(Args*)> func)
     each(Component::getComponentID(component), func);
 }
 
-#endif //POMEGRANATEENGINE_ECS_IMPL_H
+#endif //POMEGRANATE_ENGINE_ECS_IMPL_H

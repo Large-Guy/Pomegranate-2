@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_COMMON_H
-#define POMEGRANATEENGINE_COMMON_H
+#ifndef POMEGRANATE_ENGINE_ECS_EXTENSIONS_COMMON_COMMON_H
+#define POMEGRANATE_ENGINE_ECS_EXTENSIONS_COMMON_COMMON_H
 
 #include "transform2d.h"
 #include "transform3d.h"
@@ -16,4 +16,4 @@ void registerCommonComponents() {
     Component::create<Parent>("Parent");
 }
 
-#endif //POMEGRANATEENGINE_COMMON_H
+#endif //POMEGRANATE_ENGINE_ECS_EXTENSIONS_COMMON_COMMON_H

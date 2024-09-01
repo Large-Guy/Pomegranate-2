@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_CORE_H
-#define POMEGRANATEENGINE_CORE_H
+#ifndef POMEGRANATE_ENGINE_ECS_CORE_H
+#define POMEGRANATE_ENGINE_ECS_CORE_H
 #include <unordered_map>
 #include <string>
 #include "ecs_typedefs.h"
@@ -32,4 +32,4 @@ public:
     static void each(const std::string& component, std::function<void(Args*)> func);
 };
 
-#endif //POMEGRANATEENGINE_CORE_H
+#endif //POMEGRANATE_ENGINE_CORE_H

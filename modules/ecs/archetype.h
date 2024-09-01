@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_ARCHETYPE_H
-#define POMEGRANATEENGINE_ARCHETYPE_H
+#ifndef POMEGRANATE_ENGINE_ECS_ARCHETYPE_H
+#define POMEGRANATE_ENGINE_ECS_ARCHETYPE_H
 #include <unordered_set>
 #include <unordered_map>
 #include "ecs_typedefs.h"
@@ -31,4 +31,4 @@ struct Archetype {
     void removeRow(size_t row);
 };
 
-#endif //POMEGRANATEENGINE_ARCHETYPE_H
+#endif //POMEGRANATE_ENGINE_ARCHETYPE_H

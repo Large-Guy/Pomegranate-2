@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_TABLE_H
-#define POMEGRANATEENGINE_TABLE_H
+#ifndef POMEGRANATE_ENGINE_CORE_TABLE_H
+#define POMEGRANATE_ENGINE_CORE_TABLE_H
 #include "serializable.h"
 #include <unordered_map>
 #include <any>
@@ -39,4 +39,4 @@ public:
 };
 
 
-#endif //POMEGRANATEENGINE_TABLE_H
+#endif //POMEGRANATE_ENGINE_TABLE_H

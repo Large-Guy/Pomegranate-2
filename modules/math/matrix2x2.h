@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_MATRIX2X2_H
-#define POMEGRANATEENGINE_MATRIX2X2_H
+#ifndef POMEGRANATE_ENGINE_MATH_MATRIX2X2_H
+#define POMEGRANATE_ENGINE_MATH_MATRIX2X2_H
 #include"vector2.h"
 
 struct Matrix2x2 : public Serializable {
@@ -25,4 +25,4 @@ struct std::hash<Matrix2x2> {
     }
 };
 
-#endif //POMEGRANATEENGINE_MATRIX2X2_H
+#endif //POMEGRANATE_ENGINE_MATH_MATRIX2X2_H

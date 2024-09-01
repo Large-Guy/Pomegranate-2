@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_LIST_H
-#define POMEGRANATEENGINE_LIST_H
+#ifndef POMEGRANATE_ENGINE_CORE_LIST_H
+#define POMEGRANATE_ENGINE_CORE_LIST_H
 #include "serializable.h"
 #include <iterator>
 #include <vector>
@@ -103,4 +103,4 @@ public:
 };
 
 
-#endif //POMEGRANATEENGINE_LIST_H
+#endif //POMEGRANATE_ENGINE_LIST_H

@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_STRING_H
-#define POMEGRANATEENGINE_STRING_H
+#ifndef POMEGRANATE_ENGINE_CORE_STRING_H
+#define POMEGRANATE_ENGINE_CORE_STRING_H
 #include "serializable.h"
 
 //Implemented partially to avoid std::string's SSO optimization
@@ -33,4 +33,4 @@ struct std::hash<String> {
     }
 };
 
-#endif //POMEGRANATEENGINE_STRING_H
+#endif //POMEGRANATE_ENGINE_STRING_H

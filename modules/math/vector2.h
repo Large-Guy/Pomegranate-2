@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_VEC2_H
-#define POMEGRANATEENGINE_VEC2_H
+#ifndef POMEGRANATE_ENGINE_MATH_VEC2_H
+#define POMEGRANATE_ENGINE_MATH_VEC2_H
 #include <core/serializable.h>
 #include <cmath>
 
@@ -49,4 +49,4 @@ struct std::hash<Vector2> {
     }
 };
 
-#endif //POMEGRANATEENGINE_VEC2_H
+#endif //POMEGRANATE_ENGINE_MATH_VEC2_H

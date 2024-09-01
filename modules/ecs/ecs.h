@@ -1,8 +1,8 @@
-#ifndef POMEGRANATEENGINE_ECS_H
-#define POMEGRANATEENGINE_ECS_H
+#ifndef POMEGRANATE_ENGINE_ECS_ECS_H
+#define POMEGRANATE_ENGINE_ECS_ECS_H
 
 #include "entity.h"
 #include "component.h"
 #include "core_impl.h"
 
-#endif //POMEGRANATEENGINE_ECS_H
+#endif //POMEGRANATE_ENGINE_ECS_H

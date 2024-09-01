@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_RANGE_H
-#define POMEGRANATEENGINE_RANGE_H
+#ifndef POMEGRANATE_ENGINE_CORE_RANGE_H
+#define POMEGRANATE_ENGINE_CORE_RANGE_H
 #include <iterator>
 #include <vector>
 #include "list.h"
@@ -27,4 +27,4 @@ public:
     iterator end() const;
 };
 
-#endif //POMEGRANATEENGINE_RANGE_H
+#endif //POMEGRANATE_ENGINE_RANGE_H

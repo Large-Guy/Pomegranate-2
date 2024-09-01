@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_MATRIX4X4_H
-#define POMEGRANATEENGINE_MATRIX4X4_H
+#ifndef POMEGRANATE_ENGINE_MATH_MATRIX4X4_H
+#define POMEGRANATE_ENGINE_MATH_MATRIX4X4_H
 #include "vector4.h"
 #include "vector3.h"
 #include <cmath>
@@ -36,4 +36,4 @@ struct std::hash<Matrix4x4> {
     }
 };
 
-#endif //POMEGRANATEENGINE_MATRIX4X4_H
+#endif //POMEGRANATE_ENGINE_MATH_MATRIX4X4_H

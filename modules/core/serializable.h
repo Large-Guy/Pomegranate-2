@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_SERIALIZABLE_H
-#define POMEGRANATEENGINE_SERIALIZABLE_H
+#ifndef POMEGRANATE_ENGINE_CORE_SERIALIZABLE_H
+#define POMEGRANATE_ENGINE_CORE_SERIALIZABLE_H
 #include<vector>
 #include<cstdlib>
 #include<cstring>
@@ -74,4 +74,4 @@ public:
         a >> &(what); \
     }
 
-#endif //POMEGRANATEENGINE_SERIALIZABLE_H
+#endif //POMEGRANATE_ENGINE_SERIALIZABLE_H

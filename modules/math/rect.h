@@ -1,5 +1,5 @@
-#ifndef POMEGRANATEENGINE_RECT_H
-#define POMEGRANATEENGINE_RECT_H
+#ifndef POMEGRANATE_ENGINE_MATH_RECT_H
+#define POMEGRANATE_ENGINE_MATH_RECT_H
 #include "vector2.h"
 
 struct Rect : public Serializable {
@@ -31,4 +31,4 @@ struct std::hash<Rect> {
     }
 };
 
-#endif //POMEGRANATEENGINE_RECT_H
+#endif //POMEGRANATE_ENGINE_MATH_RECT_H
