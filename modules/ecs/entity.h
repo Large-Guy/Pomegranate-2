@@ -37,8 +37,10 @@ public:
     Entity();
     Entity(EntityID id);
     Entity(const Entity& entity);
+    Entity(const Entity* entity);
 
     Entity& operator=(const Entity& entity);
+    Entity& operator=(const EntityID& entity);
     bool operator==(const Entity& entity) const;
     explicit operator EntityID() const;
     bool exists() const;

@@ -5,5 +5,6 @@
 #include "serializable.h"
 #include "range.h"
 #include "string.h"
+#include "debug.h"
 
 #endif //POMEGRANATE_ENGINE_CORE_CORE_H

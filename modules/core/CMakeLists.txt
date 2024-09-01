@@ -11,6 +11,8 @@ set(POMEGRANATE_CORE_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/table.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/string.h
         ${CMAKE_CURRENT_SOURCE_DIR}/string.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
 )
 
 set(POMEGRANATE_CORE_INCLUDE_DIRS

@@ -192,7 +192,7 @@ void Graphics::init() {
         throw std::runtime_error("Failed to find GPU with Vulkan support!");
     }
 
-    std::cout << "There are: " << deviceCount << " Vulkan supported devices!" << std::endl;
+    Debug::Log::info(String("There are: ") + String((int)deviceCount) + String(" Vulkan supported devices!"));
 
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
@@ -209,7 +209,7 @@ void Graphics::init() {
         throw std::runtime_error("Failed to find GPU!");
     }
 
-    std::cout << "Found device" << std::endl;
+    Debug::Log::pass("Found device!");
 
     //OPTIONAL TODO: Replace with device scoring system
 
@@ -248,7 +248,7 @@ void Graphics::init() {
     vkGetDeviceQueue(logicalDevice, indices.presentFamily.value(),0,&queues.present);
 
     glfwDestroyWindow(window);
-    std::cout << "Vulkan initialized!" << std::endl;
+    Debug::Log::pass("Vulkan Initialized!");
 }
 
 void Graphics::terminate() {

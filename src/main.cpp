@@ -1,9 +1,11 @@
-#include<iostream>
 #include <utility>
 #include <core/core.h>
+#include <graphics/vulkan/graphics.h>
 #include <ecs/ecs.h>
 #include <ecs/extensions/common/common.h>
 #include <math/math.h>
+#include <thread>
+#include <omp.h>
 
 void printEntity(Entity e)
 {
@@ -44,22 +46,7 @@ void printEntity(Entity e)
 }
 
 int main() {
-
-    registerCommonComponents();
-
-    //Create a bunch of entities with random names
-    for(int i = 0; i < 10; i++)
-    {
-        Entity e = Entity::create();
-        e.addComponent<Name>("Name", String("Entity ") + String(i));
-        e.addComponent<Transform2D>("Transform2D");
-    }
-
-    ECS::each<Name>("Name",[&](Name* name, Entity* entity){
-        std::cout << "EntityID: " << entity->id << std::endl;
-        std::cout << name->name << std::endl;
-    });
-
+    Graphics::init();
 
     return 0;
 }

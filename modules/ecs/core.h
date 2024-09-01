@@ -2,8 +2,10 @@
 #define POMEGRANATE_ENGINE_ECS_CORE_H
 #include <unordered_map>
 #include <string>
+#include <core/core.h>
 #include "ecs_typedefs.h"
 #include <functional>
+#include <omp.h>
 
 struct Entity;
 struct EntityRecord;
@@ -33,10 +35,13 @@ public:
     static void each(const std::string& component, std::function<void(Args*)> func);
 
     template <typename Args>
-    static void each(ComponentID component, std::function<void(Args*,Entity*)> func);
+    static void each(ComponentID component, std::function<void(Args*,Entity&)> func);
 
     template <typename Args>
-    static void each(const std::string& component, std::function<void(Args*,Entity*)> func);
+    static void each(const std::string& component, std::function<void(Args*,Entity&)> func);
+
+    static void setThreadCount(int count);
+    static int getMaxThreadCount();
 };
 
 #endif //POMEGRANATE_ENGINE_CORE_H

@@ -13,7 +13,7 @@ PomegranateWindow::PomegranateWindow() {
         //Get error
         const char *description;
         int code = glfwGetError(&description);
-        std::cout << "Error: " << code << " Description: " << description << std::endl;
+        Debug::Log::error(String("Error: ") + String(code) + String(" Description: ") + description);
         throw std::runtime_error("Failed to create GLFW window.");
     }
 

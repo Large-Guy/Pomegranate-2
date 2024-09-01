@@ -314,7 +314,6 @@ Archive& Archive::operator>>(const Serializable* i) {
     size_t size;
     *this >> &size;
     //Print the size
-    std::cout << size << std::endl;
 
     // Get the bytes of the object
     char* bytes = new char[size];

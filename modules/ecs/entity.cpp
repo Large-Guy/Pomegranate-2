@@ -128,14 +128,24 @@ Entity::Entity(const Entity &entity) {
     this->id = entity.id;
 }
 
+Entity::Entity(const Entity *entity) {
+    this->id = entity->id;
+}
+
 Entity& Entity::operator=(const Entity &entity) {
     this->id = entity.id;
+    return *this;
+}
+
+Entity& Entity::operator=(const EntityID &entity) {
+    this->id = entity;
     return *this;
 }
 
 bool Entity::operator==(const Entity &entity) const {
     return id == entity.id;
 }
+
 
 Entity::operator EntityID() const {
     return id;
