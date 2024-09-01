@@ -1,11 +1,12 @@
 #ifndef POMEGRANATEENGINE_NAME_H
 #define POMEGRANATEENGINE_NAME_H
 #include <ecs/ecs.h>
+#include <core/core.h>
 
 struct Name : public Component {
-    std::string name;
+    String name;
     Name();
-    Name(const std::string& name);
+    Name(const String& name);
 };
 
 

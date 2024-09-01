@@ -1,6 +1,6 @@
 #include<iostream>
 #include <utility>
-#include <core/pomegranate.h>
+#include <core/core.h>
 #include <ecs/ecs.h>
 #include <ecs/extensions/common/common.h>
 #include <math/math.h>
@@ -32,9 +32,9 @@ void printEntity(Entity e)
                 auto* f = c->get<float>(property);
                 std::cout << *f;
             }
-            else if(c->getPropertyType(property) == typeid(std::string).hash_code())
+            else if(c->getPropertyType(property) == typeid(String).hash_code())
             {
-                auto* s = c->get<std::string>(property);
+                auto* s = c->get<String>(property);
                 std::cout << *s;
             }
             std::cout << "," << std::endl;
@@ -45,37 +45,13 @@ void printEntity(Entity e)
 
 int main() {
 
-    ComponentID NAME = Component::create<std::string>("NAME");
-
     registerCommonComponents();
-    Entity player = Entity::create();
-    player.addComponent<Name>("Name","Player Player Player Player Player");
-    player.addComponent<Transform3D>("Transform3D")->position = {1,2,3};
 
-    Entity camera = Entity::create();
-    camera.addComponent<Name>("Name","Camera Camera Camera Camera Camera Camera");
-    //camera.addComponent<Transform3D>("Transform3D")->position = {0,5,0};
+    Entity e = Entity::create();
+    e.addComponent<Name>("Name", "Entity");
 
-    //Hierarchy::addChildTo(player,camera);
-
-    auto* a = player.getComponent<Name>("Name");
-    auto* b = camera.getComponent<Name>("Name");
-
-    if(a == b)
-    {
-        std::cout << "A is in the same memory location as B" << std::endl;
-    }
-
-    if(a->data() == b->data())
-    {
-        std::cout << "A string data is in the same memory location as B" << std::endl;
-    }
-
-    std::cout << "----------Printing player!----------" << std::endl;
-    printEntity(player);
-    std::cout << "----------Printing camera!----------" << std::endl;
-    printEntity(camera);
-
+    std::cout << "Entity: " << e.id << std::endl;
+    printEntity(e);
 
     return 0;
 }
