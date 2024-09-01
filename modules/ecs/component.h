@@ -44,6 +44,15 @@ public:
     }
     size_t getPropertyType(const std::string& name);
     std::vector<std::string> properties();
+
+    static ComponentID create(const std::string& component,size_t size);
+    template<typename T>
+    static ComponentID create(const std::string& component)
+    {
+        return create(component, sizeof(T));
+    }
+    static ComponentID getComponentID(const std::string& component);
+    static std::string getComponentName(ComponentID component);
 };
 
 #endif //POMEGRANATEENGINE_COMPONENT_H

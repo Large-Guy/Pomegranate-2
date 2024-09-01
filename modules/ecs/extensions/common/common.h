@@ -8,12 +8,12 @@
 #include "hierarchy.h"
 
 void registerCommonComponents() {
-    ECS::registerComponent<Transform2D>("Transform2D");
-    ECS::registerComponent<Transform3D>("Transform3D");
-    ECS::registerComponent<Name>("Name");
-    ECS::registerComponent<Color>("Color");
-    ECS::registerComponent<Children>("Children");
-    ECS::registerComponent<Parent>("Parent");
+    Component::create<Transform2D>("Transform2D");
+    Component::create<Transform3D>("Transform3D");
+    Component::create<Name>("Name");
+    Component::create<Color>("Color");
+    Component::create<Children>("Children");
+    Component::create<Parent>("Parent");
 }
 
 #endif //POMEGRANATEENGINE_COMMON_H

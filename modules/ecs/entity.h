@@ -20,6 +20,8 @@ struct EntityRecord
 class Entity
 {
 public:
+    static Entity create();
+
     //Static
     static void moveEntityArchetype(EntityID entity, Archetype* new_archetype);
     static bool hasComponent(EntityID entity, ComponentID component);

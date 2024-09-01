@@ -32,29 +32,3 @@ bool SetEqual::operator()(const std::unordered_set<EntityID>& set1, const std::u
 
     return true;
 }
-
-ComponentID ECS::registerComponent(const std::string& component, size_t size) {
-    ComponentID id = component_sizes.size();
-    component_sizes[id] = size;
-    component_names[component] = id;
-    return id;
-}
-
-ComponentID ECS::getComponentID(const std::string &component) {
-    if(component_names.find(component) == component_names.end())
-    {
-        throw std::runtime_error("Component \"" + component + "\" not found!");
-    }
-    return component_names[component];
-}
-
-std::string ECS::getComponentName(ComponentID component) {
-    for(auto& pair : component_names)
-    {
-        if(pair.second == component)
-        {
-            return pair.first;
-        }
-    }
-    throw std::runtime_error("Component with ID " + std::to_string(component) + " not found!");
-}

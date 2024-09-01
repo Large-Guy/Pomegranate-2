@@ -2,6 +2,13 @@
 
 #include <utility>
 
+Entity Entity::create() {
+    Entity entity;
+    entity.id = ECS::entity_index.size() + 1;
+    ECS::entity_index[entity.id] = new EntityRecord{Archetype::getArchetype({}),0};
+    return entity;
+}
+
 EntityRecord::EntityRecord(Archetype *archetype, size_t row) {
     this->archetype = archetype;
     this->row = row;
@@ -22,7 +29,6 @@ void Entity::moveEntityArchetype(EntityID entity, Archetype *new_archetype) {
     for(auto& list : new_archetype->components)
     {
         row = list.add();
-        std::cout << "Entity " << entity << " moved to row " << row << "\n";
     }
     for(auto& list : record->archetype->components)
     {
@@ -35,6 +41,9 @@ void Entity::moveEntityArchetype(EntityID entity, Archetype *new_archetype) {
         void* new_data_loc = new_list.get(row);
         memcpy(new_data_loc,data_loc,list.element_size);
         list.remove(record->row);
+        std::string old_data = *(std::string*)data_loc;
+        std::string new_data = *(std::string*)new_data_loc;
+        std::cout << "Moved " << old_data << " to " << new_data << std::endl;
     }
     record->archetype = new_archetype;
     record->row = row;
@@ -52,7 +61,7 @@ bool Entity::hasComponent(EntityID entity, ComponentID component) {
 }
 
 bool Entity::hasComponent(EntityID entity, const std::string &component) {
-    return hasComponent(entity,ECS::getComponentID(component));
+    return hasComponent(entity,Component::getComponentID(component));
 }
 
 void* Entity::getComponent(EntityID entity, ComponentID component) {
@@ -84,11 +93,11 @@ void Entity::removeComponent(EntityID entity, ComponentID component) {
 }
 
 void Entity::removeComponent(EntityID entity, const std::string &component) {
-    removeComponent(entity,ECS::getComponentID(component));
+    removeComponent(entity,Component::getComponentID(component));
 }
 
 void* Entity::getComponent(EntityID entity, const std::string &component) {
-    return getComponent(entity,ECS::getComponentID(component));
+    return getComponent(entity,Component::getComponentID(component));
 }
 
 void* Entity::addComponent(EntityID entity, ComponentID component) {
@@ -104,12 +113,11 @@ void* Entity::addComponent(EntityID entity, ComponentID component) {
 }
 
 void* Entity::addComponent(EntityID entity, const std::string &component) {
-    return addComponent(entity,ECS::getComponentID(component));
+    return addComponent(entity,Component::getComponentID(component));
 }
 
 Entity::Entity() {
-    this->id = ECS::entity_index.size() + 1;
-    ECS::entity_index[this->id] = new EntityRecord{Archetype::getArchetype({}),0};
+    this->id = 0;
 }
 
 Entity::Entity(EntityID id) {
@@ -142,7 +150,7 @@ bool Entity::hasComponent(ComponentID component) const {
 }
 
 bool Entity::hasComponent(const std::string &component) const {
-    return hasComponent(id,ECS::getComponentID(component));
+    return hasComponent(id,Component::getComponentID(component));
 }
 
 void *Entity::getComponent(ComponentID component) const {
@@ -150,7 +158,7 @@ void *Entity::getComponent(ComponentID component) const {
 }
 
 void *Entity::getComponent(const std::string &component) const {
-    return getComponent(id,ECS::getComponentID(component));
+    return getComponent(id,Component::getComponentID(component));
 }
 
 void* Entity::addComponent(ComponentID component) const {
@@ -158,7 +166,7 @@ void* Entity::addComponent(ComponentID component) const {
 }
 
 void* Entity::addComponent(const std::string &component) const {
-    return addComponent(id,ECS::getComponentID(component));
+    return addComponent(id,Component::getComponentID(component));
 }
 
 void Entity::removeComponent(ComponentID component) const {
@@ -166,7 +174,7 @@ void Entity::removeComponent(ComponentID component) const {
 }
 
 void Entity::removeComponent(const std::string &component) const {
-    removeComponent(id,ECS::getComponentID(component));
+    removeComponent(id,Component::getComponentID(component));
 }
 
 Type Entity::getType() const {

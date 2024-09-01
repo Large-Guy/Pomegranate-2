@@ -25,12 +25,6 @@ public:
     static std::unordered_map<ComponentID, size_t> component_sizes;
     static std::unordered_map<std::string, ComponentID> component_names;
 
-    static ComponentID registerComponent(const std::string& component,size_t size);
-    template<typename T>
-    static ComponentID registerComponent(const std::string& component);
-    static ComponentID getComponentID(const std::string& component);
-    static std::string getComponentName(ComponentID component);
-
     template <typename Args>
     static void each(ComponentID component, std::function<void(Args*)> func);
 

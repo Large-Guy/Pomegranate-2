@@ -61,6 +61,8 @@ void ComponentList::remove(size_t i) {
     }
     occupied[i] = false;
     count--;
+    //0 the memory
+    memset((char*)elements + element_size * i,0,element_size);
 }
 
 bool ComponentList::has(size_t i) const {
@@ -80,4 +82,30 @@ std::vector<std::string> Component::properties() {
         keys.push_back(x.first);
     }
     return keys;
+}
+
+ComponentID Component::create(const std::string& component, size_t size) {
+    ComponentID id = ECS::component_sizes.size();
+    ECS::component_sizes[id] = size;
+    ECS::component_names[component] = id;
+    return id;
+}
+
+ComponentID Component::getComponentID(const std::string &component) {
+    if(ECS::component_names.find(component) == ECS::component_names.end())
+    {
+        throw std::runtime_error("Component \"" + component + "\" not found!");
+    }
+    return ECS::component_names[component];
+}
+
+std::string Component::getComponentName(ComponentID component) {
+    for(auto& pair : ECS::component_names)
+    {
+        if(pair.second == component)
+        {
+            return pair.first;
+        }
+    }
+    throw std::runtime_error("Component with ID " + std::to_string(component) + " not found!");
 }
