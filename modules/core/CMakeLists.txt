@@ -1,8 +1,10 @@
 set(POMEGRANATE_CORE_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/serializable.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/serializable.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/resource.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/resource.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/asset.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/asset.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/asset_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/asset_manager.h
         ${CMAKE_CURRENT_SOURCE_DIR}/range.h
         ${CMAKE_CURRENT_SOURCE_DIR}/range.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/list.h
@@ -15,6 +17,8 @@ set(POMEGRANATE_CORE_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/file.h
         ${CMAKE_CURRENT_SOURCE_DIR}/file.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/directory.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/directory.cpp
 )
 
 set(POMEGRANATE_CORE_INCLUDE_DIRS

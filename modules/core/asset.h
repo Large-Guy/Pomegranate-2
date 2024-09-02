@@ -3,7 +3,7 @@
 #include<string>
 #include<core/serializable.h>
 
-class Resource : public Serializable {
+class Asset : public Serializable {
 private:
     std::string _name = "";
     std::string _path = "";
@@ -11,7 +11,7 @@ private:
     bool _runtime = false;
     static uint resourceCount;
 public:
-    explicit Resource(std::string path = "", std::string name = "");
+    explicit Asset(std::string path = "", std::string name = "");
     [[nodiscard]] std::string getName() const;
     [[nodiscard]] std::string getPath() const;
     [[nodiscard]] uint getId() const;

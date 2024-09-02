@@ -16,6 +16,7 @@ public:
     File();
     File(const String& path);
     ~File();
+    void open();
     void open(const String& path);
     String path() const;
     String name() const;
@@ -34,6 +35,7 @@ public:
     bool exists();
     String& operator[](int index);
     void init();
+    void remove();
     void close();
 };
 

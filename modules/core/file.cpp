@@ -18,7 +18,18 @@ File::File(const String& path) {
     this->_parentDirectory = String::merge(parts,"/");
     this->_content = "";
     this->_lines = List<String>();
-    //Set this->_file fstream
+}
+
+File::~File() {
+    this->close();
+}
+
+void File::open() {
+    List<String> parts = this->_path.split('/');
+    this->_name = parts.last();
+    parts.remove(parts.size() - 1);
+    this->_parentDirectory = String::merge(parts,"/");
+    this->_file.open(this->_path.data());
 
     if (exists()) {
         std::ifstream file(this->_path.data());
@@ -29,12 +40,6 @@ File::File(const String& path) {
         }
         file.close();
     }
-
-    this->_file.open(this->_path.data());
-}
-
-File::~File() {
-    this->close();
 }
 
 void File::open(const String &path) {
@@ -125,8 +130,16 @@ String& File::operator[](int index) {
 
 void File::init() {
     // Used to create a new file
-    std::ofstream file(this->_path.data());
-    file.close();
+    if (!exists()) {
+        this->_file.open(this->_path.data(), std::ios::out);
+        this->_file.close();
+    }
+}
+
+void File::remove() {
+    this->_file.close();
+    //Delete the file
+    std::remove(this->_path.data());
 }
 
 void File::close() {
