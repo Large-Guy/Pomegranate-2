@@ -6,5 +6,6 @@
 #include "range.h"
 #include "string.h"
 #include "debug.h"
+#include "file.h"
 
 #endif //POMEGRANATE_ENGINE_CORE_CORE_H

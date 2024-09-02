@@ -25,6 +25,10 @@ public:
     {
         this->_data = other._data;
     }
+    ~List()
+    {
+        this->_data.clear();
+    }
     List<T>& operator=(const List<T>& other)
     {
         this->_data = other._data;
@@ -46,6 +50,10 @@ public:
     {
         this->_data.push_back(value);
     }
+    void insert(size_t index, const T& value)
+    {
+        this->_data.insert(this->_data.begin() + index, value);
+    }
     void remove(size_t index)
     {
         this->_data.erase(this->_data.begin() + index);
@@ -58,9 +66,29 @@ public:
     {
         this->_data.resize(size);
     }
+    T& last()
+    {
+        return this->_data.back();
+    }
+    T& first()
+    {
+        return this->_data.front();
+    }
+    T& at(size_t index)
+    {
+        return this->_data.at(index);
+    }
     T* data()
     {
         return this->_data.data();
+    }
+    typename std::vector<T>::iterator begin()
+    {
+        return this->_data.begin();
+    }
+    typename std::vector<T>::iterator end()
+    {
+        return this->_data.end();
     }
     const T* data() const
     {
@@ -93,7 +121,7 @@ public:
         }
     }
     void deserialize(Archive& ar) override {
-        size_t size;
+        size_t size = 0;
         ar >> &size;
         this->_data.resize(size);
         for (T &value: this->_data) {

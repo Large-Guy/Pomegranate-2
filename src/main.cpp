@@ -47,6 +47,9 @@ void printEntity(Entity e)
 
 int main() {
     Graphics::init();
-
+    File file;
+    file.open("assets/shaders/shader.frag");
+    std::cout << file.read();
+    file.close();
     return 0;
 }

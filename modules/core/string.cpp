@@ -1,95 +1,105 @@
 #include "string.h"
+#include <cstring>
+#include <iostream>
 
 String::String() {
-    this->value = nullptr;
-    this->length = 0;
+    this->_data = nullptr;
+    this->_length = 0;
 }
 
 String::String(const char* value) {
-    this->length = strlen(value);
-    this->value = new char[this->length];
-    strcpy(this->value, value);
+    this->_length = strlen(value);
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    strcpy(this->_data, value);
+}
+
+String::String(const char* value, size_t length) {
+    this->_length = length;
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    strncpy(this->_data, value, length);
+    this->_data[this->_length] = '\0';
 }
 
 String::String(int value) {
-    this->length = snprintf(nullptr, 0, "%d", value);
-    this->value = new char[this->length];
-    sprintf(this->value, "%d", value);
+    this->_length = snprintf(nullptr, 0, "%d", value);
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    sprintf(this->_data, "%d", value);
 }
 
 String::String(float value) {
-    this->length = snprintf(nullptr, 0, "%f", value);
-    this->value = new char[this->length];
-    sprintf(this->value, "%f", value);
+    this->_length = snprintf(nullptr, 0, "%f", value);
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    sprintf(this->_data, "%f", value);
 }
 
 String::String(double value) {
-    this->length = snprintf(nullptr, 0, "%f", value);
-    this->value = new char[this->length];
-    sprintf(this->value, "%f", value);
+    this->_length = snprintf(nullptr, 0, "%f", value);
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    sprintf(this->_data, "%f", value);
 }
 
 String::String(bool value) {
-    this->length = snprintf(nullptr, 0, "%d", value);
-    this->value = new char[this->length];
-    sprintf(this->value, "%d", value);
+    this->_length = snprintf(nullptr, 0, "%d", value);
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    sprintf(this->_data, "%d", value);
 }
 
 String::String(const String& other) {
-    this->length = other.length;
-    this->value = new char[this->length];
-    strcpy(this->value, other.value);
+    this->_length = other._length;
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    strcpy(this->_data, other._data);
 }
 
 String::~String() {
-    delete[] this->value;
+    delete[] this->_data;
 }
 
 String::operator const char*() const {
-    return this->value;
+    return this->_data;
 }
 
 std::ostream& operator<<(std::ostream& os, const String& string) {
-    os << string.value;
+    os << string._data;
     return os;
 }
 
 String& String::operator=(const String& other) {
-    if(this == &other) {
+    if (this == &other) {
         return *this;
     }
-    delete[] this->value;
-    this->length = other.length;
-    this->value = new char[this->length];
-    strcpy(this->value, other.value);
+    delete[] this->_data;
+    this->_length = other._length;
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    strcpy(this->_data, other._data);
     return *this;
 }
 
 String& String::operator=(const char* other) {
-    delete[] this->value;
-    this->length = strlen(other);
-    this->value = new char[this->length];
-    strcpy(this->value, other);
+    delete[] this->_data;
+    this->_length = strlen(other);
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    strcpy(this->_data, other);
     return *this;
 }
 
 String& String::operator+(const String& other) {
-    char* newValue = new char[this->length + other.length];
-    strcpy(newValue, this->value);
-    strcat(newValue, other.value);
-    delete[] this->value;
-    this->value = newValue;
-    this->length += other.length;
+    char* newValue = new char[this->_length + other._length + 1]; // +1 for null terminator
+    strcpy(newValue, this->_data);
+    strcat(newValue, other._data);
+    delete[] this->_data;
+    this->_data = newValue;
+    this->_length += other._length;
     return *this;
 }
 
 String& String::operator+(const char* other) {
-    char* newValue = new char[this->length + strlen(other)];
-    strcpy(newValue, this->value);
+    size_t otherLength = strlen(other);
+    char* newValue = new char[this->_length + otherLength + 1]; // +1 for null terminator
+    strcpy(newValue, this->_data);
     strcat(newValue, other);
-    delete[] this->value;
-    this->value = newValue;
-    this->length += strlen(other);
+    delete[] this->_data;
+    this->_data = newValue;
+    this->_length += otherLength;
     return *this;
 }
 
@@ -101,13 +111,29 @@ String& String::operator+=(const char* other) {
     return *this + other;
 }
 
+String& String::operator+(char other) {
+    char* newValue = new char[this->_length + 2]; // +1 for char and +1 for null terminator
+    strcpy(newValue, this->_data);
+    newValue[this->_length] = other;
+    newValue[this->_length + 1] = '\0';
+    delete[] this->_data;
+    this->_data = newValue;
+    this->_length++;
+    return *this;
+}
+
+String& String::operator+=(char other) {
+    return *this + other;
+}
+
 String& operator+(const char* lhs, String& rhs) {
-    char* newValue = new char[strlen(lhs) + rhs.length];
+    size_t lhsLength = strlen(lhs);
+    char* newValue = new char[lhsLength + rhs._length + 1]; // +1 for null terminator
     strcpy(newValue, lhs);
-    strcat(newValue, rhs.value);
-    delete[] rhs.value;
-    rhs.value = newValue;
-    rhs.length += strlen(lhs);
+    strcat(newValue, rhs._data);
+    delete[] rhs._data;
+    rhs._data = newValue;
+    rhs._length += lhsLength;
     return rhs;
 }
 
@@ -116,32 +142,91 @@ String& operator+=(const char* lhs, String& rhs) {
 }
 
 bool String::operator==(const String& other) const {
-    return strcmp(this->value, other.value) == 0;
+    return strcmp(this->_data, other._data) == 0;
 }
 
 bool String::operator==(const char* other) const {
-    return strcmp(this->value, other) == 0;
+    return strcmp(this->_data, other) == 0;
 }
 
 bool String::operator!=(const String& other) const {
-    return strcmp(this->value, other.value) != 0;
+    return strcmp(this->_data, other._data) != 0;
 }
 
 bool String::operator!=(const char* other) const {
-    return strcmp(this->value, other) != 0;
+    return strcmp(this->_data, other) != 0;
+}
+
+char& String::operator[](size_t index) const {
+    return this->_data[index];
+}
+
+List<String> String::split(char delimiter) const {
+    List<String> result = List<String>();
+    const char* start = _data;
+    const char* current = _data;
+
+    while (*current != '\0') {
+        if (*current == delimiter) {
+            result.add(String(start, current - start));
+            start = current + 1;
+        }
+        ++current;
+    }
+
+    // Add the last segment after the last delimiter
+    if (start != current) {
+        result.add(String(start, current - start));
+    }
+
+    return result;
+}
+
+String String::substring(size_t start, size_t end) const {
+    return String(_data + start, end - start);
+}
+
+char* String::data() const {
+    return this->_data;
+}
+
+void String::reserve(size_t size) {
+    char* newData = new char[size + 1];
+    strcpy(newData, this->_data);
+    delete[] this->_data;
+    this->_data = newData;
+    this->_length = size;
+    this->_data[this->_length] = '\0'; // Ensure null termination
+}
+
+size_t String::length() const {
+    return this->_length;
+}
+
+String String::merge(const List<String>& strings, const String& delimiter) {
+    String result = "";
+    for (size_t i = 0; i < strings.size(); i++) {
+        result += strings[i];
+        if (i < strings.size() - 1) {
+            result += delimiter;
+        }
+    }
+    return result;
 }
 
 void String::serialize(Archive &a) const {
-    a << this->length;
-    for(size_t i = 0; i < this->length; i++) {
-        a << this->value[i];
+    a << this->_length;
+    for (size_t i = 0; i < this->_length; i++) {
+        a << this->_data[i];
     }
 }
 
 void String::deserialize(Archive &a) {
-    a >> &this->length;
-    this->value = new char[this->length];
-    for(size_t i = 0; i < this->length; i++) {
-        a >> &this->value[i];
+    a >> &this->_length;
+    delete[] this->_data; // Delete existing data before allocating new
+    this->_data = new char[this->_length + 1]; // +1 for null terminator
+    for (size_t i = 0; i < this->_length; i++) {
+        a >> &this->_data[i];
     }
+    this->_data[this->_length] = '\0'; // Ensure null termination
 }

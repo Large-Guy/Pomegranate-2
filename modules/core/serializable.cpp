@@ -242,7 +242,7 @@ Archive& Archive::operator>>(const ushort* i){
 }
 
 Archive& Archive::operator>>(const char* i){
-    //Copy data to i
+    //Copy _data to i
     *(char*)i = _data[0];
     // Remove the bytes from the _data
     _data.erase(_data.begin(), _data.begin() + sizeof(char));
@@ -250,7 +250,7 @@ Archive& Archive::operator>>(const char* i){
 }
 
 Archive& Archive::operator>>(const char** i){
-    //Copy data to i
+    //Copy _data to i
     *(char*)i = _data[0];
     // Remove the bytes from the _data
     _data.erase(_data.begin(), _data.begin() + sizeof(char));
