@@ -1,5 +1,3 @@
-option(ENABLE_ECS_EXTENSIONS "Enable ECS extensions" ON)
-
 set(POMEGRANATE_ECS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/entity.h
@@ -11,21 +9,6 @@ set(POMEGRANATE_ECS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/core.h
         ${CMAKE_CURRENT_SOURCE_DIR}/core.cpp
 )
-
-if(ENABLE_ECS_EXTENSIONS)
-set(POMEGRANATE_ECS_SOURCES ${POMEGRANATE_ECS_SOURCES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/transform2d.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/transform2d.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/transform3d.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/transform3d.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/name.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/name.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/color.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/color.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/hierarchy.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/extensions/common/hierarchy.h
-)
-endif ()
 
 set(POMEGRANATE_ECS_INCLUDE_DIRS
         ../

@@ -15,6 +15,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/math)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/ecs)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/events)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/graphics/vulkan)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/ecs/extensions/common)
 
 set(SOURCE_FILES
     ${SOURCE_DIR}/main.cpp
@@ -32,6 +33,7 @@ target_link_libraries(PomegranateEngine PomegranateMath)
 target_link_libraries(PomegranateEngine PomegranateECS)
 target_link_libraries(PomegranateEngine PomegranateEvents)
 target_link_libraries(PomegranateEngine PomegranateVulkan)
+target_link_libraries(PomegranateEngine PomegranateECSExtensionsCommon)
 
 # Set the output directory for the build
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

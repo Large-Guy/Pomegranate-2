@@ -82,17 +82,34 @@ String& String::operator=(const char* other) {
     return *this;
 }
 
-String& String::operator+(const String& other) {
-    char* newValue = new char[this->_length + other._length + 1]; // +1 for null terminator
+String String::operator+(const String& other) {
+    size_t otherLength = other._length;
+    char* newValue = new char[this->_length + otherLength + 1]; // +1 for null terminator
+    strcpy(newValue, this->_data);
+    strcat(newValue, other._data);
+    return String(newValue);
+}
+
+String String::operator+(const char* other) {
+    size_t otherLength = strlen(other);
+    char* newValue = new char[this->_length + otherLength + 1]; // +1 for null terminator
+    strcpy(newValue, this->_data);
+    strcat(newValue, other);
+    return String(newValue);
+}
+
+String& String::operator+=(const String& other) {
+    size_t otherLength = other._length;
+    char* newValue = new char[this->_length + otherLength + 1]; // +1 for null terminator
     strcpy(newValue, this->_data);
     strcat(newValue, other._data);
     delete[] this->_data;
     this->_data = newValue;
-    this->_length += other._length;
+    this->_length += otherLength;
     return *this;
 }
 
-String& String::operator+(const char* other) {
+String& String::operator+=(const char* other) {
     size_t otherLength = strlen(other);
     char* newValue = new char[this->_length + otherLength + 1]; // +1 for null terminator
     strcpy(newValue, this->_data);
@@ -101,14 +118,6 @@ String& String::operator+(const char* other) {
     this->_data = newValue;
     this->_length += otherLength;
     return *this;
-}
-
-String& String::operator+=(const String& other) {
-    return *this + other;
-}
-
-String& String::operator+=(const char* other) {
-    return *this + other;
 }
 
 String& String::operator+(char other) {

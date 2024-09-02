@@ -11,6 +11,6 @@ typedef unsigned int ArchetypeID;
 typedef unsigned int GroupID;
 typedef std::unordered_set<ComponentID> Type;
 typedef std::unordered_map<ArchetypeID, ArchetypeRecord> ArchetypeMap;
-
+#define NULL_ENTITY (uint32_t)0
 
 #endif //POMEGRANATE_ENGINE_ECS_TYPEDEFS_H

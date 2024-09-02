@@ -23,8 +23,8 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const String& string);
     String& operator=(const String& other);
     String& operator=(const char* other);
-    String& operator+(const String& other);
-    String& operator+(const char* other);
+    String operator+(const String& other);
+    String operator+(const char* other);
     String& operator+=(const String& other);
     String& operator+=(const char* other);
     String& operator+(char other);
