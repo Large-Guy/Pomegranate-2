@@ -3,6 +3,7 @@
 #include "directory.h"
 #include "file.h"
 #include "asset.h"
+#include "debug.h"
 
 class AssetManager {
 private:

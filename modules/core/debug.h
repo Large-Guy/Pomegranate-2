@@ -12,6 +12,81 @@ public:
         static void pass(String message);
         static void fail(String message);
     };
+    class AssertIf {
+    public:
+        static inline void isTrue(bool condition, const String& message) {
+            if (condition) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isFalse(bool condition, const String& message) {
+            if (!condition) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isNull(void* ptr, const String& message) {
+            if (ptr == nullptr) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isNotNull(void* ptr, const String& message) {
+            if (ptr != nullptr) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isZero(int value, const String& message) {
+            if (value == 0) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isNotZero(int value, const String& message) {
+            if (value != 0) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isEqual(int a, int b, const String& message) {
+            if (a == b) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isNotEqual(int a, int b, const String& message) {
+            if (a != b) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isLessThan(int a, int b, const String& message) {
+            if (a < b) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isLessThanOrEqual(int a, int b, const String& message) {
+            if (a <= b) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isGreaterThan(int a, int b, const String& message) {
+            if (a > b) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+        static inline void isGreaterThanOrEqual(int a, int b, const String& message) {
+            if (a >= b) {
+                Log::fail(message);
+                exit(1);
+            }
+        }
+    };
 };
 
 
