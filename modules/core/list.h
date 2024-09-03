@@ -11,7 +11,7 @@ private:
 public:
     List()
     {
-        this->_data = {};
+
     }
     explicit List(size_t size)
     {

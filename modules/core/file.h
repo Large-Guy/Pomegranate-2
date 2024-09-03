@@ -3,14 +3,11 @@
 #include "string.h"
 #include <fstream>
 
-class File {
+struct File : public Serializable {
 private:
     String _path;
-    String _name;
-    String _extension;
-    String _parentDirectory;
-    String _content;
-    List<String> _lines;
+    List<List<char>> _lines;
+    List<char> buffer;
     std::fstream _file;
 public:
     File();
@@ -18,25 +15,12 @@ public:
     ~File();
     File& open();
     File& open(const String& path);
-    String path() const;
-    String name() const;
-    String extension() const;
-    String parentDirectory() const;
-    char* content() const;
-    String read();
-    String readLine(int line);
-    List<String> readLines();
-    uint lineCount();
-    void write(const String& content);
-    void writeLine(int line, const String& content);
-    void insertLine(const String& content, int line);
-    void append(const String& content);
-    void commit();
+    File& close();
     bool exists();
-    String& operator[](int index);
-    void init();
-    void remove();
-    void close();
+    String readTextLine();
+    String readText();
+    List<List<char>>& readBufferLine();
+    List<char>& readBuffer();
 };
 
 

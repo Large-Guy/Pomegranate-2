@@ -24,11 +24,11 @@ void Hierarchy::addChildTo(Entity parent, Entity child) {
 void Hierarchy::removeChildFrom(Entity parent, Entity child) {
     auto* children = parent.getComponent<Children>("Children");
     children->children.erase(child);
-    child.getComponent<Parent>("Parent")->parent = NULL;
+    child.getComponent<Parent>("Parent")->parent = NULL_ENTITY;
 }
 
 Parent::Parent() {
-    this->parent = NULL;
+    this->parent = NULL_ENTITY;
     property<Entity>("parent", &this->parent);
 }
 
@@ -38,7 +38,7 @@ void Hierarchy::orphan(Entity entity) {
         auto* children = parent->parent.getComponent<Children>("Children");
         children->children.erase(entity);
     }
-    parent->parent = NULL;
+    parent->parent = NULL_ENTITY;
 }
 
 void Hierarchy::setParentOn(Entity entity, Entity new_parent) {

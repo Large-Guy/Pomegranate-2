@@ -1,6 +1,6 @@
 #ifndef POMEGRANATE_ENGINE_EVENTS_EVENT_TYPEDEFS_H
 #define POMEGRANATE_ENGINE_EVENTS_EVENT_TYPEDEFS_H
 
-typedef unsigned int event_id;
+typedef unsigned int EventID;
 
 #endif //POMEGRANATE_ENGINE_EVENT_TYPEDEFS_H

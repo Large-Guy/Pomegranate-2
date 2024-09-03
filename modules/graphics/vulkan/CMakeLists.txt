@@ -1,11 +1,9 @@
 set(POMEGRANATE_GRAPHICS_VULKAN_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/graphics.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/core.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/core.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/window.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/core.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/window.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/shader.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/shader.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/window.cpp
 )
 
 set(POMEGRANATE_GRAPHICS_VULKAN_INCLUDE_DIRS

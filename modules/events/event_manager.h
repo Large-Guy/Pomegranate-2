@@ -46,24 +46,24 @@ public:
 
 class Event {
 private:
-    static std::unordered_map<event_id, std::vector<EventFunction>> _events;
-    static std::unordered_map<std::string, event_id> _eventIndex;
-    static event_id _eventCounter;
+    static std::unordered_map<EventID, std::vector<EventFunction>> _events;
+    static std::unordered_map<std::string, EventID> _eventIndex;
+    static EventID _eventCounter;
 
-    static event_id createEvent();
+    static EventID createEvent();
 public:
-    static void on(event_id id, EventFunction callback);
+    static void on(EventID id, EventFunction callback);
     static void on(const std::string& name, EventFunction callback);
-    template <typename... Args> static void call(event_id id, Args... args) {
+    template <typename... Args> static void call(EventID id, Args... args) {
         for(auto& f : _events[id]) {
             f.call(args...);
         }
     }
     template <typename... Args> static void call(const std::string& name, Args... args) {
-        event_id id = getEventId(name);
+        EventID id = getEventId(name);
         call(id,args...);
     };
-    static event_id getEventId(const std::string& name);
+    static EventID getEventId(const std::string& name);
 };
 
 
