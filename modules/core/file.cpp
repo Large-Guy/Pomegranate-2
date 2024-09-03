@@ -24,7 +24,7 @@ File::~File() {
     this->close();
 }
 
-void File::open() {
+File& File::open() {
     List<String> parts = this->_path.split('/');
     this->_name = parts.last();
     parts.remove(parts.size() - 1);
@@ -35,14 +35,15 @@ void File::open() {
         std::ifstream file(this->_path.data());
         std::string line;
         while (std::getline(file, line)) {
-            this->_content += String(line.c_str()) + '\n';
+            this->_content += String(line.c_str(),line.size()) + '\n';
             this->_lines.add(line.c_str());
         }
         file.close();
     }
+    return *this;
 }
 
-void File::open(const String &path) {
+File& File::open(const String &path) {
     this->_path = path;
     List<String> parts = path.split('/');
     this->_name = parts.last();
@@ -59,6 +60,7 @@ void File::open(const String &path) {
         }
         file.close();
     }
+    return *this;
 }
 
 String File::path() const {

@@ -51,11 +51,13 @@ public:
         std::vector<VkPresentModeKHR> presentModes;
     };
 
+    static std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
     static VkInstance instance;
     static VkPhysicalDevice physicalDevice;
     static VkDevice logicalDevice;
     static Queues queues;
     static std::vector<const char*> deviceExtensions;
+    static std::vector<const char*> validationLayers;
 
     static bool isDeviceValid(VkPhysicalDevice device, VkSurfaceKHR surface);
     static bool hasExtensionSupport(VkPhysicalDevice device);
@@ -64,6 +66,8 @@ public:
     static VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
     static VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
     static VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
+    static bool hasValidationLayerSupport();
+    static std::vector<const char*> getRequiredExtensions();
 public:
     static const char* getAPI();
     static void init();

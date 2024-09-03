@@ -1,5 +1,6 @@
 #include "core.h"
 
+std::vector<VkPipelineShaderStageCreateInfo> Graphics::shaderStages = {};
 VkInstance Graphics::instance = VK_NULL_HANDLE;
 VkPhysicalDevice Graphics::physicalDevice = VK_NULL_HANDLE;
 VkDevice Graphics::logicalDevice = VK_NULL_HANDLE;
@@ -7,6 +8,10 @@ Graphics::Queues Graphics::queues;
 std::vector<const char*> Graphics::deviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
+std::vector<const char*> Graphics::validationLayers = {
+        "VK_LAYER_KHRONOS_validation"
+};
+
 
 bool Graphics::QueueFamilies::isComplete() const {
     return graphicsFamily.has_value() && presentFamily.has_value();
@@ -138,6 +143,47 @@ bool Graphics::hasExtensionSupport(VkPhysicalDevice device) {
     return requiredExtensions.empty();
 }
 
+bool Graphics::hasValidationLayerSupport() {
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    for(const char* layerName : validationLayers)
+    {
+        bool layerFound = false;
+
+        for(const auto& layerProperties : availableLayers)
+        {
+            if(strcmp(layerName, layerProperties.layerName) == 0)
+            {
+                layerFound = true;
+                break;
+            }
+        }
+
+        if(!layerFound)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+std::vector<const char*> Graphics::getRequiredExtensions() {
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions;
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+    extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
+    return extensions;
+}
+
 void Graphics::init() {
     //Initialize GLFW
 
@@ -238,6 +284,14 @@ void Graphics::init() {
     deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
     deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
     deviceCreateInfo.enabledLayerCount = 0; //TODO: Implement validation layers
+
+    if(!hasValidationLayerSupport())
+    {
+        throw std::runtime_error("validation layers requested, but not available!");
+    }
+
+    deviceCreateInfo.enabledLayerCount = validationLayers.size();
+    deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
 
     if(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice) != VK_SUCCESS)
     {

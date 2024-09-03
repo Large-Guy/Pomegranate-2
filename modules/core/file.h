@@ -16,8 +16,8 @@ public:
     File();
     File(const String& path);
     ~File();
-    void open();
-    void open(const String& path);
+    File& open();
+    File& open(const String& path);
     String path() const;
     String name() const;
     String extension() const;

@@ -3,5 +3,6 @@
 
 #include "core.h"
 #include "window.h"
+#include "shader.h"
 
 #endif //POMEGRANATE_ENGINE_GRAPHICS_VULKAN_GRAPHICS_H

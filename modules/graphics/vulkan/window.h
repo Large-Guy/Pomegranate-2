@@ -16,6 +16,9 @@ private:
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
     std::vector<VkImageView> swapChainImageViews;
+    VkRenderPass renderPass;
+    VkPipelineLayout pipelineLayout;
+    VkPipeline graphicsPipeline;
 public:
     PomegranateWindow();
     ~PomegranateWindow();
@@ -25,7 +28,7 @@ public:
     void setSize(int new_width, int new_height);
     void setFullscreen(bool is_fullscreen);
     void poll();
-    bool is_open();
+    bool isOpen();
 };
 
 
