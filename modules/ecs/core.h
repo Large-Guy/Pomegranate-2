@@ -5,7 +5,9 @@
 #include <core/core.h>
 #include "ecs_typedefs.h"
 #include <functional>
+#ifndef __APPLE__
 #include <omp.h>
+#endif
 
 struct Entity;
 struct EntityRecord;

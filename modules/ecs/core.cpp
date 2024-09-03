@@ -34,13 +34,19 @@ bool SetEqual::operator()(const std::unordered_set<EntityID>& set1, const std::u
 }
 
 void ECS::setThreadCount(int count) {
+#ifndef __APPLE__
     if(count == omp_get_max_threads())
     {
         Debug::Log::warn("Using maximum number of threads may lead to diminishing returns. Consider using a smaller number of threads.");
     }
     omp_set_num_threads(count);
+#endif
 }
 
 int ECS::getMaxThreadCount() {
+#ifndef __APPLE__
     return omp_get_max_threads();
+#else
+    return 1;
+#endif
 }

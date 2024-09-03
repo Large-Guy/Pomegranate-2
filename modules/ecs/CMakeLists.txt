@@ -16,8 +16,15 @@ set(POMEGRANATE_ECS_INCLUDE_DIRS
 
 add_library(PomegranateECS ${POMEGRANATE_ECS_SOURCES})
 
-find_package(OpenMP)
+# only enable open mp if not on mac
+
 
 target_include_directories(PomegranateECS PUBLIC ${POMEGRANATE_ECS_INCLUDE_DIRS})
 
-target_link_libraries(PomegranateECS PomegranateCore OpenMP::OpenMP_CXX)
+
+if(APPLE)
+    target_link_libraries(PomegranateECS PomegranateCore)
+else()
+    find_package(OpenMP)
+    target_link_libraries(PomegranateECS PomegranateCore OpenMP::OpenMP_CXX)
+endif()

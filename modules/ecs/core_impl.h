@@ -2,7 +2,9 @@
 #define POMEGRANATE_ENGINE_ECS_CORE_IMPL_H
 
 #include <ecs/ecs.h>
+#ifndef __APPLE__
 #include <omp.h>
+#endif
 
 template <typename Args>
 void ECS::each(ComponentID component, std::function<void(Args*)> func)
