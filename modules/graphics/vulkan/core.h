@@ -17,34 +17,43 @@
 #endif
 #include <core/core.h>
 #include <optional>
+#include <set>
 
 class Graphics {
 private:
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
 
         bool complete();
     };
 
     struct Queues {
         VkQueue graphicsQueue;
+        VkQueue presentQueue;
     };
 
-    static VkInstance _instance;
-    static VkPhysicalDevice _physicalDevice;
-    static VkDevice _logicalDevice;
-    static Queues _queues;
-    static std::vector<const char*> validationLayers;
+    VkInstance _instance;
+    VkPhysicalDevice _physicalDevice;
+    VkDevice _logicalDevice;
+    Queues _queues;
+    std::vector<const char*> validationLayers;
+    VkSurfaceKHR _currentSurface;
 
-    static void createInstance(bool enableValidationLayers);
-    static void createPhysicalDevice();
-    static void createLogicalDevice(bool enableValidationLayers);
-    static bool hasValidationLayerSupport();
-    static bool isDeviceSuitable(VkPhysicalDevice device);
-    static QueueFamilyIndices getQueueFamilies(VkPhysicalDevice device);
+    void createInstance(bool enableValidationLayers);
+    void createPhysicalDevice();
+    void createLogicalDevice(bool enableValidationLayers);
+    bool hasValidationLayerSupport();
+    bool isDeviceSuitable(VkPhysicalDevice device);
+    QueueFamilyIndices getQueueFamilies(VkPhysicalDevice device);
+
+    static Graphics* _graphicsInstance;
 public:
-    static void init(bool enableValidationLayers = false);
-    static void destroy();
+    static bool enableValidationLayers;
+    Graphics();
+    ~Graphics();
+
+    static Graphics* getInstance();
 
     friend class Window;
 };

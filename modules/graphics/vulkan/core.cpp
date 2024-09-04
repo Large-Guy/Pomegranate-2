@@ -1,12 +1,26 @@
 #include "core.h"
 
-VkInstance Graphics::_instance = VK_NULL_HANDLE;
-VkPhysicalDevice Graphics::_physicalDevice = VK_NULL_HANDLE;
-VkDevice Graphics::_logicalDevice = VK_NULL_HANDLE;
-Graphics::Queues Graphics::_queues;
-std::vector<const char*> Graphics::validationLayers = {
-        "VK_LAYER_KHRONOS_validation"
-};
+Graphics* Graphics::_graphicsInstance = nullptr;
+bool Graphics::enableValidationLayers = false;
+
+Graphics::Graphics() {
+    _instance = VK_NULL_HANDLE;
+    _physicalDevice = VK_NULL_HANDLE;
+    _logicalDevice = VK_NULL_HANDLE;
+    _queues = {};
+    validationLayers = {
+            "VK_LAYER_KHRONOS_validation"
+    };
+
+    Debug::AssertIf::isFalse(glfwInit(), "Failed to initialize GLFW");
+    Graphics::createInstance(enableValidationLayers);
+}
+
+Graphics::~Graphics() {
+    vkDestroyDevice(_logicalDevice, nullptr);
+    vkDestroyInstance(_instance, nullptr);
+    glfwTerminate();
+}
 
 void Graphics::createInstance(bool enableValidationLayers) {
 
@@ -34,12 +48,6 @@ void Graphics::createInstance(bool enableValidationLayers) {
 
     std::vector<VkExtensionProperties> extensions(extensionCount);
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
-
-    Debug::Log::info("Available extensions:");
-
-    for (const auto& extension : extensions) {
-        Debug::Log::info(String("    ") + extension.extensionName);
-    }
 
     //GLFW Extensions
 
@@ -91,11 +99,14 @@ void Graphics::createInstance(bool enableValidationLayers) {
 }
 
 void Graphics::createPhysicalDevice() {
+    if(_physicalDevice != VK_NULL_HANDLE)
+        return;
+
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(_instance,&deviceCount, nullptr);
 
     Debug::AssertIf::isZero(deviceCount,"Unable to find GPU(s) with Vulkan support!");
-    Debug::Log::info(String("Found ") + String((int)deviceCount) + " devices with Vulkan support");
+    Debug::Log::pass(String("Found ") + String((int)deviceCount) + " devices with Vulkan support");
 
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
@@ -111,26 +122,35 @@ void Graphics::createPhysicalDevice() {
     Debug::AssertIf::isNull(_physicalDevice, "Failed to find suitable GPU!");
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(_physicalDevice, &deviceProperties);
-    Debug::Log::info(String("Found suitable GPU - ") + deviceProperties.deviceName);
+    Debug::Log::pass(String("Found suitable GPU - ") + deviceProperties.deviceName);
 }
 
 void Graphics::createLogicalDevice(bool enableValidationLayers) {
+    if(_logicalDevice != VK_NULL_HANDLE)
+        return;
+
     QueueFamilyIndices indices = getQueueFamilies(_physicalDevice);
 
-    VkDeviceQueueCreateInfo queueCreateInfo{};
-    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
-    queueCreateInfo.queueCount = 1;
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(), indices.presentFamily.value()};
 
     float queuePriority = 1.0f;
-    queueCreateInfo.pQueuePriorities = &queuePriority;
+    for(uint32_t queueFamily : uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+        queueCreateInfos.push_back(queueCreateInfo);
+    }
+
 
     VkPhysicalDeviceFeatures deviceFeatures{};
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = &queueCreateInfo;
-    createInfo.queueCreateInfoCount = 1;
+    createInfo.queueCreateInfoCount = queueCreateInfos.size();
+    createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
     //Portability Subset extension
     const char* extensions[] = {VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME};
@@ -149,9 +169,11 @@ void Graphics::createLogicalDevice(bool enableValidationLayers) {
     }
 
     Debug::AssertIf::isFalse(vkCreateDevice(_physicalDevice,&createInfo, nullptr,&_logicalDevice) == VK_SUCCESS, "Failed to create logical device");
-    Debug::Log::info("Created logical device.");
+    Debug::Log::pass("Created logical device.");
 
     vkGetDeviceQueue(_logicalDevice, indices.graphicsFamily.value(), 0, &_queues.graphicsQueue);
+    vkGetDeviceQueue(_logicalDevice, indices.presentFamily.value(), 0, &_queues.presentQueue);
+    Debug::Log::pass("Created queues.");
 }
 
 bool Graphics::hasValidationLayerSupport() {
@@ -201,6 +223,14 @@ Graphics::QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device)
             indices.graphicsFamily = i;
         }
 
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, _currentSurface, &presentSupport);
+
+        if(presentSupport)
+        {
+            indices.presentFamily = i;
+        }
+
         if(indices.complete())
             break;
 
@@ -210,19 +240,13 @@ Graphics::QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device)
     return indices;
 }
 
-void Graphics::init(bool enableValidationLayers) {
-    Debug::AssertIf::isFalse(glfwInit(), "Failed to initialize GLFW");
-    Graphics::createInstance(enableValidationLayers);
-    Graphics::createPhysicalDevice();
-    Graphics::createLogicalDevice(enableValidationLayers);
-}
-
-void Graphics::destroy() {
-    vkDestroyDevice(_logicalDevice, nullptr);
-    vkDestroyInstance(_instance, nullptr);
-    glfwTerminate();
-}
-
 bool Graphics::QueueFamilyIndices::complete() {
-    return graphicsFamily.has_value();
+    return graphicsFamily.has_value() && presentFamily.has_value();
+}
+
+Graphics* Graphics::getInstance() {
+    if(_graphicsInstance == nullptr) {
+        _graphicsInstance = new Graphics();
+    }
+    return _graphicsInstance;
 }

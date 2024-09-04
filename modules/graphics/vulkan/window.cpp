@@ -1,6 +1,7 @@
 #include "window.h"
 
 Window::Window() {
+    Graphics::getInstance();
     this->_title = "Pomegranate Engine";
     this->_size = {800, 600};
     this->_fullscreen = false;
@@ -9,12 +10,15 @@ Window::Window() {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     this->_window = glfwCreateWindow(this->_size.x, this->_size.y, this->_title.data(), nullptr, nullptr);
-    Debug::AssertIf::isFalse(glfwCreateWindowSurface(Graphics::_instance, this->_window, nullptr, &this->_surface) == VK_SUCCESS,"Failed to create window surface");
+    Debug::AssertIf::isFalse(glfwCreateWindowSurface(Graphics::getInstance()->_instance, this->_window, nullptr, &this->_surface) == VK_SUCCESS,"Failed to create window surface");
     glfwHideWindow(this->_window);
+    Graphics::getInstance()->_currentSurface = this->_surface; //Set the current surface to the window surface
+    Graphics::getInstance()->createPhysicalDevice(); //Create the physical device now because we need the surface to do so
+    Graphics::getInstance()->createLogicalDevice(Graphics::enableValidationLayers); //Create the logical device now because we need the physical device to do so
 }
 
 Window::~Window() {
-    vkDestroySurfaceKHR(Graphics::_instance, this->_surface, nullptr);
+    vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
     glfwDestroyWindow(this->_window);
 }
 
