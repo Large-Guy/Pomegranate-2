@@ -10,6 +10,7 @@ private:
     VkSurfaceKHR _surface;
     VkSwapchainKHR _swapChain;
     std::vector<VkImage> _swapChainImages;
+    std::vector<VkImageView> _swapChainImageViews;
     VkFormat _swapChainImageFormat;
     VkExtent2D _swapExtent;
 
@@ -22,6 +23,7 @@ private:
     Vector2i _position;
 
     void createSwapChain();
+    void createImageViews();
     VkExtent2D getExtents(const VkSurfaceCapabilitiesKHR& capabilities);
 public:
     Window();

@@ -57,6 +57,32 @@ void Window::createSwapChain() {
     Debug::Log::pass("Retrieved swap chain images");
 }
 
+void Window::createImageViews() {
+    _swapChainImageViews.resize(_swapChainImages.size());
+    for(size_t i = 0; i < _swapChainImages.size(); i++)
+    {
+        VkImageViewCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.image = _swapChainImages[i];
+        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        createInfo.format = _swapChainImageFormat;
+
+        createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+        createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        createInfo.subresourceRange.baseMipLevel = 0;
+        createInfo.subresourceRange.levelCount = 1;
+        createInfo.subresourceRange.baseArrayLayer = 0;
+        createInfo.subresourceRange.layerCount = 1;
+
+        Debug::AssertIf::isFalse(vkCreateImageView(Graphics::getInstance()->_logicalDevice,&createInfo, nullptr,&_swapChainImageViews[i]) == VK_SUCCESS, "Failed to create image views!");
+    }
+    Debug::Log::pass("Created image views");
+}
+
 VkExtent2D Window::getExtents(const VkSurfaceCapabilitiesKHR &capabilities) {
     if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
         return capabilities.currentExtent;
@@ -91,9 +117,15 @@ Window::Window() {
     Graphics::getInstance()->createPhysicalDevice(); //Create the physical device now because we need the surface to do so
     Graphics::getInstance()->createLogicalDevice(Graphics::enableValidationLayers); //Create the logical device now because we need the physical device to do so
     createSwapChain();
+    createImageViews();
 }
 
 Window::~Window() {
+    for(auto imageView : _swapChainImageViews)
+    {
+        vkDestroyImageView(Graphics::getInstance()->_logicalDevice,imageView, nullptr);
+    }
+
     vkDestroySwapchainKHR(Graphics::getInstance()->_logicalDevice,_swapChain, nullptr);
     vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
     glfwDestroyWindow(this->_window);
