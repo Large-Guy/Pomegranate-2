@@ -45,6 +45,7 @@ private:
     void createLogicalDevice(bool enableValidationLayers);
     bool hasValidationLayerSupport();
     bool isDeviceSuitable(VkPhysicalDevice device);
+    bool hasDeviceExtensionSupport(VkPhysicalDevice device);
     QueueFamilyIndices getQueueFamilies(VkPhysicalDevice device);
 
     static Graphics* _graphicsInstance;

@@ -202,10 +202,16 @@ bool Graphics::hasValidationLayerSupport() {
     return true;
 }
 
+bool Graphics::hasDeviceExtensionSupport(VkPhysicalDevice device) {
+
+}
+
 bool Graphics::isDeviceSuitable(VkPhysicalDevice device) {
     QueueFamilyIndices indices = getQueueFamilies(device);
 
-    return indices.complete();
+    bool extensionSupported = hasDeviceExtensionSupport(device);
+
+    return indices.complete() && extensionSupported;
 }
 
 Graphics::QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
