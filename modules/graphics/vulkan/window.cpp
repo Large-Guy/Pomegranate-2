@@ -1,5 +1,80 @@
 #include "window.h"
 
+void Window::createSwapChain() {
+    SwapChainSupportDetails swapChainSupport = Graphics::getInstance()->getSwapChainSupport(Graphics::getInstance()->_physicalDevice);
+
+    VkSurfaceFormatKHR surfaceFormat = Graphics::getInstance()->getSwapSurfaceFormat(swapChainSupport.formats);
+    VkPresentModeKHR presentMode = Graphics::getInstance()->chooseSwapPresentMode(swapChainSupport.presentModes);
+    VkExtent2D extent = getExtents(swapChainSupport.capabilities);
+
+    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+
+    if(swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+        imageCount = swapChainSupport.capabilities.maxImageCount;
+    }
+
+    VkSwapchainCreateInfoKHR createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface = _surface;
+    createInfo.minImageCount = imageCount;
+    createInfo.imageFormat = surfaceFormat.format;
+    createInfo.imageColorSpace = surfaceFormat.colorSpace;
+    createInfo.imageExtent = extent;
+    createInfo.imageArrayLayers = 1;
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    QueueFamilyIndices indices = Graphics::getInstance()->getQueueFamilies(Graphics::getInstance()->_physicalDevice);
+    uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(), indices.presentFamily.value()};
+
+    if(indices.graphicsFamily != indices.presentFamily)
+    {
+        createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+        createInfo.queueFamilyIndexCount = 2;
+        createInfo.pQueueFamilyIndices = queueFamilyIndices;
+    } else {
+        createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        createInfo.queueFamilyIndexCount = 0;
+        createInfo.pQueueFamilyIndices = nullptr;
+    }
+
+    createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    createInfo.presentMode = presentMode;
+    createInfo.clipped = true;
+    createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+    Debug::AssertIf::isFalse(vkCreateSwapchainKHR(Graphics::getInstance()->_logicalDevice,&createInfo, nullptr,&_swapChain) == VK_SUCCESS, "Failed to create swap chain!");
+
+    Debug::Log::pass("Created swap chain!");
+
+    vkGetSwapchainImagesKHR(Graphics::getInstance()->_logicalDevice,_swapChain,&imageCount, nullptr);
+    _swapChainImages.resize(imageCount);
+    vkGetSwapchainImagesKHR(Graphics::getInstance()->_logicalDevice, _swapChain, &imageCount, _swapChainImages.data());
+
+    _swapChainImageFormat = surfaceFormat.format;
+    _swapExtent = extent;
+
+    Debug::Log::pass("Retrieved swap chain images");
+}
+
+VkExtent2D Window::getExtents(const VkSurfaceCapabilitiesKHR &capabilities) {
+    if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
+        return capabilities.currentExtent;
+    } else {
+        int width, height;
+        glfwGetFramebufferSize(_window,&width,&height);
+
+        VkExtent2D actualExtent = {
+                (uint32_t)width,
+                (uint32_t)height
+        };
+
+        actualExtent.width = std::clamp(actualExtent.width,capabilities.minImageExtent.width,capabilities.maxImageExtent.width);
+        actualExtent.height = std::clamp(actualExtent.height,capabilities.minImageExtent.height,capabilities.maxImageExtent.height);
+        return actualExtent;
+    }
+}
+
 Window::Window() {
     Graphics::getInstance();
     this->_title = "Pomegranate Engine";
@@ -15,10 +90,13 @@ Window::Window() {
     Graphics::getInstance()->_currentSurface = this->_surface; //Set the current surface to the window surface
     Graphics::getInstance()->createPhysicalDevice(); //Create the physical device now because we need the surface to do so
     Graphics::getInstance()->createLogicalDevice(Graphics::enableValidationLayers); //Create the logical device now because we need the physical device to do so
+    createSwapChain();
 }
 
 Window::~Window() {
-
+    vkDestroySwapchainKHR(Graphics::getInstance()->_logicalDevice,_swapChain, nullptr);
+    vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
+    glfwDestroyWindow(this->_window);
 }
 
 void Window::setTitle(const String& title) {
@@ -107,9 +185,4 @@ String Window::getTitle() const {
 
 bool Window::isOpen() const {
     return this->_open;
-}
-
-void Window::destroy() {
-    vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
-    glfwDestroyWindow(this->_window);
 }

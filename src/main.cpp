@@ -29,7 +29,5 @@ int main() {
         Event::call(UPDATE);
         Event::call(DRAW);
     }
-
-    window.destroy();
     return 0;
 }

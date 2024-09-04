@@ -8,12 +8,21 @@ class Window {
 private:
     GLFWwindow* _window;
     VkSurfaceKHR _surface;
+    VkSwapchainKHR _swapChain;
+    std::vector<VkImage> _swapChainImages;
+    VkFormat _swapChainImageFormat;
+    VkExtent2D _swapExtent;
+
+
     String _title;
     Vector2i _size;
     bool _fullscreen;
     bool _visible;
     bool _open;
     Vector2i _position;
+
+    void createSwapChain();
+    VkExtent2D getExtents(const VkSurfaceCapabilitiesKHR& capabilities);
 public:
     Window();
     ~Window();
@@ -34,8 +43,6 @@ public:
     Vector2i getSize() const;
     String getTitle() const;
     [[nodiscard]] bool isOpen() const;
-
-    void destroy();
 };
 
 

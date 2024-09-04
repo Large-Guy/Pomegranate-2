@@ -1,4 +1,5 @@
 #include "core.h"
+#include "window.h"
 
 Graphics* Graphics::_graphicsInstance = nullptr;
 bool Graphics::enableValidationLayers = false;
@@ -8,8 +9,12 @@ Graphics::Graphics() {
     _physicalDevice = VK_NULL_HANDLE;
     _logicalDevice = VK_NULL_HANDLE;
     _queues = {};
+    _windows = {};
     validationLayers = {
             "VK_LAYER_KHRONOS_validation"
+    };
+    deviceExtensions = {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 
     Debug::AssertIf::isFalse(glfwInit(), "Failed to initialize GLFW");
@@ -17,6 +22,11 @@ Graphics::Graphics() {
 }
 
 Graphics::~Graphics() {
+    for(auto& window : _windows)
+    {
+        delete window;
+    }
+
     vkDestroyDevice(_logicalDevice, nullptr);
     vkDestroyInstance(_instance, nullptr);
     glfwTerminate();
@@ -170,6 +180,9 @@ void Graphics::createLogicalDevice(bool enableValidationLayers) {
         createInfo.enabledLayerCount = 0;
     }
 
+    createInfo.enabledExtensionCount = (uint32_t)deviceExtensions.size();
+    createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
     Debug::AssertIf::isFalse(vkCreateDevice(_physicalDevice,&createInfo, nullptr,&_logicalDevice) == VK_SUCCESS, "Failed to create logical device");
     Debug::Log::pass("Created logical device.");
 
@@ -205,7 +218,19 @@ bool Graphics::hasValidationLayerSupport() {
 }
 
 bool Graphics::hasDeviceExtensionSupport(VkPhysicalDevice device) {
-    return true;
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr,&extensionCount, nullptr);
+
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr,&extensionCount,availableExtensions.data());
+
+    std::set<std::string> requiredExtensions(deviceExtensions.begin(),deviceExtensions.end());
+
+    for(const auto& extension : availableExtensions)
+    {
+        requiredExtensions.erase(extension.extensionName);
+    }
+    return requiredExtensions.empty();
 }
 
 bool Graphics::isDeviceSuitable(VkPhysicalDevice device) {
@@ -213,10 +238,16 @@ bool Graphics::isDeviceSuitable(VkPhysicalDevice device) {
 
     bool extensionSupported = hasDeviceExtensionSupport(device);
 
-    return indices.complete() && extensionSupported;
+    bool swapChainAdequate = false;
+    if(extensionSupported) {
+        SwapChainSupportDetails swapChainSupportDetails = getSwapChainSupport(device);
+        swapChainAdequate = !swapChainSupportDetails.formats.empty() && !swapChainSupportDetails.presentModes.empty();
+    }
+
+    return indices.complete() && extensionSupported && swapChainAdequate;
 }
 
-Graphics::QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
+QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
     QueueFamilyIndices indices;
 
     uint32_t queueFamilyCount = 0;
@@ -248,7 +279,55 @@ Graphics::QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device)
     return indices;
 }
 
-bool Graphics::QueueFamilyIndices::complete() {
+SwapChainSupportDetails Graphics::getSwapChainSupport(VkPhysicalDevice device) {
+    SwapChainSupportDetails details;
+
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, _currentSurface, &details.capabilities);
+
+    uint32_t formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device,_currentSurface,&formatCount, nullptr);
+
+    if(formatCount != 0)
+    {
+        details.formats.resize(formatCount);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, _currentSurface, &formatCount, details.formats.data());
+    }
+
+    uint32_t presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device,_currentSurface,&presentModeCount, nullptr);
+
+    if(presentModeCount != 0)
+    {
+        details.presentModes.resize(presentModeCount);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device,_currentSurface,&presentModeCount,details.presentModes.data());
+    }
+
+    return details;
+}
+
+VkSurfaceFormatKHR Graphics::getSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> availableFormats) {
+    for(const auto& availableFormat : availableFormats)
+    {
+        if(availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+            return availableFormat;
+        }
+    }
+
+    return availableFormats[0];
+}
+
+VkPresentModeKHR Graphics::chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes) {
+    for(const auto& availablePresentMode : availablePresentModes)
+    {
+        if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+            return availablePresentMode;
+        }
+    }
+
+    return VK_PRESENT_MODE_FIFO_KHR;
+}
+
+bool QueueFamilyIndices::complete() {
     return graphicsFamily.has_value() && presentFamily.has_value();
 }
 

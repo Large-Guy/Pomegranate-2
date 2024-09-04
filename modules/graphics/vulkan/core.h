@@ -19,14 +19,24 @@
 #include <optional>
 #include <set>
 
+struct Window;
+
+struct SwapChainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> presentModes;
+};
+
+struct QueueFamilyIndices {
+    std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
+
+    bool complete();
+};
+
 class Graphics {
 private:
-    struct QueueFamilyIndices {
-        std::optional<uint32_t> graphicsFamily;
-        std::optional<uint32_t> presentFamily;
 
-        bool complete();
-    };
 
     struct Queues {
         VkQueue graphicsQueue;
@@ -40,6 +50,10 @@ private:
     std::vector<const char*> validationLayers;
     VkSurfaceKHR _currentSurface;
 
+    std::vector<const char*> deviceExtensions;
+
+    std::vector<Window*> _windows;
+
     void createInstance(bool enableValidationLayers);
     void createPhysicalDevice();
     void createLogicalDevice(bool enableValidationLayers);
@@ -47,6 +61,9 @@ private:
     bool isDeviceSuitable(VkPhysicalDevice device);
     bool hasDeviceExtensionSupport(VkPhysicalDevice device);
     QueueFamilyIndices getQueueFamilies(VkPhysicalDevice device);
+    SwapChainSupportDetails getSwapChainSupport(VkPhysicalDevice device);
+    VkSurfaceFormatKHR getSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 
     static Graphics* _graphicsInstance;
 public:
