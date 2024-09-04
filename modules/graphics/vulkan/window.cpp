@@ -6,6 +6,8 @@ Window::Window() {
     this->_fullscreen = false;
     this->_visible = false;
     this->_open = true;
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     this->_window = glfwCreateWindow(this->_size.x, this->_size.y, this->_title.data(), nullptr, nullptr);
     glfwHideWindow(this->_window);
 }

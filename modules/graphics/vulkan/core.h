@@ -17,8 +17,13 @@
 #include <core/core.h>
 
 class Graphics {
+private:
+    static VkInstance _instance;
+
+    static void createInstance();
 public:
     static void init();
+    static void destroy();
 };
 
 
