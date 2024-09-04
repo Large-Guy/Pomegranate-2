@@ -7,6 +7,7 @@
 class Window {
 private:
     GLFWwindow* _window;
+    VkSurfaceKHR _surface;
     String _title;
     Vector2i _size;
     bool _fullscreen;
@@ -31,7 +32,10 @@ public:
 
     Vector2i getPosition() const;
     Vector2i getSize() const;
+    String getTitle() const;
     [[nodiscard]] bool isOpen() const;
+
+    void destroy();
 };
 
 

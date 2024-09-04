@@ -45,6 +45,8 @@ private:
 public:
     static void init(bool enableValidationLayers = false);
     static void destroy();
+
+    friend class Window;
 };
 
 

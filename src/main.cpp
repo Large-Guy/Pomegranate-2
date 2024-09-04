@@ -16,7 +16,7 @@ int main() {
     const EventID UPDATE = Event::getEventId("update");
     const EventID DRAW = Event::getEventId("draw");
 
-    Window window;
+    Window window{};
     window.setTitle("Pomegranate Engine - Vulkan Again");
     window.setSize(800, 600);
     window.show();
@@ -32,7 +32,7 @@ int main() {
         Event::call(DRAW);
     }
 
-
+    window.destroy();
     Graphics::destroy();
     return 0;
 }
