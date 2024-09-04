@@ -87,6 +87,69 @@ public:
             }
         }
     };
+    class WarnIf {
+    public:
+        static inline void isTrue(bool condition, const String& message) {
+            if (condition) {
+                Log::warn(message);
+            }
+        }
+        static inline void isFalse(bool condition, const String& message) {
+            if (!condition) {
+                Log::warn(message);
+            }
+        }
+        static inline void isNull(void* ptr, const String& message) {
+            if (ptr == nullptr) {
+                Log::warn(message);
+            }
+        }
+        static inline void isNotNull(void* ptr, const String& message) {
+            if (ptr != nullptr) {
+                Log::warn(message);
+            }
+        }
+        static inline void isZero(int value, const String& message) {
+            if (value == 0) {
+                Log::warn(message);
+            }
+        }
+        static inline void isNotZero(int value, const String& message) {
+            if (value != 0) {
+                Log::warn(message);
+            }
+        }
+        static inline void isEqual(int a, int b, const String& message) {
+            if (a == b) {
+                Log::warn(message);
+            }
+        }
+        static inline void isNotEqual(int a, int b, const String& message) {
+            if (a != b) {
+                Log::warn(message);
+            }
+        }
+        static inline void isLessThan(int a, int b, const String& message) {
+            if (a < b) {
+                Log::warn(message);
+            }
+        }
+        static inline void isLessThanOrEqual(int a, int b, const String& message) {
+            if (a <= b) {
+                Log::warn(message);
+            }
+        }
+        static inline void isGreaterThan(int a, int b, const String& message) {
+            if (a > b) {
+                Log::warn(message);
+            }
+        }
+        static inline void isGreaterThanOrEqual(int a, int b, const String& message) {
+            if (a >= b) {
+                Log::warn(message);
+            }
+        }
+    };
 };
 
 

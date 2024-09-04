@@ -1,8 +1,16 @@
 #include "core.h"
 
 VkInstance Graphics::_instance = nullptr;
+std::vector<const char*> Graphics::validationLayers = {
+        "VK_LAYER_KHRONOS_validation"
+};
 
-void Graphics::createInstance() {
+void Graphics::createInstance(bool enableValidationLayers) {
+
+    if(enableValidationLayers)
+    {
+        Debug::WarnIf::isFalse(hasValidationLayerSupport(), "Validation layers requested, but not available! Continuing without validation layers.");
+    }
 
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -65,14 +73,47 @@ void Graphics::createInstance() {
     createInfo.enabledExtensionCount = (uint32_t)requiredExtensions.size();
     createInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
-    createInfo.enabledLayerCount = 0;
+    if(enableValidationLayers)
+    {
+        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+        createInfo.ppEnabledLayerNames = validationLayers.data();
+    }
+    else {
+        createInfo.enabledLayerCount = 0;
+    }
 
     Debug::AssertIf::isFalse(vkCreateInstance(&createInfo, nullptr, &_instance) == VK_SUCCESS, "Failed to create Vulkan instance");
 }
 
-void Graphics::init() {
+bool Graphics::hasValidationLayerSupport() {
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount,availableLayers.data());
+
+    for(const char* layerName : validationLayers) {
+        bool layerFound = false;
+
+        for(const auto& layerProperties : availableLayers) {
+            if(strcmp(layerName, layerProperties.layerName) == 0)
+            {
+                layerFound = true;
+                break;
+            }
+        }
+        if(!layerFound)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void Graphics::init(bool enableValidationLayers) {
     Debug::AssertIf::isFalse(glfwInit(), "Failed to initialize GLFW");
-    Graphics::createInstance();
+    Graphics::createInstance(enableValidationLayers);
 }
 
 void Graphics::destroy() {

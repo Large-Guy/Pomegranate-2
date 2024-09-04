@@ -8,7 +8,7 @@
 #include <thread>
 
 int main() {
-    Graphics::init();
+    Graphics::init(true);
 
     List<char> vertexShader = File("assets/graphics/shaders/vertex.spv").open().readBuffer();
     List<char> fragmentShader = File("assets/graphics/shaders/fragment.spv").open().readBuffer();

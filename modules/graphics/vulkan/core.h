@@ -5,10 +5,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #elif __linux__
-#define VK_USE_PLATFORM_XLIB_KHR
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-#include <vulkan/vulkan_xlib.h>
 #elif __APPLE__
 #define VK_USE_PLATFORM_MACOS_MVK
 #define GLFW_INCLUDE_VULKAN
@@ -19,10 +17,12 @@
 class Graphics {
 private:
     static VkInstance _instance;
+    static std::vector<const char*> validationLayers;
 
-    static void createInstance();
+    static void createInstance(bool enableValidationLayers);
+    static bool hasValidationLayerSupport();
 public:
-    static void init();
+    static void init(bool enableValidationLayers = false);
     static void destroy();
 };
 
