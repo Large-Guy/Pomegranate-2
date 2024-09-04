@@ -1,6 +1,7 @@
 #include "core.h"
 
 VkInstance Graphics::_instance = nullptr;
+VkPhysicalDevice Graphics::_physicalDevice = VK_NULL_HANDLE;
 std::vector<const char*> Graphics::validationLayers = {
         "VK_LAYER_KHRONOS_validation"
 };
@@ -85,6 +86,30 @@ void Graphics::createInstance(bool enableValidationLayers) {
     Debug::AssertIf::isFalse(vkCreateInstance(&createInfo, nullptr, &_instance) == VK_SUCCESS, "Failed to create Vulkan instance");
 }
 
+void Graphics::createPhysicalDevice() {
+    uint32_t deviceCount = 0;
+    vkEnumeratePhysicalDevices(_instance,&deviceCount, nullptr);
+
+    Debug::AssertIf::isZero(deviceCount,"Unable to find GPU(s) with Vulkan support!");
+    Debug::Log::info(String("Found ") + String((int)deviceCount) + " devices with Vulkan support");
+
+    std::vector<VkPhysicalDevice> devices(deviceCount);
+    vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
+
+    for(const auto& device : devices)
+    {
+        if(isDeviceSuitable(device)) {
+            _physicalDevice = device;
+            break;
+        }
+    }
+
+    Debug::AssertIf::isNull(_physicalDevice, "Failed to find suitable GPU!");
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(_physicalDevice, &deviceProperties);
+    Debug::Log::info(String("Found suitable GPU - ") + deviceProperties.deviceName);
+}
+
 bool Graphics::hasValidationLayerSupport() {
     uint32_t layerCount;
     vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -111,12 +136,47 @@ bool Graphics::hasValidationLayerSupport() {
     return true;
 }
 
+bool Graphics::isDeviceSuitable(VkPhysicalDevice device) {
+    QueueFamilyIndices indices = getQueueFamilies(device);
+
+    return indices.complete();
+}
+
+Graphics::QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
+    QueueFamilyIndices indices;
+
+    uint32_t queueFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+
+    std::vector<VkQueueFamilyProperties > queueFamilies(queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+    int i = 0;
+    for(const auto& queueFamily : queueFamilies) {
+        if(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            indices.graphicsFamily = i;
+        }
+
+        if(indices.complete())
+            break;
+
+        i++;
+    }
+
+    return indices;
+}
+
 void Graphics::init(bool enableValidationLayers) {
     Debug::AssertIf::isFalse(glfwInit(), "Failed to initialize GLFW");
     Graphics::createInstance(enableValidationLayers);
+    Graphics::createPhysicalDevice();
 }
 
 void Graphics::destroy() {
     vkDestroyInstance(_instance, nullptr);
     glfwTerminate();
+}
+
+bool Graphics::QueueFamilyIndices::complete() {
+    return graphicsFamily.has_value();
 }

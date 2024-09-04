@@ -13,14 +13,25 @@
 #include <GLFW/glfw3.h>
 #endif
 #include <core/core.h>
+#include <optional>
 
 class Graphics {
 private:
+    struct QueueFamilyIndices {
+        std::optional<uint32_t> graphicsFamily;
+
+        bool complete();
+    };
+
     static VkInstance _instance;
+    static VkPhysicalDevice _physicalDevice;
     static std::vector<const char*> validationLayers;
 
     static void createInstance(bool enableValidationLayers);
+    static void createPhysicalDevice();
     static bool hasValidationLayerSupport();
+    static bool isDeviceSuitable(VkPhysicalDevice device);
+    static QueueFamilyIndices getQueueFamilies(VkPhysicalDevice device);
 public:
     static void init(bool enableValidationLayers = false);
     static void destroy();
