@@ -18,8 +18,7 @@ Window::Window() {
 }
 
 Window::~Window() {
-    vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
-    glfwDestroyWindow(this->_window);
+
 }
 
 void Window::setTitle(const String& title) {
@@ -111,5 +110,6 @@ bool Window::isOpen() const {
 }
 
 void Window::destroy() {
-    delete this;
+    vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
+    glfwDestroyWindow(this->_window);
 }

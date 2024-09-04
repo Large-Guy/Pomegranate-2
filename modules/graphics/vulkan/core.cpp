@@ -152,11 +152,13 @@ void Graphics::createLogicalDevice(bool enableValidationLayers) {
     createInfo.queueCreateInfoCount = queueCreateInfos.size();
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
+#ifdef __APPLE__
     //Portability Subset extension
     const char* extensions[] = {VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME};
 
     createInfo.enabledExtensionCount = 1;
     createInfo.ppEnabledExtensionNames = extensions;
+#endif
 
 
     createInfo.pEnabledFeatures = &deviceFeatures;
@@ -203,7 +205,7 @@ bool Graphics::hasValidationLayerSupport() {
 }
 
 bool Graphics::hasDeviceExtensionSupport(VkPhysicalDevice device) {
-
+    return true;
 }
 
 bool Graphics::isDeviceSuitable(VkPhysicalDevice device) {
