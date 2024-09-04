@@ -23,12 +23,19 @@ private:
         bool complete();
     };
 
+    struct Queues {
+        VkQueue graphicsQueue;
+    };
+
     static VkInstance _instance;
     static VkPhysicalDevice _physicalDevice;
+    static VkDevice _logicalDevice;
+    static Queues _queues;
     static std::vector<const char*> validationLayers;
 
     static void createInstance(bool enableValidationLayers);
     static void createPhysicalDevice();
+    static void createLogicalDevice(bool enableValidationLayers);
     static bool hasValidationLayerSupport();
     static bool isDeviceSuitable(VkPhysicalDevice device);
     static QueueFamilyIndices getQueueFamilies(VkPhysicalDevice device);

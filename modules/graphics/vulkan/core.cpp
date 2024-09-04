@@ -1,7 +1,9 @@
 #include "core.h"
 
-VkInstance Graphics::_instance = nullptr;
+VkInstance Graphics::_instance = VK_NULL_HANDLE;
 VkPhysicalDevice Graphics::_physicalDevice = VK_NULL_HANDLE;
+VkDevice Graphics::_logicalDevice = VK_NULL_HANDLE;
+Graphics::Queues Graphics::_queues;
 std::vector<const char*> Graphics::validationLayers = {
         "VK_LAYER_KHRONOS_validation"
 };
@@ -110,6 +112,39 @@ void Graphics::createPhysicalDevice() {
     Debug::Log::info(String("Found suitable GPU - ") + deviceProperties.deviceName);
 }
 
+void Graphics::createLogicalDevice(bool enableValidationLayers) {
+    QueueFamilyIndices indices = getQueueFamilies(_physicalDevice);
+
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+    queueCreateInfo.queueCount = 1;
+
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    VkPhysicalDeviceFeatures deviceFeatures{};
+
+    VkDeviceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+
+    createInfo.pEnabledFeatures = &deviceFeatures;
+
+    if(enableValidationLayers) {
+        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+        createInfo.ppEnabledLayerNames = validationLayers.data();
+    } else {
+        createInfo.enabledLayerCount = 0;
+    }
+
+    Debug::AssertIf::isFalse(vkCreateDevice(_physicalDevice,&createInfo, nullptr,&_logicalDevice) == VK_SUCCESS, "Failed to create logical device");
+    Debug::Log::info("Created logical device.");
+
+    vkGetDeviceQueue(_logicalDevice, indices.graphicsFamily.value(), 0, &_queues.graphicsQueue);
+}
+
 bool Graphics::hasValidationLayerSupport() {
     uint32_t layerCount;
     vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -170,9 +205,11 @@ void Graphics::init(bool enableValidationLayers) {
     Debug::AssertIf::isFalse(glfwInit(), "Failed to initialize GLFW");
     Graphics::createInstance(enableValidationLayers);
     Graphics::createPhysicalDevice();
+    Graphics::createLogicalDevice(enableValidationLayers);
 }
 
 void Graphics::destroy() {
+    vkDestroyDevice(_logicalDevice, nullptr);
     vkDestroyInstance(_instance, nullptr);
     glfwTerminate();
 }
