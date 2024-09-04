@@ -54,6 +54,8 @@ void Graphics::createInstance(bool enableValidationLayers) {
         requiredExtensions.push_back(glfwExtensions[i]);
     }
 
+    //Portability Extensions
+    requiredExtensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
     requiredExtensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
 
     //Ensure extensions are supported
@@ -129,6 +131,13 @@ void Graphics::createLogicalDevice(bool enableValidationLayers) {
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     createInfo.pQueueCreateInfos = &queueCreateInfo;
     createInfo.queueCreateInfoCount = 1;
+
+    //Portability Subset extension
+    const char* extensions[] = {VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME};
+
+    createInfo.enabledExtensionCount = 1;
+    createInfo.ppEnabledExtensionNames = extensions;
+
 
     createInfo.pEnabledFeatures = &deviceFeatures;
 
