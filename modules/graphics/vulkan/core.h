@@ -20,6 +20,7 @@
 #include <set>
 
 struct Window;
+struct Shader;
 
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -37,7 +38,6 @@ struct QueueFamilyIndices {
 class Graphics {
 private:
 
-
     struct Queues {
         VkQueue graphicsQueue;
         VkQueue presentQueue;
@@ -53,10 +53,13 @@ private:
     std::vector<const char*> deviceExtensions;
 
     std::vector<Window*> _windows;
+    std::vector<Shader*> _shaders;
 
     void createInstance(bool enableValidationLayers);
     void createPhysicalDevice();
     void createLogicalDevice(bool enableValidationLayers);
+    void createGraphicsPipeline();
+
     bool hasValidationLayerSupport();
     bool isDeviceSuitable(VkPhysicalDevice device);
     bool hasDeviceExtensionSupport(VkPhysicalDevice device);
@@ -74,6 +77,7 @@ public:
     static Graphics* getInstance();
 
     friend class Window;
+    friend class Shader;
 };
 
 

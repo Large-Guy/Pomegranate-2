@@ -1,5 +1,6 @@
 #include "core.h"
 #include "window.h"
+#include "shader.h"
 
 Graphics* Graphics::_graphicsInstance = nullptr;
 bool Graphics::enableValidationLayers = false;
@@ -22,6 +23,11 @@ Graphics::Graphics() {
 }
 
 Graphics::~Graphics() {
+    for(auto& shader : _shaders)
+    {
+        delete shader;
+    }
+
     for(auto& window : _windows)
     {
         delete window;
@@ -189,6 +195,10 @@ void Graphics::createLogicalDevice(bool enableValidationLayers) {
     vkGetDeviceQueue(_logicalDevice, indices.graphicsFamily.value(), 0, &_queues.graphicsQueue);
     vkGetDeviceQueue(_logicalDevice, indices.presentFamily.value(), 0, &_queues.presentQueue);
     Debug::Log::pass("Created queues.");
+}
+
+void Graphics::createGraphicsPipeline() {
+
 }
 
 bool Graphics::hasValidationLayerSupport() {

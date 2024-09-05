@@ -8,41 +8,47 @@
 #include <thread>
 
 int main() {
-    List<char> vertexShader = File("assets/graphics/shaders/vertex.spv").open().readBuffer();
-    List<char> fragmentShader = File("assets/graphics/shaders/fragment.spv").open().readBuffer();
+
+    ECS::setThreadCount(ECS::getMaxThreadCount()/2);
+
+    Graphics::enableValidationLayers = true;
 
     const EventID UPDATE = Event::getEventId("update");
     const EventID DRAW = Event::getEventId("draw");
 
-    Window window{};
-    window.setTitle("Pomegranate Engine - Vulkan Again");
-    window.setSize(800, 600);
-    window.show();
+    Extensions::Common::init();
 
-    Event::on(UPDATE,std::function<void()>([&](){
-        //Poll window events and update the window
-        window.poll();
-    }));
-
-    const QuestionID TEST = Question::getQuestionId("test");
-    Question::answer(TEST,std::function<bool()>([](){
-        return false;
-    }));
-
-    Question::answer(TEST,std::function<bool()>([](){
-        return true;
-    }));
-
-    auto result = Question::ask<bool,Resolver::Or>(TEST);
-
-    std::cout << result << std::endl; //True
-
-
-
-    while(window.isOpen())
+    for(int i = 0; i < 64; i++)
     {
-        Event::call(UPDATE);
-        Event::call(DRAW);
+        Entity entity = Entity::create();
+        entity.addComponent<Transform2D>(Extensions::Common::TRANSFORM_2D);
+
     }
+
+    const QuestionID GET_ENTITY_COUNT = Question::getQuestionId("get_entity_count");
+
+    Question::answer(GET_ENTITY_COUNT,std::function<int()>([&](){
+        int count = 0;
+
+        ECS::parallelEach<Transform2D>("Transform2D", [&](Transform2D *transform, const Entity& entity) {
+            count++;
+        });
+
+        return count;
+    }));
+
+    int entityCount = Question::ask<int,Resolver::Sum>(GET_ENTITY_COUNT);
+
+    std::cout << "Entity Count: " << entityCount << std::endl;
+
+    int count = 0;
+    //Mutex lock
+
+    ECS::each<Transform2D>("Transform2D", [&](Transform2D *transform, const Entity& entity) {
+        count++;
+    });
+
+    std::cout << "Entity Count: " << count << std::endl;
+
     return 0;
 }

@@ -2,6 +2,7 @@
 #define POMEGRANATE_ENGINE_GRAPHICS_VULKAN_GRAPHICS_H
 
 #include "window.h"
+#include "shader.h"
 #include "core.h"
 
 #endif //POMEGRANATE_ENGINE_GRAPHICS_VULKAN_GRAPHICS_H

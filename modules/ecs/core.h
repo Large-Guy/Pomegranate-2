@@ -31,16 +31,28 @@ public:
     static std::unordered_map<std::string, ComponentID> component_names;
 
     template <typename Args>
+    static void parallelEach(ComponentID component, std::function<void(Args*)> func);
+
+    template <typename Args>
+    static void parallelEach(const std::string& component, std::function<void(Args*)> func);
+
+    template <typename Args>
+    static void parallelEach(ComponentID component, std::function<void(Args*, Entity&)> func);
+
+    template <typename Args>
+    static void parallelEach(const std::string& component, std::function<void(Args*, Entity&)> func);
+
+    template <typename Args>
     static void each(ComponentID component, std::function<void(Args*)> func);
 
     template <typename Args>
     static void each(const std::string& component, std::function<void(Args*)> func);
 
     template <typename Args>
-    static void each(ComponentID component, std::function<void(Args*,Entity&)> func);
+    static void each(ComponentID component, std::function<void(Args*, Entity&)> func);
 
     template <typename Args>
-    static void each(const std::string& component, std::function<void(Args*,Entity&)> func);
+    static void each(const std::string& component, std::function<void(Args*, Entity&)> func);
 
     static void setThreadCount(int count);
     static int getMaxThreadCount();
