@@ -42,6 +42,14 @@ public:
     template <typename Args>
     static void parallelEach(const std::string& component, std::function<void(Args*, Entity&)> func);
 
+    static void parallelEach(ComponentID component, std::function<void(void*)> func);
+
+    static void parallelEach(ComponentID component, std::function<void(void*, Entity&)> func);
+
+    static void parallelEach(const std::string& component, std::function<void(void*)> func);
+
+    static void parallelEach(const std::string& component, std::function<void(void*, Entity&)> func);
+
     template <typename Args>
     static void each(ComponentID component, std::function<void(Args*)> func);
 
@@ -53,6 +61,14 @@ public:
 
     template <typename Args>
     static void each(const std::string& component, std::function<void(Args*, Entity&)> func);
+
+    static void each(ComponentID component, std::function<void(void*)> func);
+
+    static void each(const std::string& component, std::function<void(void*)> func);
+
+    static void each(ComponentID component, std::function<void(void*, Entity&)> func);
+
+    static void each(const std::string& component, std::function<void(void*, Entity&)> func);
 
     static void setThreadCount(int count);
     static int getMaxThreadCount();

@@ -25,7 +25,7 @@ void ECS::parallelEach(ComponentID component, std::function<void(Args*)> func)
 template <typename Args>
 void ECS::parallelEach(const std::string& component, std::function<void(Args*)> func)
 {
-    parallelEach(Component::getComponentID(component), func);
+    parallelEach<Args>(Component::getComponentID(component), func);
 }
 
 template <typename Args>

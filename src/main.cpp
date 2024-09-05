@@ -5,7 +5,7 @@
 #include <ecs/extensions/common/common.h>
 #include <graphics/vulkan/graphics.h>
 #include <math/math.h>
-#include <thread>
+#include <omp.h>
 
 int main() {
 
@@ -29,10 +29,17 @@ int main() {
 
     Question::answer(GET_ENTITY_COUNT,std::function<int()>([&](){
         int count = 0;
+        //Mutex lock
+        omp_lock_t lock;
+        omp_init_lock(&lock);
 
-        ECS::parallelEach<Transform2D>("Transform2D", [&](Transform2D *transform, const Entity& entity) {
+        ECS::parallelEach("Transform2D", [&](void *transform, const Entity& entity) {
+            omp_set_lock(&lock);
             count++;
+            omp_unset_lock(&lock);
         });
+
+        omp_destroy_lock(&lock);
 
         return count;
     }));
@@ -44,7 +51,7 @@ int main() {
     int count = 0;
     //Mutex lock
 
-    ECS::each<Transform2D>("Transform2D", [&](Transform2D *transform, const Entity& entity) {
+    ECS::each("Transform2D", [&](void *transform, const Entity& entity) {
         count++;
     });
 

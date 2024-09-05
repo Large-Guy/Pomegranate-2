@@ -50,3 +50,73 @@ int ECS::getMaxThreadCount() {
     return 1;
 #endif
 }
+
+void ECS::parallelEach(ComponentID component, std::function<void(void *)> func) {
+    for(auto archetype : ECS::component_index[component])
+    {
+        ArchetypeRecord& record = archetype.second;
+#pragma omp parallel for
+        for(size_t i = 0; i < record.archetype->components[record.column].count; i++)
+        {
+            //Call the function
+            func(record.archetype->components[record.column].get(i));
+        }
+    }
+#pragma omp barrier
+}
+
+void ECS::parallelEach(const std::string &component, std::function<void(void *)> func) {
+    parallelEach(Component::getComponentID(component), func);
+}
+
+void ECS::parallelEach(ComponentID component, std::function<void(void *, Entity &)> func) {
+    for(auto archetype : ECS::component_index[component])
+    {
+        ArchetypeRecord& record = archetype.second;
+#pragma omp parallel for
+        for(size_t i = 0; i < record.archetype->components[record.column].count; i++)
+        {
+            //Call the function
+            Entity entity(record.archetype->entities[i]);
+            func(record.archetype->components[record.column].get(i),entity);
+        }
+    }
+#pragma omp barrier
+}
+
+void ECS::parallelEach(const std::string &component, std::function<void(void *, Entity &)> func) {
+    parallelEach(Component::getComponentID(component), func);
+}
+
+void ECS::each(ComponentID component, std::function<void(void *)> func) {
+    for(auto archetype : ECS::component_index[component])
+    {
+        ArchetypeRecord& record = archetype.second;
+        for(size_t i = 0; i < record.archetype->components[record.column].count; i++)
+        {
+            //Call the function
+            func(record.archetype->components[record.column].get(i));
+        }
+    }
+}
+
+void ECS::each(const std::string &component, std::function<void(void *)> func) {
+    each(Component::getComponentID(component), func);
+}
+
+void ECS::each(ComponentID component, std::function<void(void *, Entity &)> func) {
+    for(auto archetype : ECS::component_index[component])
+    {
+        ArchetypeRecord& record = archetype.second;
+        for(size_t i = 0; i < record.archetype->components[record.column].count; i++)
+        {
+            //Call the function
+            Entity entity(record.archetype->entities[i]);
+            func(record.archetype->components[record.column].get(i),entity);
+        }
+    }
+}
+
+void ECS::each(const std::string &component, std::function<void(void *, Entity &)> func) {
+    each(Component::getComponentID(component), func);
+}
