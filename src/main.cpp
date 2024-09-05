@@ -24,6 +24,21 @@ int main() {
         window.poll();
     }));
 
+    const QuestionID TEST = Question::getQuestionId("test");
+    Question::answer(TEST,std::function<bool()>([](){
+        return false;
+    }));
+
+    Question::answer(TEST,std::function<bool()>([](){
+        return true;
+    }));
+
+    auto result = Question::ask<bool,Resolver::Or>(TEST);
+
+    std::cout << result << std::endl; //True
+
+
+
     while(window.isOpen())
     {
         Event::call(UPDATE);

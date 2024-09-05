@@ -2,5 +2,6 @@
 #define POMEGRANATE_ENGINE_EVENTS_EVENT_TYPEDEFS_H
 
 typedef unsigned int EventID;
+typedef unsigned int QuestionID;
 
 #endif //POMEGRANATE_ENGINE_EVENT_TYPEDEFS_H

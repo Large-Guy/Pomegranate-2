@@ -35,7 +35,7 @@ private:
     std::shared_ptr<EventFunctionBase> _function;
 public:
     template<typename... Args>
-    EventFunction(std::function<void(Args...)> f) : _function(std::make_unique<EventFunctionImpl<Args...>>(f)) {}
+    EventFunction(std::function<void(Args...)> f) : _function(std::make_shared<EventFunctionImpl<Args...>>(f)) {}
     EventFunction(const EventFunction& other) : _function(std::move(other._function)) {}
 
 

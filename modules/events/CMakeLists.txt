@@ -1,6 +1,8 @@
 set(POMEGRANATE_EVENTS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/event_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/event_manager.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/question_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/question_manager.h
         ${CMAKE_CURRENT_SOURCE_DIR}/event_typedefs.h
         ${CMAKE_CURRENT_SOURCE_DIR}/events.h
 )
