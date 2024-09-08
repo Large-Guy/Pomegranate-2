@@ -247,26 +247,25 @@ void Graphics::createRenderPass(Window* window) {
     Debug::AssertIf::isFalse(vkCreateRenderPass(_logicalDevice,&renderPassInfo,nullptr,&window->_renderPass) == VK_SUCCESS, "Failed to create render pass!");
 }
 
-void Graphics::createGraphicsPipeline(Window* window) {
+Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(Shader* shader, Window* window) {
+    GraphicsPipelineGroup group{};
+
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
-    for(auto& shader : _shaders)
-    {
-        VkPipelineShaderStageCreateInfo vertexShaderStageInfo{};
-        vertexShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-        vertexShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-        vertexShaderStageInfo.module = shader->_vertex;
-        vertexShaderStageInfo.pName = "main";
+    VkPipelineShaderStageCreateInfo vertexShaderStageInfo{};
+    vertexShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertexShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertexShaderStageInfo.module = shader->_vertex;
+    vertexShaderStageInfo.pName = "main";
 
-        VkPipelineShaderStageCreateInfo fragmentShaderStageInfo{};
-        fragmentShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-        fragmentShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-        fragmentShaderStageInfo.module = shader->_fragment;
-        fragmentShaderStageInfo.pName = "main";
+    VkPipelineShaderStageCreateInfo fragmentShaderStageInfo{};
+    fragmentShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragmentShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragmentShaderStageInfo.module = shader->_fragment;
+    fragmentShaderStageInfo.pName = "main";
 
-        shaderStages.push_back(vertexShaderStageInfo);
-        shaderStages.push_back(fragmentShaderStageInfo);
-    }
+    shaderStages.push_back(vertexShaderStageInfo);
+    shaderStages.push_back(fragmentShaderStageInfo);
 
     std::vector<VkDynamicState> dynamicStates = {
             VK_DYNAMIC_STATE_VIEWPORT,
@@ -360,7 +359,7 @@ void Graphics::createGraphicsPipeline(Window* window) {
     pipelineLayoutInfo.pushConstantRangeCount = 0;
     pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
-    Debug::AssertIf::isFalse(vkCreatePipelineLayout(_logicalDevice,&pipelineLayoutInfo,nullptr,&window->_pipelineLayout) == VK_SUCCESS, "Failed to create pipeline layout");
+    Debug::AssertIf::isFalse(vkCreatePipelineLayout(_logicalDevice,&pipelineLayoutInfo,nullptr,&group.layout) == VK_SUCCESS, "Failed to create pipeline layout");
 
     Debug::Log::pass("Created fixed state");
 
@@ -376,14 +375,16 @@ void Graphics::createGraphicsPipeline(Window* window) {
     pipelineInfo.pDepthStencilState = nullptr;
     pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.pDynamicState = &dynamicState;
-    pipelineInfo.layout = window->_pipelineLayout;
+    pipelineInfo.layout = group.layout;
     pipelineInfo.renderPass = window->_renderPass;
     pipelineInfo.subpass = 0;
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
     pipelineInfo.basePipelineIndex = -1;
 
-    Debug::AssertIf::isFalse(vkCreateGraphicsPipelines(_logicalDevice,VK_NULL_HANDLE,1,&pipelineInfo, nullptr,&window->_graphicsPipeline) == VK_SUCCESS, "Failed to create graphics pipeline!");
+    Debug::AssertIf::isFalse(vkCreateGraphicsPipelines(_logicalDevice,VK_NULL_HANDLE,1,&pipelineInfo, nullptr,&group.pipeline) == VK_SUCCESS, "Failed to create graphics pipeline!");
     Debug::Log::pass("Successfully created graphics pipeline!");
+
+    return group;
 }
 
 void Graphics::createSyncObjects() {

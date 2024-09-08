@@ -37,6 +37,10 @@ struct QueueFamilyIndices {
 
 class Graphics {
 public:
+    struct GraphicsPipelineGroup {
+        VkPipelineLayout layout;
+        VkPipeline pipeline;
+    };
 
     struct Queues {
         VkQueue graphicsQueue;
@@ -73,7 +77,7 @@ public:
     VkFence inFlightFence;
 
     void createRenderPass(Window* window);
-    void createGraphicsPipeline(Window* window);
+    GraphicsPipelineGroup createGraphicsPipeline(Shader* shader, Window* window);
     void createSyncObjects();
     static bool enableValidationLayers;
     Graphics();

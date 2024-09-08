@@ -1,4 +1,5 @@
 #include "window.h"
+#include "shader.h"
 
 void Window::createSwapChain() {
     SwapChainSupportDetails swapChainSupport = Graphics::getInstance()->getSwapChainSupport(Graphics::getInstance()->_physicalDevice, &_surface);
@@ -128,7 +129,7 @@ void Window::createCommandBuffer() {
     Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, &_commandBuffer) == VK_SUCCESS, "Failed to allocate command buffers!");
 }
 
-void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Shader* shader) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     beginInfo.flags = 0;
@@ -149,7 +150,7 @@ void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
 
     vkCmdBeginRenderPass(commandBuffer,&renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,_graphicsPipeline);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[this].pipeline);
 
     VkViewport viewport{};
     viewport.x = 0.0f;
@@ -192,6 +193,7 @@ VkExtent2D Window::getExtents(const VkSurfaceCapabilitiesKHR &capabilities) {
 
 Window::Window() {
     Graphics::getInstance();
+    Graphics::getInstance()->_windows.push_back(this);
     this->_title = "Pomegranate Engine";
     this->_size = {800, 600};
     this->_fullscreen = false;
@@ -203,10 +205,12 @@ Window::Window() {
     createSwapChain();
     createImageViews();
     Graphics::getInstance()->createRenderPass(this);
-    Graphics::getInstance()->createGraphicsPipeline(this);
     createFramebuffers();
     createCommandPool();
     createCommandBuffer();
+    for(auto shader : Graphics::getInstance()->_shaders) {
+        shader->requestPipeline(this);
+    }
 }
 
 Window::~Window() {
@@ -221,8 +225,6 @@ Window::~Window() {
     vkDestroyCommandPool(Graphics::getInstance()->_logicalDevice,_commandPool, nullptr);
     vkDestroySwapchainKHR(Graphics::getInstance()->_logicalDevice,_swapChain, nullptr);
     vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
-    vkDestroyPipeline(Graphics::getInstance()->_logicalDevice, _graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(Graphics::getInstance()->_logicalDevice,_pipelineLayout, nullptr);
     vkDestroyRenderPass(Graphics::getInstance()->_logicalDevice,_renderPass, nullptr);
     glfwDestroyWindow(this->_window);
 }

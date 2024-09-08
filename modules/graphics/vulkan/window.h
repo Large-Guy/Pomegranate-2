@@ -16,8 +16,6 @@ public:
     std::vector<VkFramebuffer> _swapChainFramebuffers;
 
     VkRenderPass _renderPass;
-    VkPipelineLayout _pipelineLayout;
-    VkPipeline _graphicsPipeline;
 
     VkCommandPool _commandPool;
     VkCommandBuffer _commandBuffer;
@@ -38,7 +36,7 @@ public:
     void createFramebuffers();
     void createCommandPool();
     void createCommandBuffer();
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Shader* shader);
 
     void setTitle(const String& title);
     void setSize(Vector2i size);

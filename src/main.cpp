@@ -37,7 +37,7 @@ int main() {
         vkAcquireNextImageKHR(Graphics::getInstance()->_logicalDevice,window._swapChain, UINT64_MAX, Graphics::getInstance()->imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
         vkResetCommandBuffer(window._commandBuffer, 0);
-        window.recordCommandBuffer(window._commandBuffer,imageIndex);
+        window.recordCommandBuffer(window._commandBuffer,imageIndex, &shader);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
