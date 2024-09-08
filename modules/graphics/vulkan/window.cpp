@@ -83,6 +83,95 @@ void Window::createImageViews() {
     Debug::Log::pass("Created image views");
 }
 
+void Window::createFramebuffers() {
+    _swapChainFramebuffers.resize(_swapChainImageViews.size());
+
+    for (int i = 0; i < _swapChainImageViews.size(); ++i) {
+        VkImageView attachments[] = {
+                _swapChainImageViews[i]
+        };
+
+        VkFramebufferCreateInfo framebufferCreateInfo;
+        framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferCreateInfo.renderPass = _renderPass;
+        framebufferCreateInfo.attachmentCount = 1;
+        framebufferCreateInfo.pAttachments = attachments;
+        framebufferCreateInfo.width = _swapExtent.width;
+        framebufferCreateInfo.height = _swapExtent.height;
+        framebufferCreateInfo.layers = 1;
+
+        Debug::AssertIf::isFalse(vkCreateFramebuffer(Graphics::getInstance()->_logicalDevice, &framebufferCreateInfo,
+                                                     nullptr,&_swapChainFramebuffers[i]) == VK_SUCCESS, "Failed to create framebuffer");
+    }
+    Debug::Log::pass("Successfully created frame buffers");
+}
+
+void Window::createCommandPool() {
+    QueueFamilyIndices queueFamilyIndices = Graphics::getInstance()->getQueueFamilies(Graphics::getInstance()->_physicalDevice);
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+    Debug::AssertIf::isFalse(vkCreateCommandPool(Graphics::getInstance()->_logicalDevice, &poolInfo, nullptr, &_commandPool) == VK_SUCCESS, "Failed to create command pool!");
+    Debug::Log::pass("Successfully created command pool!");
+}
+
+void Window::createCommandBuffer() {
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = _commandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+
+    Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, &_commandBuffer) == VK_SUCCESS, "Failed to allocate command buffers!");
+}
+
+void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = 0;
+    beginInfo.pInheritanceInfo = nullptr;
+
+    Debug::AssertIf::isFalse(vkBeginCommandBuffer(commandBuffer,&beginInfo) == VK_SUCCESS, "Failed to begin recording command buffer!");
+
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = _renderPass;
+    renderPassInfo.framebuffer = _swapChainFramebuffers[imageIndex];
+    renderPassInfo.renderArea.offset = {0,0};
+    renderPassInfo.renderArea.extent = _swapExtent;
+
+    VkClearValue clearColor = {{{0.0f,0.0f,0.0f,1.0f}}};
+    renderPassInfo.clearValueCount = 1;
+    renderPassInfo.pClearValues = &clearColor;
+
+    vkCmdBeginRenderPass(commandBuffer,&renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,_graphicsPipeline);
+
+    VkViewport viewport{};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = static_cast<float>(_swapExtent.width);
+    viewport.height = static_cast<float>(_swapExtent.height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+    VkRect2D scissor{};
+    scissor.offset = {0, 0};
+    scissor.extent = _swapExtent;
+    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+    vkCmdDraw(commandBuffer,3,1,0,0);
+
+    vkCmdEndRenderPass(commandBuffer);
+
+    Debug::AssertIf::isFalse(vkEndCommandBuffer(commandBuffer) == VK_SUCCESS, "Failed to record command buffer!");
+}
+
 VkExtent2D Window::getExtents(const VkSurfaceCapabilitiesKHR &capabilities) {
     if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
         return capabilities.currentExtent;
@@ -121,11 +210,15 @@ Window::Window() {
 }
 
 Window::~Window() {
+    for(auto framebuffer : _swapChainFramebuffers) {
+        vkDestroyFramebuffer(Graphics::getInstance()->_logicalDevice,framebuffer, nullptr);
+    }
+
     for(auto imageView : _swapChainImageViews)
     {
         vkDestroyImageView(Graphics::getInstance()->_logicalDevice,imageView, nullptr);
     }
-
+    vkDestroyCommandPool(Graphics::getInstance()->_logicalDevice,_commandPool, nullptr);
     vkDestroySwapchainKHR(Graphics::getInstance()->_logicalDevice,_swapChain, nullptr);
     vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
     vkDestroyPipeline(Graphics::getInstance()->_logicalDevice, _graphicsPipeline, nullptr);

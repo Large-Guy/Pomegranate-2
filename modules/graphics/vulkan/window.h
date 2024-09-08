@@ -5,7 +5,7 @@
 #include <math/math.h>
 
 class Window {
-private:
+public:
     GLFWwindow* _window;
     VkSurfaceKHR _surface;
     VkSwapchainKHR _swapChain;
@@ -13,10 +13,14 @@ private:
     std::vector<VkImageView> _swapChainImageViews;
     VkFormat _swapChainImageFormat;
     VkExtent2D _swapExtent;
+    std::vector<VkFramebuffer> _swapChainFramebuffers;
 
     VkRenderPass _renderPass;
     VkPipelineLayout _pipelineLayout;
     VkPipeline _graphicsPipeline;
+
+    VkCommandPool _commandPool;
+    VkCommandBuffer _commandBuffer;
 
     String _title;
     Vector2i _size;
@@ -31,6 +35,11 @@ private:
 public:
     Window();
     ~Window();
+    void createFramebuffers();
+    void createCommandPool();
+    void createCommandBuffer();
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
     void setTitle(const String& title);
     void setSize(Vector2i size);
     void setSize(int width, int height);

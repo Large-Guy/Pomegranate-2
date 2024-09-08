@@ -23,6 +23,10 @@ Graphics::Graphics() {
 }
 
 Graphics::~Graphics() {
+    vkDestroySemaphore(_logicalDevice, imageAvailableSemaphore, nullptr);
+    vkDestroySemaphore(_logicalDevice, renderFinishedSemaphore, nullptr);
+    vkDestroyFence(_logicalDevice, inFlightFence, nullptr);
+
     for(auto& shader : _shaders)
     {
         delete shader;
@@ -224,6 +228,17 @@ void Graphics::createRenderPass(Window* window) {
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
 
+    VkSubpassDependency dependency{};
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcAccessMask = 0;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+    renderPassInfo.dependencyCount = 1;
+    renderPassInfo.pDependencies = &dependency;
+
     Debug::AssertIf::isFalse(vkCreateRenderPass(_logicalDevice,&renderPassInfo,nullptr,&window->_renderPass) == VK_SUCCESS, "Failed to create render pass!");
 }
 
@@ -364,6 +379,19 @@ void Graphics::createGraphicsPipeline(Window* window) {
 
     Debug::AssertIf::isFalse(vkCreateGraphicsPipelines(_logicalDevice,VK_NULL_HANDLE,1,&pipelineInfo, nullptr,&window->_graphicsPipeline) == VK_SUCCESS, "Failed to create graphics pipeline!");
     Debug::Log::pass("Successfully created graphics pipeline!");
+}
+
+void Graphics::createSyncObjects() {
+    VkSemaphoreCreateInfo semaphoreInfo{};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkFenceCreateInfo fenceInfo{};
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+    Debug::AssertIf::isFalse(vkCreateSemaphore(_logicalDevice,&semaphoreInfo,nullptr,&imageAvailableSemaphore) == VK_SUCCESS, "Failed to create semaphore!");
+    Debug::AssertIf::isFalse(vkCreateSemaphore(_logicalDevice,&semaphoreInfo,nullptr,&renderFinishedSemaphore) == VK_SUCCESS, "Failed to create semaphore!");
+    Debug::AssertIf::isFalse(vkCreateFence(_logicalDevice,&fenceInfo,nullptr,&inFlightFence) == VK_SUCCESS, "Failed to create semaphore!");
 }
 
 bool Graphics::hasValidationLayerSupport() {

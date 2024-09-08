@@ -36,7 +36,7 @@ struct QueueFamilyIndices {
 };
 
 class Graphics {
-private:
+public:
 
     struct Queues {
         VkQueue graphicsQueue;
@@ -69,8 +69,13 @@ private:
 
     static Graphics* _graphicsInstance;
 public:
+    VkSemaphore imageAvailableSemaphore;
+    VkSemaphore renderFinishedSemaphore;
+    VkFence inFlightFence;
+
     void createRenderPass(Window* window);
     void createGraphicsPipeline(Window* window);
+    void createSyncObjects();
     static bool enableValidationLayers;
     Graphics();
     ~Graphics();
