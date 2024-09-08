@@ -11,12 +11,6 @@ int main() {
 
     Graphics::enableValidationLayers = true;
 
-    Window window;
-
-    window.setTitle("Pomegranate Engine - Vulkan");
-    window.setSize(800, 600);
-    window.show();
-
     auto vertexFile = File("assets/graphics/shaders/shader.vert.spv");
     vertexFile.open();
     auto fragmentFile = File("assets/graphics/shaders/shader.frag.spv");
@@ -27,14 +21,11 @@ int main() {
 
     Shader shader(vertexShader, fragmentShader);
 
-    Graphics::getInstance()->createRenderPass(&window);
-    Graphics::getInstance()->createGraphicsPipeline(&window);
+    Window window;
 
-    window.createFramebuffers();
-    window.createCommandPool();
-    window.createCommandBuffer();
-
-    Graphics::getInstance()->createSyncObjects();
+    window.setTitle("Pomegranate Engine - Vulkan");
+    window.setSize(800, 600);
+    window.show();
 
     while(window.isOpen()) {
         window.poll();
@@ -45,7 +36,7 @@ int main() {
         uint32_t imageIndex;
         vkAcquireNextImageKHR(Graphics::getInstance()->_logicalDevice,window._swapChain, UINT64_MAX, Graphics::getInstance()->imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
-        vkResetCommandBuffer(window._commandBuffer, imageIndex);
+        vkResetCommandBuffer(window._commandBuffer, 0);
         window.recordCommandBuffer(window._commandBuffer,imageIndex);
 
         VkSubmitInfo submitInfo{};

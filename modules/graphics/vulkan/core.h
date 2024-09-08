@@ -48,7 +48,6 @@ public:
     VkDevice _logicalDevice;
     Queues _queues;
     std::vector<const char*> validationLayers;
-    VkSurfaceKHR _currentSurface;
 
     std::vector<const char*> deviceExtensions;
 
@@ -63,7 +62,7 @@ public:
     bool isDeviceSuitable(VkPhysicalDevice device);
     bool hasDeviceExtensionSupport(VkPhysicalDevice device);
     QueueFamilyIndices getQueueFamilies(VkPhysicalDevice device);
-    SwapChainSupportDetails getSwapChainSupport(VkPhysicalDevice device);
+    SwapChainSupportDetails getSwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR* surface = nullptr);
     VkSurfaceFormatKHR getSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> availableFormats);
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 

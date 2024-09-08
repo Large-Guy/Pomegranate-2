@@ -1,7 +1,7 @@
 #include "window.h"
 
 void Window::createSwapChain() {
-    SwapChainSupportDetails swapChainSupport = Graphics::getInstance()->getSwapChainSupport(Graphics::getInstance()->_physicalDevice);
+    SwapChainSupportDetails swapChainSupport = Graphics::getInstance()->getSwapChainSupport(Graphics::getInstance()->_physicalDevice, &_surface);
 
     VkSurfaceFormatKHR surfaceFormat = Graphics::getInstance()->getSwapSurfaceFormat(swapChainSupport.formats);
     VkPresentModeKHR presentMode = Graphics::getInstance()->chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -197,16 +197,16 @@ Window::Window() {
     this->_fullscreen = false;
     this->_visible = false;
     this->_open = true;
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     this->_window = glfwCreateWindow(this->_size.x, this->_size.y, this->_title.data(), nullptr, nullptr);
     Debug::AssertIf::isFalse(glfwCreateWindowSurface(Graphics::getInstance()->_instance, this->_window, nullptr, &this->_surface) == VK_SUCCESS,"Failed to create window surface");
     glfwHideWindow(this->_window);
-    Graphics::getInstance()->_currentSurface = this->_surface; //Set the current surface to the window surface
-    Graphics::getInstance()->createPhysicalDevice(); //Create the physical device now because we need the surface to do so
-    Graphics::getInstance()->createLogicalDevice(Graphics::enableValidationLayers); //Create the logical device now because we need the physical device to do so
     createSwapChain();
     createImageViews();
+    Graphics::getInstance()->createRenderPass(this);
+    Graphics::getInstance()->createGraphicsPipeline(this);
+    createFramebuffers();
+    createCommandPool();
+    createCommandBuffer();
 }
 
 Window::~Window() {

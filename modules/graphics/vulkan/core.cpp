@@ -18,8 +18,13 @@ Graphics::Graphics() {
             VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 
-    Debug::AssertIf::isFalse(glfwInit(), "Failed to initialize GLFW");
+    Debug::AssertIf::isFalse(glfwInit() == GLFW_TRUE, "Failed to initialize GLFW");
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     Graphics::createInstance(enableValidationLayers);
+    createPhysicalDevice();
+    createLogicalDevice(Graphics::enableValidationLayers);
+    createSyncObjects();
 }
 
 Graphics::~Graphics() {
@@ -459,6 +464,22 @@ QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
     std::vector<VkQueueFamilyProperties > queueFamilies(queueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
+    //Create a temporary surface and window to get the queue family indices
+    GLFWwindow* tempWindow = glfwCreateWindow(1,1,"Temp", nullptr, nullptr);
+    VkSurfaceKHR tempSurface;
+    if(glfwCreateWindowSurface(_instance,tempWindow, nullptr,&tempSurface) == VK_SUCCESS)
+    {
+        Debug::Log::pass("Created temporary surface");
+    }
+    else {
+        //Get glfw error
+        Debug::Log::fail("Failed to create temporary surface");
+        const char* error;
+        int code = glfwGetError(&error);
+        Debug::Log::fail(String("Error code: ") + String(code) + " - " + String(error));
+        throw std::runtime_error("Failed to create temporary surface");
+    }
+
     int i = 0;
     for(const auto& queueFamily : queueFamilies) {
         if(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
@@ -466,7 +487,7 @@ QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
         }
 
         VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, _currentSurface, &presentSupport);
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, tempSurface, &presentSupport);
 
         if(presentSupport)
         {
@@ -479,31 +500,46 @@ QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
         i++;
     }
 
+    glfwDestroyWindow(tempWindow);
     return indices;
 }
 
-SwapChainSupportDetails Graphics::getSwapChainSupport(VkPhysicalDevice device) {
+SwapChainSupportDetails Graphics::getSwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR* surface) {
     SwapChainSupportDetails details;
 
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, _currentSurface, &details.capabilities);
+    GLFWwindow* tempWindow;
+    VkSurfaceKHR tempSurface;
+    if(surface != nullptr)
+    {
+        tempSurface = *surface;
+    }
+    else {
+        //Create a temporary surface and window to get the swap chain support details
+        tempWindow = glfwCreateWindow(1,1,"Temp", nullptr, nullptr);
+        glfwCreateWindowSurface(_instance, tempWindow, nullptr, &tempSurface);
+    }
+
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, tempSurface, &details.capabilities);
 
     uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device,_currentSurface,&formatCount, nullptr);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device,tempSurface,&formatCount, nullptr);
 
     if(formatCount != 0)
     {
         details.formats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, _currentSurface, &formatCount, details.formats.data());
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, tempSurface, &formatCount, details.formats.data());
     }
 
     uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(device,_currentSurface,&presentModeCount, nullptr);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device,tempSurface,&presentModeCount, nullptr);
 
     if(presentModeCount != 0)
     {
         details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device,_currentSurface,&presentModeCount,details.presentModes.data());
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device,tempSurface,&presentModeCount,details.presentModes.data());
     }
+    if(tempWindow != nullptr)
+        glfwDestroyWindow(tempWindow);
 
     return details;
 }

@@ -17,73 +17,73 @@ public:
         static inline void isTrue(bool condition, const String& message) {
             if (condition) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isFalse(bool condition, const String& message) {
             if (!condition) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isNull(void* ptr, const String& message) {
             if (ptr == nullptr) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isNotNull(void* ptr, const String& message) {
             if (ptr != nullptr) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isZero(int value, const String& message) {
             if (value == 0) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isNotZero(int value, const String& message) {
             if (value != 0) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isEqual(int a, int b, const String& message) {
             if (a == b) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isNotEqual(int a, int b, const String& message) {
             if (a != b) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isLessThan(int a, int b, const String& message) {
             if (a < b) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isLessThanOrEqual(int a, int b, const String& message) {
             if (a <= b) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isGreaterThan(int a, int b, const String& message) {
             if (a > b) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
         static inline void isGreaterThanOrEqual(int a, int b, const String& message) {
             if (a >= b) {
                 Log::fail(message);
-                exit(1);
+                throw std::runtime_error(message.data());
             }
         }
     };
