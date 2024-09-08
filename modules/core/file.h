@@ -13,9 +13,9 @@ public:
     File();
     File(const String& path);
     ~File();
-    File& open();
-    File& open(const String& path);
-    File& close();
+    void open();
+    void open(const String& path);
+    void close();
     bool exists();
     String readTextLine();
     String readText();

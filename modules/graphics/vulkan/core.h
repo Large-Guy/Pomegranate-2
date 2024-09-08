@@ -58,7 +58,6 @@ private:
     void createInstance(bool enableValidationLayers);
     void createPhysicalDevice();
     void createLogicalDevice(bool enableValidationLayers);
-    void createGraphicsPipeline();
 
     bool hasValidationLayerSupport();
     bool isDeviceSuitable(VkPhysicalDevice device);
@@ -70,6 +69,8 @@ private:
 
     static Graphics* _graphicsInstance;
 public:
+    void createRenderPass(Window* window);
+    void createGraphicsPipeline(Window* window);
     static bool enableValidationLayers;
     Graphics();
     ~Graphics();

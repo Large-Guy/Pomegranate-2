@@ -128,6 +128,9 @@ Window::~Window() {
 
     vkDestroySwapchainKHR(Graphics::getInstance()->_logicalDevice,_swapChain, nullptr);
     vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
+    vkDestroyPipeline(Graphics::getInstance()->_logicalDevice, _graphicsPipeline, nullptr);
+    vkDestroyPipelineLayout(Graphics::getInstance()->_logicalDevice,_pipelineLayout, nullptr);
+    vkDestroyRenderPass(Graphics::getInstance()->_logicalDevice,_renderPass, nullptr);
     glfwDestroyWindow(this->_window);
 }
 

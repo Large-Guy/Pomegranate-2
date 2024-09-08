@@ -3,31 +3,30 @@
 File::File() {
     this->_path = "";
     this->_lines = List<List<char>>();
+    this->buffer = List<char>();
 }
 
 File::File(const String& path) {
     this->_path = path;
     this->_lines = List<List<char>>();
+    this->buffer = List<char>();
 }
 
 File::~File() {
     this->_file.close();
 }
 
-File& File::open() {
-    this->_file.open(this->_path.data());
-    return *this;
+void File::open() {
+    this->_file.open(std::string(this->_path.data()));
 }
 
-File& File::open(const String& path) {
+void File::open(const String& path) {
     this->_path = path;
     this->_file.open(this->_path.data());
-    return *this;
 }
 
-File& File::close() {
+void File::close() {
     this->_file.close();
-    return *this;
 }
 
 bool File::exists() {
@@ -67,10 +66,13 @@ List<List<char>>& File::readBufferLine() {
 
 List<char>& File::readBuffer() {
     this->buffer.clear();
+    //Get file length
+    this->_file.seekg(0, std::ios::end);
+    size_t length = this->_file.tellg();
+    this->buffer.reserve(length);
     this->_file.seekg(0, std::ios::beg);
-    while (!this->_file.eof()) {
-        char c;
-        this->_file.get(c);
+    char c;
+    while (this->_file.get(c)) {
         this->buffer.add(c);
     }
     return this->buffer;

@@ -14,6 +14,9 @@ private:
     VkFormat _swapChainImageFormat;
     VkExtent2D _swapExtent;
 
+    VkRenderPass _renderPass;
+    VkPipelineLayout _pipelineLayout;
+    VkPipeline _graphicsPipeline;
 
     String _title;
     Vector2i _size;
@@ -45,6 +48,8 @@ public:
     Vector2i getSize() const;
     String getTitle() const;
     [[nodiscard]] bool isOpen() const;
+
+    friend Graphics;
 };
 
 

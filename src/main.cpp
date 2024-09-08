@@ -9,53 +9,30 @@
 
 int main() {
 
-    ECS::setThreadCount(ECS::getMaxThreadCount()/2);
-
     Graphics::enableValidationLayers = true;
 
-    const EventID UPDATE = Event::getEventId("update");
-    const EventID DRAW = Event::getEventId("draw");
+    Window window;
 
-    Extensions::Common::init();
+    window.setTitle("Pomegranate Engine - Vulkan");
+    window.setSize(800, 600);
+    window.show();
 
-    for(int i = 0; i < 64; i++)
-    {
-        Entity entity = Entity::create();
-        entity.addComponent<Transform2D>(Extensions::Common::TRANSFORM_2D);
+    auto vertexFile = File("assets/graphics/shaders/shader.vert.spv");
+    vertexFile.open();
+    auto fragmentFile = File("assets/graphics/shaders/shader.frag.spv");
+    fragmentFile.open();
 
+    auto vertexShader = vertexFile.readBuffer();
+    auto fragmentShader = fragmentFile.readBuffer();
+
+    Shader shader(vertexShader, fragmentShader);
+
+    Graphics::getInstance()->createRenderPass(&window);
+    Graphics::getInstance()->createGraphicsPipeline(&window);
+
+    while(window.isOpen()) {
+        window.poll();
     }
-
-    const QuestionID GET_ENTITY_COUNT = Question::getQuestionId("get_entity_count");
-
-    Question::answer(GET_ENTITY_COUNT,std::function<int()>([&](){
-        int count = 0;
-        //Mutex lock
-        omp_lock_t lock;
-        omp_init_lock(&lock);
-
-        ECS::parallelEach("Transform2D", [&](void *transform, const Entity& entity) {
-            omp_set_lock(&lock);
-            count++;
-            omp_unset_lock(&lock);
-        });
-
-        omp_destroy_lock(&lock);
-
-        return count;
-    }));
-
-    int entityCount = Question::ask<int,Resolver::Sum>(GET_ENTITY_COUNT);
-
-    std::cout << "Entity Count: " << entityCount << std::endl;
-
-    int count = 0;
-    //Mutex lock
-
-    ECS::each("Transform2D", [&](void *transform, const Entity& entity) {
-        count++;
-    });
-
-    std::cout << "Entity Count: " << count << std::endl;
 
     return 0;
 }

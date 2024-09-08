@@ -66,6 +66,10 @@ public:
     {
         this->_data.resize(size);
     }
+    void reserve(size_t size)
+    {
+        this->_data.reserve(size);
+    }
     T& last()
     {
         return this->_data.back();

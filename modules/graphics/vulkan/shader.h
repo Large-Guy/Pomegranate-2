@@ -12,6 +12,7 @@ private:
 public:
     Shader(List<char> vertex, List<char> fragment);
     ~Shader();
+    friend Graphics;
 };
 
 
