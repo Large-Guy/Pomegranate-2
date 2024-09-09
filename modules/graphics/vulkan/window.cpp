@@ -131,7 +131,7 @@ void Window::createCommandBuffer() {
     Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, _commandBuffers.data()) == VK_SUCCESS, "Failed to allocate command buffers!");
 }
 
-void Window::recordCommandBuffer(Shader* shader) {
+void Window::drawShader(Shader* shader) {
     VkCommandBuffer& commandBuffer = getCurrentCommandBuffer();
 
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[this].pipeline);

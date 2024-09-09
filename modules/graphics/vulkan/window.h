@@ -49,7 +49,7 @@ public:
     void createFramebuffers();
     void createCommandPool();
     void createCommandBuffer();
-    void recordCommandBuffer(Shader* shader);
+    void drawShader(Shader* shader);
     void beginCommandBuffer();
     void endCommandBuffer();
 

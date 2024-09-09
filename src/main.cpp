@@ -41,8 +41,8 @@ int main() {
         window.draw.begin();
         window.draw.clear({0.0, 0.0, 0.0, 1.0});
 
-        window.recordCommandBuffer(&shader);
-        //window.recordCommandBuffer(&shader1);
+        window.drawShader(&shader);
+        window.drawShader(&shader1);
 
         window.draw.end();
     }
