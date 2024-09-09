@@ -18,7 +18,9 @@ public:
     VkRenderPass _renderPass;
 
     VkCommandPool _commandPool;
-    VkCommandBuffer _commandBuffer;
+    std::vector<VkCommandBuffer> _commandBuffers;
+
+    uint32_t _currentFrame = 0;
 
     String _title;
     Vector2i _size;

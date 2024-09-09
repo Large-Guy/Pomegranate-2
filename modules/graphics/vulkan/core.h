@@ -70,11 +70,13 @@ public:
     VkSurfaceFormatKHR getSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> availableFormats);
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 
-    static Graphics* _graphicsInstance;
+    static Graphics _graphicsInstance;
 public:
-    VkSemaphore imageAvailableSemaphore;
-    VkSemaphore renderFinishedSemaphore;
-    VkFence inFlightFence;
+    std::vector<VkSemaphore> imageAvailableSemaphores;
+    std::vector<VkSemaphore> renderFinishedSemaphores;
+    std::vector<VkFence> inFlightFences;
+
+    static const int MAX_FRAMES_IN_FLIGHT;
 
     void createRenderPass(Window* window);
     GraphicsPipelineGroup createGraphicsPipeline(Shader* shader, Window* window);

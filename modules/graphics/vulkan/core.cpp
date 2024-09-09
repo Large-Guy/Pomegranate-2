@@ -2,8 +2,9 @@
 #include "window.h"
 #include "shader.h"
 
-Graphics* Graphics::_graphicsInstance = nullptr;
+Graphics Graphics::_graphicsInstance{};
 bool Graphics::enableValidationLayers = false;
+const int Graphics::MAX_FRAMES_IN_FLIGHT = 2;
 
 Graphics::Graphics() {
     _instance = VK_NULL_HANDLE;
@@ -28,9 +29,11 @@ Graphics::Graphics() {
 }
 
 Graphics::~Graphics() {
-    vkDestroySemaphore(_logicalDevice, imageAvailableSemaphore, nullptr);
-    vkDestroySemaphore(_logicalDevice, renderFinishedSemaphore, nullptr);
-    vkDestroyFence(_logicalDevice, inFlightFence, nullptr);
+    for(int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        vkDestroySemaphore(_logicalDevice, imageAvailableSemaphores[i], nullptr);
+        vkDestroySemaphore(_logicalDevice, renderFinishedSemaphores[i], nullptr);
+        vkDestroyFence(_logicalDevice, inFlightFences[i], nullptr);
+    }
 
     for(auto& shader : _shaders)
     {
@@ -388,6 +391,10 @@ Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(Shader* shader,
 }
 
 void Graphics::createSyncObjects() {
+    imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+
     VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -395,9 +402,11 @@ void Graphics::createSyncObjects() {
     fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-    Debug::AssertIf::isFalse(vkCreateSemaphore(_logicalDevice,&semaphoreInfo,nullptr,&imageAvailableSemaphore) == VK_SUCCESS, "Failed to create semaphore!");
-    Debug::AssertIf::isFalse(vkCreateSemaphore(_logicalDevice,&semaphoreInfo,nullptr,&renderFinishedSemaphore) == VK_SUCCESS, "Failed to create semaphore!");
-    Debug::AssertIf::isFalse(vkCreateFence(_logicalDevice,&fenceInfo,nullptr,&inFlightFence) == VK_SUCCESS, "Failed to create semaphore!");
+    for(int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        Debug::AssertIf::isFalse(vkCreateSemaphore(_logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) == VK_SUCCESS, "Failed to create semaphore!");
+        Debug::AssertIf::isFalse(vkCreateSemaphore(_logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) == VK_SUCCESS, "Failed to create semaphore!");
+        Debug::AssertIf::isFalse(vkCreateFence(_logicalDevice, &fenceInfo, nullptr, &inFlightFences[i]) == VK_SUCCESS, "Failed to create semaphore!");
+    }
 }
 
 bool Graphics::hasValidationLayerSupport() {
@@ -572,8 +581,5 @@ bool QueueFamilyIndices::complete() {
 }
 
 Graphics* Graphics::getInstance() {
-    if(_graphicsInstance == nullptr) {
-        _graphicsInstance = new Graphics();
-    }
-    return _graphicsInstance;
+    return &_graphicsInstance;
 }

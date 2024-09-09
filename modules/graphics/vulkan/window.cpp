@@ -120,13 +120,15 @@ void Window::createCommandPool() {
 }
 
 void Window::createCommandBuffer() {
+    _commandBuffers.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
+
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = _commandPool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = 1;
+    allocInfo.commandBufferCount = _commandBuffers.size();
 
-    Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, &_commandBuffer) == VK_SUCCESS, "Failed to allocate command buffers!");
+    Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, _commandBuffers.data()) == VK_SUCCESS, "Failed to allocate command buffers!");
 }
 
 void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Shader* shader) {
@@ -227,6 +229,9 @@ Window::~Window() {
     vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
     vkDestroyRenderPass(Graphics::getInstance()->_logicalDevice,_renderPass, nullptr);
     glfwDestroyWindow(this->_window);
+
+    //Remove from windows list
+    Graphics::getInstance()->_windows.erase(std::remove(Graphics::getInstance()->_windows.begin(), Graphics::getInstance()->_windows.end(), this), Graphics::getInstance()->_windows.end());
 }
 
 void Window::setTitle(const String& title) {

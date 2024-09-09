@@ -36,4 +36,6 @@ Shader::~Shader() {
         vkDestroyPipeline(Graphics::getInstance()->_logicalDevice, _pipelines[window].pipeline, nullptr);
         vkDestroyPipelineLayout(Graphics::getInstance()->_logicalDevice, _pipelines[window].layout, nullptr);
     }
+    //Remove from shaders list
+    Graphics::getInstance()->_shaders.erase(std::remove(Graphics::getInstance()->_shaders.begin(), Graphics::getInstance()->_shaders.end(), this), Graphics::getInstance()->_shaders.end());
 }
