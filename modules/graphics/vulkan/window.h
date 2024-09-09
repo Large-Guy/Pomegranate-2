@@ -12,6 +12,7 @@ public:
         uint32_t imageIndex;
         void begin();
         void end();
+        void clear(Vector4 color);
     };
 
     GLFWwindow* _window;
@@ -40,6 +41,7 @@ public:
     void createSwapChain();
     void createImageViews();
     VkExtent2D getExtents(const VkSurfaceCapabilitiesKHR& capabilities);
+    VkCommandBuffer& getCurrentCommandBuffer();
 public:
     Draw draw;
     Window();
@@ -47,7 +49,9 @@ public:
     void createFramebuffers();
     void createCommandPool();
     void createCommandBuffer();
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, Shader* shader);
+    void recordCommandBuffer(Shader* shader);
+    void beginCommandBuffer();
+    void endCommandBuffer();
 
     void setTitle(const String& title);
     void setSize(Vector2i size);

@@ -131,26 +131,8 @@ void Window::createCommandBuffer() {
     Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, _commandBuffers.data()) == VK_SUCCESS, "Failed to allocate command buffers!");
 }
 
-void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, Shader* shader) {
-    VkCommandBufferBeginInfo beginInfo{};
-    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    beginInfo.flags = 0;
-    beginInfo.pInheritanceInfo = nullptr;
-
-    Debug::AssertIf::isFalse(vkBeginCommandBuffer(commandBuffer,&beginInfo) == VK_SUCCESS, "Failed to begin recording command buffer!");
-
-    VkRenderPassBeginInfo renderPassInfo{};
-    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass = _renderPass;
-    renderPassInfo.framebuffer = _swapChainFramebuffers[draw.imageIndex];
-    renderPassInfo.renderArea.offset = {0,0};
-    renderPassInfo.renderArea.extent = _swapExtent;
-
-    VkClearValue clearColor = {{{0.0f,0.0f,0.0f,1.0f}}};
-    renderPassInfo.clearValueCount = 1;
-    renderPassInfo.pClearValues = &clearColor;
-
-    vkCmdBeginRenderPass(commandBuffer,&renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+void Window::recordCommandBuffer(Shader* shader) {
+    VkCommandBuffer& commandBuffer = getCurrentCommandBuffer();
 
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[this].pipeline);
 
@@ -169,10 +151,22 @@ void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, Shader* shader) 
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
     vkCmdDraw(commandBuffer,3,1,0,0);
+}
 
-    vkCmdEndRenderPass(commandBuffer);
+void Window::beginCommandBuffer() {
+    VkCommandBuffer& commandBuffer = getCurrentCommandBuffer();
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = 0;
+    beginInfo.pInheritanceInfo = nullptr;
 
-    Debug::AssertIf::isFalse(vkEndCommandBuffer(commandBuffer) == VK_SUCCESS, "Failed to record command buffer!");
+    Debug::AssertIf::isFalse(vkBeginCommandBuffer(commandBuffer,&beginInfo) == VK_SUCCESS, "Failed to begin recording command buffer!");
+}
+
+void Window::endCommandBuffer() {
+    vkCmdEndRenderPass(getCurrentCommandBuffer());
+
+    Debug::AssertIf::isFalse(vkEndCommandBuffer(getCurrentCommandBuffer()) == VK_SUCCESS, "Failed to end command buffer!");
 }
 
 VkExtent2D Window::getExtents(const VkSurfaceCapabilitiesKHR &capabilities) {
@@ -191,6 +185,10 @@ VkExtent2D Window::getExtents(const VkSurfaceCapabilitiesKHR &capabilities) {
         actualExtent.height = std::clamp(actualExtent.height,capabilities.minImageExtent.height,capabilities.maxImageExtent.height);
         return actualExtent;
     }
+}
+
+VkCommandBuffer& Window::getCurrentCommandBuffer() {
+    return _commandBuffers[_currentFrame];
 }
 
 Window::Window() {
@@ -331,10 +329,26 @@ void Window::Draw::begin() {
 
     vkAcquireNextImageKHR(Graphics::getInstance()->_logicalDevice, window->_swapChain, UINT64_MAX, Graphics::getInstance()->imageAvailableSemaphores[window->_currentFrame], VK_NULL_HANDLE, &imageIndex);
 
-    vkResetCommandBuffer(window->_commandBuffers[window->_currentFrame], 0);
+    vkResetCommandBuffer(window->getCurrentCommandBuffer(), 0);
+
+    window->beginCommandBuffer();
+
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = window->_renderPass;
+    renderPassInfo.framebuffer = window->_swapChainFramebuffers[window->draw.imageIndex];
+    renderPassInfo.renderArea.offset = {0,0};
+    renderPassInfo.renderArea.extent = window->_swapExtent;
+
+    renderPassInfo.clearValueCount = 0;
+    renderPassInfo.pClearValues = nullptr;
+
+    vkCmdBeginRenderPass(window->getCurrentCommandBuffer(),&renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
 void Window::Draw::end() {
+    window->endCommandBuffer();
+
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -344,7 +358,7 @@ void Window::Draw::end() {
     submitInfo.pWaitSemaphores = waitSemaphores;
     submitInfo.pWaitDstStageMask = waitStages;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &window->_commandBuffers[window->_currentFrame];
+    submitInfo.pCommandBuffers = &window->getCurrentCommandBuffer();
 
     VkSemaphore signalSemaphores[] = {Graphics::getInstance()->renderFinishedSemaphores[window->_currentFrame]};
     submitInfo.signalSemaphoreCount = 1;
@@ -367,4 +381,20 @@ void Window::Draw::end() {
     vkQueuePresentKHR(Graphics::getInstance()->_queues.presentQueue, &presentInfo);
 
     window->_currentFrame = (window->_currentFrame + 1) % Graphics::MAX_FRAMES_IN_FLIGHT;
+}
+
+void Window::Draw::clear(Vector4 color) {
+    VkClearValue clearColor = {color.x, color.y, color.z, color.w};
+
+    VkClearAttachment clearAttachment{};
+    clearAttachment.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    clearAttachment.colorAttachment = 0;
+    clearAttachment.clearValue = clearColor;
+
+    VkClearRect clearRect{};
+    clearRect.layerCount = 1;
+    clearRect.rect.offset = {0,0};
+    clearRect.rect.extent = window->_swapExtent;
+
+    vkCmdClearAttachments(window->getCurrentCommandBuffer(), 1, &clearAttachment, 1, &clearRect);
 }
