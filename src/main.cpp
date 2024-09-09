@@ -5,7 +5,6 @@
 #include <ecs/extensions/common/common.h>
 #include <graphics/vulkan/graphics.h>
 #include <math/math.h>
-#include <omp.h>
 
 int main() {
 

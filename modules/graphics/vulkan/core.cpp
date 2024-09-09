@@ -517,7 +517,7 @@ QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
 SwapChainSupportDetails Graphics::getSwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR* surface) {
     SwapChainSupportDetails details;
 
-    GLFWwindow* tempWindow;
+    GLFWwindow* tempWindow = nullptr;
     VkSurfaceKHR tempSurface;
     if(surface != nullptr)
     {
