@@ -29,47 +29,11 @@ int main() {
     while(window.isOpen()) {
         window.poll();
 
-        vkWaitForFences(Graphics::getInstance()->_logicalDevice, 1, &Graphics::getInstance()->inFlightFences[window._currentFrame], VK_TRUE, UINT64_MAX);
-        vkResetFences(Graphics::getInstance()->_logicalDevice,1,&Graphics::getInstance()->inFlightFences[window._currentFrame]);
+        window.draw.begin();
 
-        uint32_t imageIndex;
-        vkAcquireNextImageKHR(Graphics::getInstance()->_logicalDevice, window._swapChain, UINT64_MAX, Graphics::getInstance()->imageAvailableSemaphores[window._currentFrame], VK_NULL_HANDLE, &imageIndex);
+        window.recordCommandBuffer(window._commandBuffers[window._currentFrame], &shader);
 
-        vkResetCommandBuffer(window._commandBuffers[window._currentFrame], 0);
-        window.recordCommandBuffer(window._commandBuffers[window._currentFrame], imageIndex, &shader);
-
-        VkSubmitInfo submitInfo{};
-        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-        VkSemaphore waitSemaphores[] = {Graphics::getInstance()->imageAvailableSemaphores[window._currentFrame]};
-        VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-        submitInfo.waitSemaphoreCount = 1;
-        submitInfo.pWaitSemaphores = waitSemaphores;
-        submitInfo.pWaitDstStageMask = waitStages;
-        submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &window._commandBuffers[window._currentFrame];
-
-        VkSemaphore signalSemaphores[] = {Graphics::getInstance()->renderFinishedSemaphores[window._currentFrame]};
-        submitInfo.signalSemaphoreCount = 1;
-        submitInfo.pSignalSemaphores = signalSemaphores;
-
-        Debug::AssertIf::isFalse(vkQueueSubmit(Graphics::getInstance()->_queues.graphicsQueue,1,&submitInfo,Graphics::getInstance()->inFlightFences[window._currentFrame]) == VK_SUCCESS, "Failed to submit draw command buffer!");
-
-        VkPresentInfoKHR presentInfo{};
-        presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
-        presentInfo.waitSemaphoreCount = 1;
-        presentInfo.pWaitSemaphores = signalSemaphores;
-
-        VkSwapchainKHR swapChains[] = {window._swapChain};
-        presentInfo.swapchainCount = 1;
-        presentInfo.pSwapchains = swapChains;
-        presentInfo.pImageIndices = &imageIndex;
-        presentInfo.pResults = nullptr;
-
-        vkQueuePresentKHR(Graphics::getInstance()->_queues.presentQueue, &presentInfo);
-
-        window._currentFrame = (window._currentFrame + 1) % Graphics::MAX_FRAMES_IN_FLIGHT;
+        window.draw.end();
     }
 
     return 0;

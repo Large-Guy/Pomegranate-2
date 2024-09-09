@@ -6,6 +6,14 @@
 
 class Window {
 public:
+    class Draw {
+    public:
+        Window* window;
+        uint32_t imageIndex;
+        void begin();
+        void end();
+    };
+
     GLFWwindow* _window;
     VkSurfaceKHR _surface;
     VkSwapchainKHR _swapChain;
@@ -33,12 +41,13 @@ public:
     void createImageViews();
     VkExtent2D getExtents(const VkSurfaceCapabilitiesKHR& capabilities);
 public:
+    Draw draw;
     Window();
     ~Window();
     void createFramebuffers();
     void createCommandPool();
     void createCommandBuffer();
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Shader* shader);
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, Shader* shader);
 
     void setTitle(const String& title);
     void setSize(Vector2i size);

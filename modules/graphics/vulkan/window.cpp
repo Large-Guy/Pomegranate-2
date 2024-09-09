@@ -131,7 +131,7 @@ void Window::createCommandBuffer() {
     Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, _commandBuffers.data()) == VK_SUCCESS, "Failed to allocate command buffers!");
 }
 
-void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Shader* shader) {
+void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, Shader* shader) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     beginInfo.flags = 0;
@@ -142,7 +142,7 @@ void Window::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.renderPass = _renderPass;
-    renderPassInfo.framebuffer = _swapChainFramebuffers[imageIndex];
+    renderPassInfo.framebuffer = _swapChainFramebuffers[draw.imageIndex];
     renderPassInfo.renderArea.offset = {0,0};
     renderPassInfo.renderArea.extent = _swapExtent;
 
@@ -213,6 +213,7 @@ Window::Window() {
     for(auto shader : Graphics::getInstance()->_shaders) {
         shader->requestPipeline(this);
     }
+    draw.window = this;
 }
 
 Window::~Window() {
@@ -320,4 +321,50 @@ String Window::getTitle() const {
 
 bool Window::isOpen() const {
     return this->_open;
+}
+
+//----------- Draw Class ------------
+
+void Window::Draw::begin() {
+    vkWaitForFences(Graphics::getInstance()->_logicalDevice, 1, &Graphics::getInstance()->inFlightFences[window->_currentFrame], VK_TRUE, UINT64_MAX);
+    vkResetFences(Graphics::getInstance()->_logicalDevice,1,&Graphics::getInstance()->inFlightFences[window->_currentFrame]);
+
+    vkAcquireNextImageKHR(Graphics::getInstance()->_logicalDevice, window->_swapChain, UINT64_MAX, Graphics::getInstance()->imageAvailableSemaphores[window->_currentFrame], VK_NULL_HANDLE, &imageIndex);
+
+    vkResetCommandBuffer(window->_commandBuffers[window->_currentFrame], 0);
+}
+
+void Window::Draw::end() {
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore waitSemaphores[] = {Graphics::getInstance()->imageAvailableSemaphores[window->_currentFrame]};
+    VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = waitSemaphores;
+    submitInfo.pWaitDstStageMask = waitStages;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &window->_commandBuffers[window->_currentFrame];
+
+    VkSemaphore signalSemaphores[] = {Graphics::getInstance()->renderFinishedSemaphores[window->_currentFrame]};
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores;
+
+    Debug::AssertIf::isFalse(vkQueueSubmit(Graphics::getInstance()->_queues.graphicsQueue,1,&submitInfo,Graphics::getInstance()->inFlightFences[window->_currentFrame]) == VK_SUCCESS, "Failed to submit draw command buffer!");
+
+    VkPresentInfoKHR presentInfo{};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+
+    VkSwapchainKHR swapChains[] = {window->_swapChain};
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains;
+    presentInfo.pImageIndices = &imageIndex;
+    presentInfo.pResults = nullptr;
+
+    vkQueuePresentKHR(Graphics::getInstance()->_queues.presentQueue, &presentInfo);
+
+    window->_currentFrame = (window->_currentFrame + 1) % Graphics::MAX_FRAMES_IN_FLIGHT;
 }
