@@ -58,6 +58,49 @@ public:
         vkFreeMemory(Graphics::getInstance()->_logicalDevice, _memory, nullptr);
     }
 
+    std::vector<T> data() const
+    {
+        return _data;
+    }
+
+    void add(T data)
+    {
+        _data.push_back(data);
+        generateBuffer();
+    }
+
+    void remove(int index)
+    {
+        _data.erase(_data.begin() + index);
+        generateBuffer();
+    }
+
+    void clear()
+    {
+        _data.clear();
+        generateBuffer();
+    }
+
+    void update(int index, T data)
+    {
+        _data[index] = data;
+        generateBuffer();
+    }
+
+    void set(std::vector<T> data)
+    {
+        _data = data;
+        generateBuffer();
+    }
+
+    void regenerate()
+    {
+        vkDestroyBuffer(Graphics::getInstance()->_logicalDevice, _buffer, nullptr);
+        vkFreeMemory(Graphics::getInstance()->_logicalDevice, _memory, nullptr);
+
+        generateBuffer();
+    }
+
     friend class Graphics;
     friend class Window;
 };

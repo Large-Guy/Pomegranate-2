@@ -25,9 +25,12 @@ int main() {
 
 //region Model
     std::vector<Vertex2D> vertices = {
-            {{0.0f, -0.5f}, {1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-            {{0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
-            {{-0.5f, 0.5f}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}}
+            {{-0.5f, -0.5f}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+            {{0.5f, -0.5f}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+            {{0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+            {{0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+            {{-0.5f, 0.5f}, {0.0f, 1.0f}, {1.0f, 1.0f, 0.0f}},
+            {{-0.5f, -0.5f}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}
     };
 
     //Buffer
@@ -40,6 +43,9 @@ int main() {
     window.setSize(800, 600);
     window.show();
 
+    double lastTime = glfwGetTime();
+    double deltaTime = 0.0;
+
     while(window.isOpen()) {
         window.poll();
 
@@ -49,6 +55,12 @@ int main() {
         window.drawBuffer(&vertexBuffer,&shader);
 
         window.draw.end();
+
+        double currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        Debug::Log::info(String("FPS: ") + String(1.0f / (float)deltaTime));
     }
 
     return 0;
