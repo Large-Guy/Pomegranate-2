@@ -66,35 +66,31 @@ public:
     void add(T data)
     {
         _data.push_back(data);
-        generateBuffer();
     }
 
     void remove(int index)
     {
         _data.erase(_data.begin() + index);
-        generateBuffer();
     }
 
     void clear()
     {
         _data.clear();
-        generateBuffer();
     }
 
     void update(int index, T data)
     {
         _data[index] = data;
-        generateBuffer();
     }
 
     void set(std::vector<T> data)
     {
         _data = data;
-        generateBuffer();
     }
 
     void regenerate()
     {
+        vkDeviceWaitIdle(Graphics::getInstance()->_logicalDevice);
         vkDestroyBuffer(Graphics::getInstance()->_logicalDevice, _buffer, nullptr);
         vkFreeMemory(Graphics::getInstance()->_logicalDevice, _memory, nullptr);
 

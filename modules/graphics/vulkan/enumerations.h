@@ -4,8 +4,8 @@
 
 enum RenderMode {
     Fill = VK_POLYGON_MODE_FILL,
-    Line = VK_POLYGON_MODE_LINE,
-    Point = VK_POLYGON_MODE_POINT
+    WireFrame = VK_POLYGON_MODE_LINE,
+    Points = VK_POLYGON_MODE_POINT
 };
 
 enum CullMode {

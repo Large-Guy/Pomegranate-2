@@ -6,6 +6,11 @@
 #include <graphics/vulkan/graphics.h>
 #include <math/math.h>
 
+Vec2 rotate(float angle)
+{
+    return {cosf(angle), sinf(angle)};
+}
+
 int main() {
 
     Graphics::enableValidationLayers = true;
@@ -20,18 +25,16 @@ int main() {
     auto vertexShader = vertexFile.readBuffer();
     auto fragmentShader = fragmentFile.readBuffer();
 
-    Shader shader(vertexShader, fragmentShader);
+    Shader shader(vertexShader, fragmentShader, {.renderMode=RenderMode::Fill});
 //endregion
 
 //region Model
-    std::vector<Vertex2D> vertices = {
-            {{-0.5f, -0.5f}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-            {{0.5f, -0.5f}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-            {{0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-            {{0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-            {{-0.5f, 0.5f}, {0.0f, 1.0f}, {1.0f, 1.0f, 0.0f}},
-            {{-0.5f, -0.5f}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}
-    };
+//RGB Triangle model
+    float angle = 0;
+
+    std::vector<Vertex2D> vertices = {{rotate(angle), {0.5, 0.5}, {1.0, 0.0, 0.0}},
+                                      {rotate(angle + 2.0944f), {0.5, 0.5}, {0.0, 1.0, 0.0}},
+                                      {rotate(angle + 2.0944f * 2.0f), {0.5, 0.5}, {0.0, 0.0, 1.0}}};
 
     //Buffer
     Buffer<Vertex2D> vertexBuffer(vertices, BufferType::VertexBuffer);
@@ -43,11 +46,15 @@ int main() {
     window.setSize(800, 600);
     window.show();
 
-    double lastTime = glfwGetTime();
-    double deltaTime = 0.0;
-
     while(window.isOpen()) {
         window.poll();
+
+        vertices = {{rotate(angle), {0.5, 0.5}, {1.0, 0.0, 0.0}},
+                    {rotate(angle + 2.0944f), {0.5, 0.5}, {0.0, 1.0, 0.0}},
+                    {rotate(angle + 2.0944f * 2.0f), {0.5, 0.5}, {0.0, 0.0, 1.0}}};
+        vertexBuffer.set(vertices);
+        vertexBuffer.regenerate();
+        angle += 0.05f;
 
         window.draw.begin();
         window.draw.clear({0.0, 0.0, 0.0, 1.0});
@@ -55,12 +62,6 @@ int main() {
         window.drawBuffer(&vertexBuffer,&shader);
 
         window.draw.end();
-
-        double currentTime = glfwGetTime();
-        deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
-
-        Debug::Log::info(String("FPS: ") + String(1.0f / (float)deltaTime));
     }
 
     return 0;

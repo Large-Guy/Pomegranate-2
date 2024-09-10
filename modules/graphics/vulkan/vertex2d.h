@@ -6,9 +6,9 @@
 #include <array>
 
 struct Vertex2D {
-    Vec2 position;
-    Vec2 texCoord;
-    Vec3 color;
+    Vec2 position = {0.0,0.0};
+    Vec2 texCoord = {0.0,0.0};
+    Vec3 color = {1.0,1.0,1.0};
 
     static VkVertexInputBindingDescription getBindingDescription();
     static std::array<VkVertexInputAttributeDescription,3> getAttributeDescriptions();
