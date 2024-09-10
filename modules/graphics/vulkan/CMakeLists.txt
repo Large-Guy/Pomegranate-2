@@ -6,6 +6,16 @@ set(POMEGRANATE_GRAPHICS_VULKAN_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/window.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/shader.h
         ${CMAKE_CURRENT_SOURCE_DIR}/shader.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/enumerations.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/enumerations.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector2.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector2.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector3.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector3.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector4.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector4.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vertex2d.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/vertex2d.cpp
 )
 
 set(POMEGRANATE_GRAPHICS_VULKAN_INCLUDE_DIRS

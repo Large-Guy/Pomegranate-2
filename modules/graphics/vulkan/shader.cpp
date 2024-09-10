@@ -12,11 +12,13 @@ VkShaderModule Shader::createShaderModule(const List<char> &code) {
 }
 
 void Shader::requestPipeline(Window *window) {
-    Graphics::GraphicsPipelineGroup group = Graphics::getInstance()->createGraphicsPipeline(this, window);
+    Graphics::GraphicsPipelineGroup group = Graphics::getInstance()->createGraphicsPipeline(this, window, _renderMode, _cullMode);
     _pipelines[window] = group;
 }
 
-Shader::Shader(List<char> vertex, List<char> fragment) {
+Shader::Shader(List<char> vertex, List<char> fragment, RenderInfo info) {
+    _renderMode = info.renderMode;
+    _cullMode = info.cullMode;
     _vertex = createShaderModule(vertex);
     _fragment = createShaderModule(fragment);
 

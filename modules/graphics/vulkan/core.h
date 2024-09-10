@@ -18,6 +18,7 @@
 #include <core/core.h>
 #include <optional>
 #include <set>
+#include "enumerations.h"
 
 struct Window;
 struct Shader;
@@ -79,7 +80,7 @@ public:
     static const int MAX_FRAMES_IN_FLIGHT;
 
     void createRenderPass(Window* window);
-    GraphicsPipelineGroup createGraphicsPipeline(Shader* shader, Window* window);
+    GraphicsPipelineGroup createGraphicsPipeline(Shader* shader, Window* window, RenderMode renderMode, CullMode cullMode);
     void createSyncObjects();
     static bool enableValidationLayers;
     Graphics();
