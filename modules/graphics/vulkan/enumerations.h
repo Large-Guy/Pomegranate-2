@@ -3,21 +3,27 @@
 #include <vulkan/vulkan.h>
 
 enum RenderMode {
-    RENDER_MODE_FILL = VK_POLYGON_MODE_FILL,
-    RENDER_MODE_LINE = VK_POLYGON_MODE_LINE,
-    RENDER_MODE_POINT = VK_POLYGON_MODE_POINT
+    Fill = VK_POLYGON_MODE_FILL,
+    Line = VK_POLYGON_MODE_LINE,
+    Point = VK_POLYGON_MODE_POINT
 };
 
 enum CullMode {
-    CULL_MODE_NONE = VK_CULL_MODE_NONE,
-    CULL_MODE_FRONT = VK_CULL_MODE_FRONT_BIT,
-    CULL_MODE_BACK = VK_CULL_MODE_BACK_BIT,
-    CULL_MODE_BOTH = VK_CULL_MODE_FRONT_AND_BACK
+    None = VK_CULL_MODE_NONE,
+    Front = VK_CULL_MODE_FRONT_BIT,
+    Back = VK_CULL_MODE_BACK_BIT,
+    Both = VK_CULL_MODE_FRONT_AND_BACK
+};
+
+enum BufferType {
+    VertexBuffer = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+    IndexBuffer = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+    UniformBuffer = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
 };
 
 struct RenderInfo {
-    RenderMode renderMode = RENDER_MODE_FILL;
-    CullMode cullMode = CULL_MODE_BACK;
+    RenderMode renderMode = Fill;
+    CullMode cullMode = Back;
 };
 
 #endif //POMEGRANATEENGINE_ENUMERATIONS_H

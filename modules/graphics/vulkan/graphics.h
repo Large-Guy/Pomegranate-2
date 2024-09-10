@@ -5,5 +5,7 @@
 #include "shader.h"
 #include "core.h"
 #include "enumerations.h"
+#include "vertex2d.h"
+#include "buffer.h"
 
 #endif //POMEGRANATE_ENGINE_GRAPHICS_VULKAN_GRAPHICS_H

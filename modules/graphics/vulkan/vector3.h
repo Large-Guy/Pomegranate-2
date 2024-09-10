@@ -2,7 +2,7 @@
 #define POMEGRANATEENGINE_VECTOR3_H
 
 
-class Vec3 {
+struct Vec3 {
     float x;
     float y;
     float z;

@@ -2,7 +2,7 @@
 #define POMEGRANATEENGINE_VECTOR4_H
 
 
-class Vector4 {
+struct Vector4 {
     float x;
     float y;
     float z;

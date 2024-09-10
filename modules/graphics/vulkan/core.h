@@ -70,6 +70,8 @@ public:
     SwapChainSupportDetails getSwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR* surface = nullptr);
     VkSurfaceFormatKHR getSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> availableFormats);
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
+    uint32_t getMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
 
     static Graphics _graphicsInstance;
 public:

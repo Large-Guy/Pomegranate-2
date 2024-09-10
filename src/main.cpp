@@ -10,6 +10,8 @@ int main() {
 
     Graphics::enableValidationLayers = true;
 
+
+//region Shader
     auto vertexFile = File("assets/graphics/shaders/shader.vert.spv");
     vertexFile.open();
     auto fragmentFile = File("assets/graphics/shaders/shader.frag.spv");
@@ -19,6 +21,18 @@ int main() {
     auto fragmentShader = fragmentFile.readBuffer();
 
     Shader shader(vertexShader, fragmentShader);
+//endregion
+
+//region Model
+    std::vector<Vertex2D> vertices = {
+            {{0.0f, -0.5f}, {1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+            {{0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
+            {{-0.5f, 0.5f}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}}
+    };
+
+    //Buffer
+    Buffer<Vertex2D> vertexBuffer(vertices, BufferType::VertexBuffer);
+//endregion
 
     Window window;
 
@@ -32,7 +46,7 @@ int main() {
         window.draw.begin();
         window.draw.clear({0.0, 0.0, 0.0, 1.0});
 
-        window.drawShader(&shader);
+        window.drawBuffer(&vertexBuffer,&shader);
 
         window.draw.end();
     }

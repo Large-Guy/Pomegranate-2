@@ -3,6 +3,7 @@
 #include "vector2.h"
 #include "vector3.h"
 #include <vulkan/vulkan.h>
+#include <array>
 
 struct Vertex2D {
     Vec2 position;
@@ -10,7 +11,7 @@ struct Vertex2D {
     Vec3 color;
 
     static VkVertexInputBindingDescription getBindingDescription();
-    static VkVertexInputAttributeDescription* getAttributeDescriptions();
+    static std::array<VkVertexInputAttributeDescription,3> getAttributeDescriptions();
 };
 
 

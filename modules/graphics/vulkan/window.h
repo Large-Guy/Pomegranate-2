@@ -3,6 +3,8 @@
 #include "core.h"
 #include <core/core.h>
 #include <math/math.h>
+#include "buffer.h"
+#include "vertex2d.h"
 
 class Window {
 public:
@@ -49,7 +51,7 @@ public:
     void createFramebuffers();
     void createCommandPool();
     void createCommandBuffer();
-    void drawShader(Shader* shader);
+    void drawBuffer(Buffer<Vertex2D>* buffer, Shader* shader);
     void beginCommandBuffer();
     void endCommandBuffer();
 

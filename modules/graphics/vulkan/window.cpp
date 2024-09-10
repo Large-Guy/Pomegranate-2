@@ -131,10 +131,8 @@ void Window::createCommandBuffer() {
     Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, _commandBuffers.data()) == VK_SUCCESS, "Failed to allocate command buffers!");
 }
 
-void Window::drawShader(Shader* shader) {
+void Window::drawBuffer(Buffer<Vertex2D>* buffer, Shader* shader) {
     VkCommandBuffer& commandBuffer = getCurrentCommandBuffer();
-
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[this].pipeline);
 
     VkViewport viewport{};
     viewport.x = 0.0f;
@@ -150,7 +148,13 @@ void Window::drawShader(Shader* shader) {
     scissor.extent = _swapExtent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    vkCmdDraw(commandBuffer,3,1,0,0);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[this].pipeline);
+
+    VkBuffer vertexBuffers[] = {buffer->_buffer};
+    VkDeviceSize offsets[] = {0};
+    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+    vkCmdDraw(commandBuffer,(uint32_t)buffer->_data.size(),1,0,0);
 }
 
 void Window::beginCommandBuffer() {

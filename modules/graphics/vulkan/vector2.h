@@ -2,7 +2,7 @@
 #define POMEGRANATEENGINE_VECTOR2_H
 
 
-class Vec2 {
+struct Vec2 {
     float x;
     float y;
 };
