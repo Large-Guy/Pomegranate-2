@@ -3,7 +3,7 @@
 #include <core/serializable.h>
 #include <cmath>
 
-struct Vector4 : public Serializable {
+struct Vector4 {
     float x = 0, y = 0, z = 0, w = 0;
     Vector4();
     Vector4(float v);
@@ -35,8 +35,8 @@ struct Vector4 : public Serializable {
     [[nodiscard]] Vector4 reflect(const Vector4& normal) const;
     [[nodiscard]] Vector4 refract(const Vector4& normal, float eta) const;
 
-    void serialize(Archive& a) const override;
-    void deserialize(Archive& a) override;
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 
 };
 

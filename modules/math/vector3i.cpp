@@ -137,7 +137,10 @@ Vector3i Vector3i::lerp(const Vector3i& v, float t) const
 Vector3i Vector3i::slerp(const Vector3i& v, float t) const
 {
     float dot = normalized().dot(v.normalized());
-    dot = std::clamp(dot, -1.0f, 1.0f);
+    if (dot < -1.0f)
+        dot = -1.0f;
+    if (dot > 1.0f)
+        dot = 1.0f;
     float theta = acosf(dot) * t;
     Vector3i relative = (v - *this * dot).normalized();
     return *this * cosf(theta) + relative * sinf(theta);
@@ -175,5 +178,5 @@ void Vector3i::serialize(Archive& a) const
 
 void Vector3i::deserialize(Archive& a)
 {
-    a >> &x >> &y >> &z;
+    a >> x >> y >> z;
 }

@@ -3,7 +3,7 @@
 #include<string>
 #include<core/serializable.h>
 
-class Asset : public Serializable {
+class Asset {
 private:
     std::string _name = "";
     std::string _path = "";
@@ -18,8 +18,8 @@ public:
 
     virtual void reload();
 
-    void serialize(Archive& a) const override;
-    void deserialize(Archive& a) override;
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 

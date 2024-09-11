@@ -31,7 +31,7 @@ void Matrix4x4::serialize(Archive& a) const
 
 void Matrix4x4::deserialize(Archive& a)
 {
-    a >> &x >> &y >> &z >> &w;
+    a >> x >> y >> z >> w;
 }
 
 Matrix4x4 Matrix4x4::transpose() const {

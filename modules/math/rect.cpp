@@ -55,5 +55,5 @@ void Rect2D::serialize(Archive &a) const {
 }
 
 void Rect2D::deserialize(Archive &a) {
-    a >> &position >> &size;
+    a >> position >> size;
 }

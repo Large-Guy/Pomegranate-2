@@ -3,7 +3,7 @@
 #include <core/serializable.h>
 #include <cmath>
 
-class Vector2i : public Serializable {
+class Vector2i {
 public:
     int x = 0, y = 0;
     Vector2i();
@@ -38,8 +38,8 @@ public:
     [[nodiscard]] Vector2i rotate(float angle) const;
     [[nodiscard]] Vector2i rotate(const Vector2i& pivot, float angle) const;
 
-    void serialize(Archive& a) const override;
-    void deserialize(Archive& a) override;
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 template<>

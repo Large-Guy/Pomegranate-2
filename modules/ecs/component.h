@@ -24,7 +24,7 @@ struct ComponentList
     bool has(size_t i) const;
 };
 
-struct Component : public Serializable
+struct Component
 {
 private:
     std::unordered_map<std::string, std::pair<size_t,void*>> _data;

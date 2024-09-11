@@ -3,7 +3,7 @@
 #include <core/serializable.h>
 #include <cmath>
 
-struct Vector3 : public Serializable {
+struct Vector3 {
     float x = 0, y = 0, z = 0;
     Vector3();
     Vector3(float v);
@@ -37,8 +37,8 @@ struct Vector3 : public Serializable {
     //Vector3 rotate(float angle) const;
     //Vector3 rotate(const Vector3& pivot, float angle) const;
 
-    void serialize(Archive& a) const override;
-    void deserialize(Archive& a) override;
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 template<>

@@ -25,7 +25,7 @@ void Matrix2x2::serialize(Archive& a) const
 
 void Matrix2x2::deserialize(Archive& a)
 {
-    a >> &x >> &y;
+    a >> x >> y;
 }
 
 Matrix2x2 Matrix2x2::transpose() const {

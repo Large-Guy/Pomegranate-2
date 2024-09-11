@@ -2,7 +2,7 @@
 #define POMEGRANATE_ENGINE_MATH_MATRIX2X2_H
 #include"vector2.h"
 
-struct Matrix2x2 : public Serializable {
+struct Matrix2x2 {
     Vector2 x = Vector2();
     Vector2 y = Vector2();
 
@@ -13,8 +13,8 @@ struct Matrix2x2 : public Serializable {
     [[nodiscard]] Matrix2x2 transpose() const;
     [[nodiscard]] Matrix2x2 inverse() const;
 
-    void serialize(Archive& a) const override;
-    void deserialize(Archive& a) override;
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 template<>

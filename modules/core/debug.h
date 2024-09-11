@@ -11,6 +11,46 @@ public:
         static void error(String message);
         static void pass(String message);
         static void fail(String message);
+
+        template<typename ...args>
+        static void info(args... messages) {
+            std::cout << "\033[1;44m[INFO]\033[0m  ";
+            // Ensure space between messages
+            ((std::cout << messages << ' '), ...);
+            std::cout << std::endl;
+        }
+
+        template<typename ...args>
+        static void warn(args... messages) {
+            std::cout << "\033[1;43m[WARN]\033[0m  ";
+            // Ensure space between messages
+            ((std::cout << messages << ' '), ...);
+            std::cout << std::endl;
+        }
+
+        template<typename ...args>
+        static void error(args... messages) {
+            std::cout << "\033[1;41m[ERROR]\033[0m ";
+            // Ensure space between messages
+            ((std::cout << messages << ' '), ...);
+            std::cout << std::endl;
+        }
+
+        template<typename ...args>
+        static void pass(args... messages) {
+            std::cout << "\033[1;42m[PASS]\033[0m  ";
+            // Ensure space between messages
+            ((std::cout << messages << ' '), ...);
+            std::cout << std::endl;
+        }
+
+        template<typename ...args>
+        static void fail(args... messages) {
+            std::cout << "\033[1;41m[FAIL]\033[0m  ";
+            // Ensure space between messages
+            ((std::cout << messages << ' '), ...);
+            std::cout << std::endl;
+        }
     };
     class AssertIf {
     public:

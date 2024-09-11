@@ -3,7 +3,7 @@
 #include "string.h"
 #include <fstream>
 
-struct File : public Serializable {
+struct File {
 private:
     String _path;
     List<List<char>> _lines;

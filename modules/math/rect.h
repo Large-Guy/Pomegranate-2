@@ -2,7 +2,7 @@
 #define POMEGRANATE_ENGINE_MATH_RECT_H
 #include "vector2.h"
 
-struct Rect2D : public Serializable {
+struct Rect2D {
     Vector2 position = Vector2();
     Vector2 size = Vector2();
 
@@ -19,8 +19,8 @@ struct Rect2D : public Serializable {
     [[nodiscard]] bool contains(const Vector2& point) const;
     [[nodiscard]] bool intersects(const Rect2D& other) const;
 
-    void serialize(Archive& a) const override;
-    void deserialize(Archive& a) override;
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 template<>

@@ -4,7 +4,7 @@
 #include "list.h"
 
 //Implemented partially to avoid std::string's SSO optimization
-class String : public Serializable {
+class String {
 private:
     char* _data;
     size_t _length;
@@ -47,8 +47,8 @@ public:
 
     static String merge(const List<String>& strings, const String& delimiter = "");
 
-    void serialize(Archive& a) const override;
-    void deserialize(Archive& a) override;
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 template<>

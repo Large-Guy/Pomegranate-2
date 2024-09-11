@@ -231,11 +231,11 @@ void String::serialize(Archive &a) const {
 }
 
 void String::deserialize(Archive &a) {
-    a >> &this->_length;
+    a >> this->_length;
     delete[] this->_data; // Delete existing data before allocating new
     this->_data = new char[this->_length + 1]; // +1 for null terminator
     for (size_t i = 0; i < this->_length; i++) {
-        a >> &this->_data[i];
+        a >> this->_data[i];
     }
     this->_data[this->_length] = '\0'; // Ensure null termination
 }

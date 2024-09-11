@@ -7,6 +7,8 @@ struct Name : public Component {
     String name;
     Name();
     Name(const String& name);
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 

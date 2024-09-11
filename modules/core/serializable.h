@@ -8,7 +8,6 @@
 #include<fstream>
 #include<unordered_map>
 
-class Serializable;
 struct Archive;
 
 struct Archive {
@@ -28,22 +27,29 @@ public:
     Archive& operator<<(float i);
     Archive& operator<<(bool i);
     Archive& operator<<(const std::string& i);
-    Archive& operator<<(const Serializable& i);
-    Archive& operator<<(const Serializable* i);
 
-    Archive& operator>>(const long* i);
-    Archive& operator>>(const unsigned long* i);
-    Archive& operator>>(const int* i);
-    Archive& operator>>(const uint* i);
-    Archive& operator>>(const short* i);
-    Archive& operator>>(const ushort* i);
-    Archive& operator>>(const char* i);
-    Archive& operator>>(const char** i);
-    Archive& operator>>(const double* i);
-    Archive& operator>>(const float* i);
-    Archive& operator>>(const bool* i);
-    Archive& operator>>(const std::string* i);
-    Archive& operator>>(const Serializable* i);
+    Archive& operator>>(long& i);
+    Archive& operator>>(unsigned long& i);
+    Archive& operator>>(int& i);
+    Archive& operator>>(uint& i);
+    Archive& operator>>(short& i);
+    Archive& operator>>(ushort& i);
+    Archive& operator>>(char& i);
+    Archive& operator>>(char*& i);
+    Archive& operator>>(double& i);
+    Archive& operator>>(float& i);
+    Archive& operator>>(bool& i);
+    Archive& operator>>(std::string& i);
+
+    template<typename T> Archive& operator<<(T object){
+        object.serialize(*this);
+        return *this;
+    }
+
+    template<typename T> Archive& operator>>(T& object){
+        object.deserialize(*this);
+        return *this;
+    }
 
     size_t size();
     char* getBytes();
@@ -51,14 +57,15 @@ public:
     void readFromFile(const char* filename);
 };
 
-class Serializable {
-public:
-    virtual ~Serializable() = default;
-    virtual void serialize(Archive&) const;
-    virtual void deserialize(Archive&);
-    void toFile(const char* filename) const;
-    void fromFile(const char* filename);
-};
+template<typename T> void serialize(T& object, Archive& archive)
+{
+    object.serialize(archive);
+}
+
+template<typename T> void deserialize(T& object, Archive& archive)
+{
+    object.deserialize(archive);
+}
 
 #define SERIALIZE_TO_FILE(what,filename) \
     { \

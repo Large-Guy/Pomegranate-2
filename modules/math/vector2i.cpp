@@ -164,5 +164,5 @@ void Vector2i::serialize(Archive& a) const {
 }
 
 void Vector2i::deserialize(Archive& a) {
-    a >> &x >> &y;
+    a >> x >> y;
 }

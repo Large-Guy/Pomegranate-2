@@ -9,3 +9,11 @@ Color::Color(const Vector4& color) {
     this->color = color;
     property<Vector4>("color", &this->color);
 }
+
+void Color::serialize(Archive& a) const {
+    a << this->color;
+}
+
+void Color::deserialize(Archive& a) {
+    a >> this->color;
+}

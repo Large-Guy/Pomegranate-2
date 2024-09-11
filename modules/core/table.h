@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <any>
 
-struct Table : public Serializable {
+struct Table {
 private:
     struct iKey {
         virtual ~iKey() = default;

@@ -7,6 +7,8 @@ struct Color : public Component {
     Vector4 color;
     Color();
     Color(const Vector4& color);
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 

@@ -176,5 +176,5 @@ void Vector3::serialize(Archive& a) const
 
 void Vector3::deserialize(Archive& a)
 {
-    a >> &x >> &y >> &z;
+    a >> x >> y >> z;
 }

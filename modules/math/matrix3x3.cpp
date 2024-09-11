@@ -30,7 +30,7 @@ void Matrix3x3::serialize(Archive& a) const
 
 void Matrix3x3::deserialize(Archive& a)
 {
-    a >> &x >> &y >> &z;
+    a >> x >> y >> z;
 }
 
 Matrix3x3 Matrix3x3::transpose() const {

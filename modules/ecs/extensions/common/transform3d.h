@@ -15,6 +15,8 @@ struct Transform3D : public Component
     static Vector3 getScale(Entity& entity);
     static Vector3 getRotation(Entity& entity);
     static Matrix4x4 getMatrix(Entity& entity);
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 

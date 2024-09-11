@@ -70,3 +70,15 @@ Matrix4x4 Transform3D::getMatrix(Entity& entity) {
     Vector3 rotation = getRotation(entity);
     return Matrix4x4().rotateZ(rotation.z).rotateY(rotation.y).rotateX(rotation.x).scale(scale).translate(position);
 }
+
+void Transform3D::serialize(Archive& a) const {
+    a << this->position;
+    a << this->scale;
+    a << this->rotation;
+}
+
+void Transform3D::deserialize(Archive& a) {
+    a >> this->position;
+    a >> this->scale;
+    a >> this->rotation;
+}

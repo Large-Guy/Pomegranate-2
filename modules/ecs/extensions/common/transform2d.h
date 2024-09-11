@@ -22,6 +22,8 @@ public:
     static Vector2 getScale(Entity& entity);
     static float getRotation(Entity& entity);
     static Matrix3x3 getMatrix(Entity& entity);
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 #endif //POMEGRANATE_ENGINE_ECS_EXTENSIONS_COMMON_TRANSFORM2D_H

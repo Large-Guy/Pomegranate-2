@@ -73,3 +73,14 @@ Matrix3x3 Transform2D::getMatrix(Entity& entity) {
     return Matrix3x3().rotate(rotation).scale(scale).translate(position);
 }
 
+void Transform2D::serialize(Archive& a) const {
+    a << this->position;
+    a << this->scale;
+    a << this->rotation;
+}
+
+void Transform2D::deserialize(Archive& a) {
+    a >> this->position;
+    a >> this->scale;
+    a >> this->rotation;
+}

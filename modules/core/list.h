@@ -5,7 +5,7 @@
 #include <vector>
 
 template <typename T>
-struct List : public Serializable {
+struct List {
 private:
     std::vector<T> _data;
 public:
@@ -116,7 +116,7 @@ public:
         os << "]";
         return os;
     }
-    void serialize(Archive& ar) const override
+    void serialize(Archive& ar) const
     {
         ar << this->_data.size();
         for(const T& value : this->_data)
@@ -124,12 +124,12 @@ public:
             ar << value;
         }
     }
-    void deserialize(Archive& ar) override {
+    void deserialize(Archive& ar) {
         size_t size = 0;
-        ar >> &size;
+        ar >> size;
         this->_data.resize(size);
         for (T &value: this->_data) {
-            ar >> &value;
+            //ar >> value;
         }
     }
 };

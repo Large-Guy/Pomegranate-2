@@ -4,7 +4,7 @@
 #include "vector3.h"
 #include <cmath>
 
-struct Matrix4x4 : public Serializable {
+struct Matrix4x4 {
     Vector4 x = Vector4();
     Vector4 y = Vector4();
     Vector4 z = Vector4();
@@ -24,8 +24,8 @@ struct Matrix4x4 : public Serializable {
 
     static Matrix4x4 createTransform(Vector3 pos, Vector3 scale, Vector3 rotation);
 
-    void serialize(Archive& a) const override;
-    void deserialize(Archive& a) override;
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 template<>
