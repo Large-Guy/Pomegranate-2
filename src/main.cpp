@@ -6,13 +6,14 @@
 #include <graphics/vulkan/graphics.h>
 #include <math/math.h>
 
-Vec2 rotate(float angle)
+Vector2 rotate(float angle)
 {
     return {cosf(angle), sinf(angle)};
 }
 
 int main() {
 
+#define GRAPHICS
 
 #ifdef GRAPHICS
 
