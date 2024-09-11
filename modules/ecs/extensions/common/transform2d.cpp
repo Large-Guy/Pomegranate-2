@@ -5,9 +5,9 @@ Transform2D::Transform2D() {
     this->position = Vector2();
     this->scale = Vector2(1, 1);
     this->rotation = 0;
-    property<Vector2>("position", &this->position);
-    property<Vector2>("scale", &this->scale);
-    property<float>("rotation", &this->rotation);
+    property("position", &this->position);
+    property("scale", &this->scale);
+    property("rotation", &this->rotation);
 }
 
 Transform2D::Transform2D(const Vector2& position, const Vector2& scale, float rotation) {
@@ -15,9 +15,9 @@ Transform2D::Transform2D(const Vector2& position, const Vector2& scale, float ro
     this->position = position;
     this->scale = scale;
     this->rotation = rotation;
-    property<Vector2>("position", &this->position);
-    property<Vector2>("scale", &this->scale);
-    property<float>("rotation", &this->rotation);
+    property("position", &this->position);
+    property("scale", &this->scale);
+    property("rotation", &this->rotation);
 }
 
 Vector2 Transform2D::getPosition(Entity& entity) {

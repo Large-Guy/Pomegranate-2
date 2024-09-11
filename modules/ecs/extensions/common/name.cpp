@@ -2,12 +2,12 @@
 
 Name::Name() {
     this->name = "";
-    property<String>("_name", &this->name);
+    property("_name", &this->name);
 }
 
 Name::Name(const String& name) {
     this->name = name;
-    property<String>("_name", &this->name);
+    property("_name", &this->name);
 }
 
 void Name::serialize(Archive& a) const {

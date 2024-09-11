@@ -4,18 +4,18 @@ Transform3D::Transform3D() {
     this->position = Vector3();
     this->scale = Vector3(1, 1, 1);
     this->rotation = 0;
-    property<Vector3>("position", &this->position);
-    property<Vector3>("scale", &this->scale);
-    property<Vector3>("rotation", &this->rotation);
+    property("position", &this->position);
+    property("scale", &this->scale);
+    property("rotation", &this->rotation);
 }
 
 Transform3D::Transform3D(const Vector3& position, const Vector3& scale, const Vector3& rotation) {
     this->position = position;
     this->scale = scale;
     this->rotation = rotation;
-    property<Vector3>("position", &this->position);
-    property<Vector3>("scale", &this->scale);
-    property<Vector3>("rotation", &this->rotation);
+    property("position", &this->position);
+    property("scale", &this->scale);
+    property("rotation", &this->rotation);
 }
 
 Vector3 Transform3D::getPosition(Entity& entity) {

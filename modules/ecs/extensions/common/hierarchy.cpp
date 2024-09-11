@@ -2,7 +2,7 @@
 
 Children::Children() {
     this->children = std::unordered_set<Entity>();
-    property<std::unordered_set<Entity>>("children", &this->children);
+    property("children", &this->children);
 }
 
 void Hierarchy::addChildTo(Entity parent, Entity child) {
@@ -29,7 +29,7 @@ void Hierarchy::removeChildFrom(Entity parent, Entity child) {
 
 Parent::Parent() {
     this->parent = NULL_ENTITY;
-    property<Entity>("parent", &this->parent);
+    property("parent", &this->parent);
 }
 
 void Hierarchy::orphan(Entity entity) {

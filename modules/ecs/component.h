@@ -27,24 +27,7 @@ struct ComponentList
 struct Component
 {
 private:
-    std::unordered_map<std::string, std::pair<size_t,void*>> _data;
-protected:
-    template<typename T>
-    void property(const std::string& name, void* data)
-    {
-        // Add the property to the _data
-        _data[name] = std::pair<size_t,void*>(typeid(T).hash_code(),data);
-    }
 public:
-    template<typename T>
-    T* get(const std::string& name)
-    {
-        // Get the property from the _data
-        return (T*)(_data[name].second);
-    }
-    size_t getPropertyType(const std::string& name);
-    std::vector<std::string> properties();
-
     static ComponentID create(const std::string& component,size_t size);
     template<typename T>
     static ComponentID create(const std::string& component)

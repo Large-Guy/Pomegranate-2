@@ -19,6 +19,8 @@ set(POMEGRANATE_CORE_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/file.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/directory.h
         ${CMAKE_CURRENT_SOURCE_DIR}/directory.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/reflectable.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/reflectable.cpp
 )
 
 set(POMEGRANATE_CORE_INCLUDE_DIRS

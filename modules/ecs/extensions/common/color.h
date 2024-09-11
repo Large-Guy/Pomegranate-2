@@ -3,7 +3,7 @@
 #include <ecs/ecs.h>
 #include <math/math.h>
 
-struct Color : public Component {
+struct Color : public Component, public Reflectable {
     Vector4 color;
     Color();
     Color(const Vector4& color);

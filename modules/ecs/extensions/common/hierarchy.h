@@ -2,12 +2,12 @@
 #define POMEGRANATE_ENGINE_ECS_EXTENSIONS_COMMON_HIERARCHY_H
 #include <ecs/ecs.h>
 
-struct Children : public Component {
+struct Children : public Component, public Reflectable {
     std::unordered_set<Entity> children;
     Children();
 };
 
-struct Parent : public Component {
+struct Parent : public Component, public Reflectable {
     Entity parent;
     Parent();
 };

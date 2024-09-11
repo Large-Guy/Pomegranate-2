@@ -4,7 +4,7 @@
 #include <math/math.h>
 #include "hierarchy.h"
 
-struct Transform2D : public Component
+struct Transform2D : public Component, public Reflectable
 {
 private:
     bool _initalized;

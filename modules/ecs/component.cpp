@@ -69,21 +69,6 @@ bool ComponentList::has(size_t i) const {
     return occupied[i];
 }
 
-size_t Component::getPropertyType(const std::string &name) {
-    return _data[name].first;
-}
-
-std::vector<std::string> Component::properties() {
-    // Get the keys from the _data
-    std::vector<std::string> keys;
-    keys.reserve(_data.size());
-    for (auto const& x : _data)
-    {
-        keys.push_back(x.first);
-    }
-    return keys;
-}
-
 ComponentID Component::create(const std::string& component, size_t size) {
     ComponentID id = ECS::component_sizes.size();
     ECS::component_sizes[id] = size;

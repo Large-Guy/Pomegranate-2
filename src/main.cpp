@@ -11,6 +11,27 @@ Vector2 rotate(float angle)
     return {cosf(angle), sinf(angle)};
 }
 
+struct Position : Reflectable
+{
+    float x;
+    float y;
+
+    Position() {
+        x = 0;
+        y = 0;
+        property("x",&x);
+        property("y",&y);
+    }
+
+    void serialize(Archive& a) const override {
+        a << x << y;
+    }
+
+    void deserialize(Archive& a) override {
+        a >> x >> y;
+    }
+};
+
 int main() {
 
 //#define GRAPHICS
@@ -70,6 +91,19 @@ int main() {
 
     return 0;
 #else
+    Transform2D transform;
 
+    transform.set("position", Vector2(5, 1));
+
+    auto properties = transform.getProperties();
+
+    for(auto& property : properties) {
+        if(property.second.type == typeid(Vector2).hash_code()) {
+            Debug::Log::info(property.first,":","(",transform.get<Vector2>(property.first).x,",",transform.get<Vector2>(property.first).y,")");
+        }
+        if(property.second.type == typeid(float).hash_code()) {
+            Debug::Log::info(property.first,":",transform.get<float>(property.first));
+        }
+    }
 #endif
 }

@@ -4,7 +4,7 @@
 #include <math/math.h>
 #include "hierarchy.h"
 
-struct Transform3D : public Component
+struct Transform3D : public Component, public Reflectable
 {
     Vector3 position;
     Vector3 scale;

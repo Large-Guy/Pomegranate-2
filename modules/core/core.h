@@ -9,5 +9,6 @@
 #include "debug.h"
 #include "file.h"
 #include "directory.h"
+#include "reflectable.h"
 
 #endif //POMEGRANATE_ENGINE_CORE_CORE_H
