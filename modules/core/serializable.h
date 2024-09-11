@@ -46,8 +46,26 @@ public:
         return *this;
     }
 
+    template<typename T> Archive& operator<<(std::vector<T> object){
+        *this << object.size();
+        for(auto& i : object){
+            *this << i;
+        }
+        return *this;
+    }
+
     template<typename T> Archive& operator>>(T& object){
         object.deserialize(*this);
+        return *this;
+    }
+
+    template<typename T> Archive& operator>>(std::vector<T>& object){
+        size_t size = 0;
+        *this >> size;
+        object.resize(size);
+        for(auto& i : object){
+            *this >> i;
+        }
         return *this;
     }
 
@@ -65,6 +83,15 @@ template<typename T> void serialize(T& object, Archive& archive)
 template<typename T> void deserialize(T& object, Archive& archive)
 {
     object.deserialize(archive);
+}
+
+template<typename T> T duplicate(T& object)
+{
+    Archive a;
+    a << object;
+    T result;
+    a >> result;
+    return result;
 }
 
 #define SERIALIZE_TO_FILE(what,filename) \

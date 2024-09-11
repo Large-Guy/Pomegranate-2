@@ -11,6 +11,9 @@ struct Vertex2D {
 
     static VkVertexInputBindingDescription getBindingDescription();
     static std::array<VkVertexInputAttributeDescription,3> getAttributeDescriptions();
+
+    void serialize(Archive& archive);
+    void deserialize(Archive& archive);
 };
 
 

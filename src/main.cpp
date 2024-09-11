@@ -13,7 +13,7 @@ Vector2 rotate(float angle)
 
 int main() {
 
-#define GRAPHICS
+//#define GRAPHICS
 
 #ifdef GRAPHICS
 
@@ -70,22 +70,6 @@ int main() {
 
     return 0;
 #else
-
-    Transform2D transform;
-
-    transform.position = {1,2};
-    transform.scale = {3,4};
-    transform.rotation = 5;
-
-    Archive archive;
-
-    serialize(transform,archive);
-
-    Transform2D transform2;
-
-    deserialize(transform2,archive);
-
-    Debug::Log::info("Transform2D: ","Position: ","(",transform2.position.x,",",transform2.position.y,")"," Scale: ","(",transform2.scale.x,",",transform2.scale.y,")"," Rotation: ",transform2.rotation);
 
 #endif
 }

@@ -29,3 +29,15 @@ std::array<VkVertexInputAttributeDescription,3> Vertex2D::getAttributeDescriptio
 
     return attributeDescriptions;
 }
+
+void Vertex2D::serialize(Archive &archive) {
+    archive << position;
+    archive << texCoord;
+    archive << color;
+}
+
+void Vertex2D::deserialize(Archive &archive) {
+    archive >> position;
+    archive >> texCoord;
+    archive >> color;
+}
