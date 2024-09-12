@@ -60,9 +60,15 @@ int main() {
             {{0.5f, 0.5f},{0.0,0.0}, {0.0f, 1.0f, 0.0f}},
             {{-0.5f, 0.5f},{0.0,0.0}, {0.0f, 0.0f, 1.0f}}
     };
+
+    std::vector<uint16_t> indicies = {
+            0,1,2
+    };
+
     //Buffer
     Buffer<Vertex2D> vertexBuffer(vertices, BufferType::VertexBuffer);
-//endregion
+    Buffer<uint16_t> indexBuffer(indicies,BufferType::IndexBuffer);
+    //endregion
 
     Window window;
 
@@ -76,7 +82,7 @@ int main() {
         window.draw.begin();
         window.draw.clear({0.0, 0.0, 0.0, 1.0});
 
-        window.drawBuffer(&vertexBuffer,&shader);
+        window.drawBuffer(&vertexBuffer,&indexBuffer,&shader);
 
         window.draw.end();
     }

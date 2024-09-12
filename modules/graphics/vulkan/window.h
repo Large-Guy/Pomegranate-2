@@ -50,7 +50,7 @@ public:
 
     void createFramebuffers();
     void createCommandBuffer();
-    void drawBuffer(Buffer<Vertex2D>* buffer, Shader* shader);
+    void drawBuffer(Buffer<Vertex2D>* vertexBuffer, Buffer<uint16_t>* indexBuffer, Shader* shader);
     void beginCommandBuffer();
     void endCommandBuffer();
 
