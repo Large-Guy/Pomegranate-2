@@ -50,25 +50,31 @@ int main() {
     auto vertexShader = vertexFile.readBuffer();
     auto fragmentShader = fragmentFile.readBuffer();
 
-    Shader shader(vertexShader, fragmentShader, {.renderMode=RenderMode::Fill});
+    RenderInfo renderInfo = {
+            .renderMode = RenderMode::Fill,
+            .cullMode = CullMode::Back,
+    };
+
+    Shader shader(vertexShader, fragmentShader, renderInfo);
 //endregion
 
 //region Model
-//RGB Triangle model
+//RGB Square model
     std::vector<Vertex2D> vertices = {
-            {{0.0f, -0.5f}, {0.0,0.0},{1.0f, 0.0f, 0.0f}},
-            {{0.5f, 0.5f},{0.0,0.0}, {0.0f, 1.0f, 0.0f}},
-            {{-0.5f, 0.5f},{0.0,0.0}, {0.0f, 0.0f, 1.0f}}
+            {{0.5f, 0.5f}, {1.0,0.0},{0.0f, 1.0f, 0.0f}},
+            {{0.5f, -0.5f}, {1.0,1.0},{0.0f, 0.0f, 1.0f}},
+            {{-0.5f, -0.5f}, {0.0,1.0},{1.0f, 1.0f, 1.0f}},
+            {{-0.5f, 0.5f}, {0.0,0.0},{1.0f, 0.0f, 0.0f}},
     };
 
     std::vector<uint16_t> indicies = {
-            0,1,2
+            2, 1, 0, 0, 3, 2
     };
 
     //Buffer
     Buffer<Vertex2D> vertexBuffer(vertices, BufferType::VertexBuffer);
     Buffer<uint16_t> indexBuffer(indicies,BufferType::IndexBuffer);
-    //endregion
+//endregion
 
     Window window;
 
