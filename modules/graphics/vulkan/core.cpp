@@ -26,10 +26,13 @@ Graphics::Graphics() {
     Graphics::createInstance(enableValidationLayers);
     createPhysicalDevice();
     createLogicalDevice(Graphics::enableValidationLayers);
+    createCommandPool();
     createSyncObjects();
 }
 
 Graphics::~Graphics() {
+
+    vkDestroyCommandPool(_logicalDevice, _commandPool, nullptr);
     for(int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(_logicalDevice, imageAvailableSemaphores[i], nullptr);
         vkDestroySemaphore(_logicalDevice, renderFinishedSemaphores[i], nullptr);
@@ -208,6 +211,18 @@ void Graphics::createLogicalDevice(bool enableValidationLayers) {
     vkGetDeviceQueue(_logicalDevice, indices.graphicsFamily.value(), 0, &_queues.graphicsQueue);
     vkGetDeviceQueue(_logicalDevice, indices.presentFamily.value(), 0, &_queues.presentQueue);
     Debug::Log::pass("Created queues.");
+}
+
+void Graphics::createCommandPool() {
+    QueueFamilyIndices queueFamilyIndices = Graphics::getInstance()->getQueueFamilies(_physicalDevice);
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+    Debug::AssertIf::isFalse(vkCreateCommandPool(_logicalDevice, &poolInfo, nullptr, &_commandPool) == VK_SUCCESS, "Failed to create command pool!");
+    Debug::Log::pass("Successfully created command pool!");
 }
 
 void Graphics::createRenderPass(Window* window) {

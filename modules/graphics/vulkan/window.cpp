@@ -107,24 +107,12 @@ void Window::createFramebuffers() {
     Debug::Log::pass("Successfully created frame buffers");
 }
 
-void Window::createCommandPool() {
-    QueueFamilyIndices queueFamilyIndices = Graphics::getInstance()->getQueueFamilies(Graphics::getInstance()->_physicalDevice);
-
-    VkCommandPoolCreateInfo poolInfo{};
-    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-
-    Debug::AssertIf::isFalse(vkCreateCommandPool(Graphics::getInstance()->_logicalDevice, &poolInfo, nullptr, &_commandPool) == VK_SUCCESS, "Failed to create command pool!");
-    Debug::Log::pass("Successfully created command pool!");
-}
-
 void Window::createCommandBuffer() {
     _commandBuffers.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
 
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.commandPool = _commandPool;
+    allocInfo.commandPool = Graphics::getInstance()->_commandPool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = _commandBuffers.size();
 
@@ -210,7 +198,6 @@ Window::Window() {
     createImageViews();
     Graphics::getInstance()->createRenderPass(this);
     createFramebuffers();
-    createCommandPool();
     createCommandBuffer();
     for(auto shader : Graphics::getInstance()->_shaders) {
         shader->requestPipeline(this);
@@ -227,7 +214,6 @@ Window::~Window() {
     {
         vkDestroyImageView(Graphics::getInstance()->_logicalDevice,imageView, nullptr);
     }
-    vkDestroyCommandPool(Graphics::getInstance()->_logicalDevice,_commandPool, nullptr);
     vkDestroySwapchainKHR(Graphics::getInstance()->_logicalDevice,_swapChain, nullptr);
     vkDestroySurfaceKHR(Graphics::getInstance()->_instance, this->_surface, nullptr);
     vkDestroyRenderPass(Graphics::getInstance()->_logicalDevice,_renderPass, nullptr);

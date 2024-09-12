@@ -28,7 +28,6 @@ public:
 
     VkRenderPass _renderPass;
 
-    VkCommandPool _commandPool;
     std::vector<VkCommandBuffer> _commandBuffers;
 
     uint32_t _currentFrame = 0;
@@ -48,8 +47,8 @@ public:
     Draw draw;
     Window();
     ~Window();
+
     void createFramebuffers();
-    void createCommandPool();
     void createCommandBuffer();
     void drawBuffer(Buffer<Vertex2D>* buffer, Shader* shader);
     void beginCommandBuffer();

@@ -34,7 +34,7 @@ struct Position : Reflectable
 
 int main() {
 
-//#define GRAPHICS
+#define GRAPHICS
 
 #ifdef GRAPHICS
 
@@ -55,12 +55,11 @@ int main() {
 
 //region Model
 //RGB Triangle model
-    float angle = 0;
-
-    std::vector<Vertex2D> vertices = {{rotate(angle), {0.5, 0.5}, {1.0, 0.0, 0.0}},
-                                      {rotate(angle + 2.0944f), {0.5, 0.5}, {0.0, 1.0, 0.0}},
-                                      {rotate(angle + 2.0944f * 2.0f), {0.5, 0.5}, {0.0, 0.0, 1.0}}};
-
+    std::vector<Vertex2D> vertices = {
+            {{0.0f, -0.5f}, {0.0,0.0},{1.0f, 0.0f, 0.0f}},
+            {{0.5f, 0.5f},{0.0,0.0}, {0.0f, 1.0f, 0.0f}},
+            {{-0.5f, 0.5f},{0.0,0.0}, {0.0f, 0.0f, 1.0f}}
+    };
     //Buffer
     Buffer<Vertex2D> vertexBuffer(vertices, BufferType::VertexBuffer);
 //endregion
@@ -73,13 +72,6 @@ int main() {
 
     while(window.isOpen()) {
         window.poll();
-
-        vertices = {{rotate(angle), {0.5, 0.5}, {1.0, 0.0, 0.0}},
-                    {rotate(angle + 2.0944f), {0.5, 0.5}, {0.0, 1.0, 0.0}},
-                    {rotate(angle + 2.0944f * 2.0f), {0.5, 0.5}, {0.0, 0.0, 1.0}}};
-        vertexBuffer.set(vertices);
-        vertexBuffer.regenerate();
-        angle += 0.05f;
 
         window.draw.begin();
         window.draw.clear({0.0, 0.0, 0.0, 1.0});

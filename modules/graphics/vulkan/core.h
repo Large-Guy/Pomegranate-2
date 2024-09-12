@@ -59,9 +59,12 @@ public:
     std::vector<Window*> _windows;
     std::vector<Shader*> _shaders;
 
+    VkCommandPool _commandPool;
+
     void createInstance(bool enableValidationLayers);
     void createPhysicalDevice();
     void createLogicalDevice(bool enableValidationLayers);
+    void createCommandPool();
 
     bool hasValidationLayerSupport();
     bool isDeviceSuitable(VkPhysicalDevice device);
