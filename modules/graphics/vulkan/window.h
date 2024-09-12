@@ -15,6 +15,7 @@ public:
         void begin();
         void end();
         void clear(Vector4 color);
+        void drawBuffers(Buffer<Vertex2D>* vertexBuffer, Buffer<uint16_t>* indexBuffer, Shader* shader);
     };
 
     GLFWwindow* _window;
@@ -50,7 +51,6 @@ public:
 
     void createFramebuffers();
     void createCommandBuffer();
-    void drawBuffer(Buffer<Vertex2D>* vertexBuffer, Buffer<uint16_t>* indexBuffer, Shader* shader);
     void beginCommandBuffer();
     void endCommandBuffer();
 

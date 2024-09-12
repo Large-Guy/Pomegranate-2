@@ -88,7 +88,7 @@ int main() {
         window.draw.begin();
         window.draw.clear({0.0, 0.0, 0.0, 1.0});
 
-        window.drawBuffer(&vertexBuffer,&indexBuffer,&shader);
+        window.draw.drawBuffers(&vertexBuffer,&indexBuffer,&shader);
 
         window.draw.end();
     }
