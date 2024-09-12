@@ -34,8 +34,6 @@ struct Position : Reflectable
 
 int main() {
 
-#define GRAPHICS
-
 #ifdef GRAPHICS
 
     Graphics::enableValidationLayers = true;
@@ -95,19 +93,12 @@ int main() {
 
     return 0;
 #else
-    Transform2D transform;
+    const EventID function = Event::getEventId("function");
 
-    transform.set("position", Vector2(5, 1));
+    Event::on(function,[&](float arg){
+        Debug::Log::info("Hello, World!",arg);
+    });
 
-    auto properties = transform.getProperties();
-
-    for(auto& property : properties) {
-        if(property.second.type == typeid(Vector2).hash_code()) {
-            Debug::Log::info(property.first,":","(",transform.get<Vector2>(property.first).x,",",transform.get<Vector2>(property.first).y,")");
-        }
-        if(property.second.type == typeid(float).hash_code()) {
-            Debug::Log::info(property.first,":",transform.get<float>(property.first));
-        }
-    }
+    Event::call(function,1.0f);
 #endif
 }

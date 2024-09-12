@@ -54,6 +54,15 @@ private:
 public:
     static void on(EventID id, EventFunction callback);
     static void on(const std::string& name, EventFunction callback);
+    template <typename Func>static void on(EventID id, Func callback)
+    {
+        Event::_events[id].push_back(std::function(callback));
+    }
+    template <typename Func>static void on(const std::string& name, Func callback)
+    {
+        EventID id = Event::getEventId(name);
+        Event::_events[id].push_back(std::function(callback));
+    }
     template <typename... Args> static void call(EventID id, Args... args) {
         for(auto& f : _events[id]) {
             f.call(args...);
