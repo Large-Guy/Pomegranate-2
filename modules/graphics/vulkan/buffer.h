@@ -96,6 +96,8 @@ private:
 public:
     Buffer(std::vector<T> data, BufferType type)
     {
+        _buffer = VK_NULL_HANDLE;
+        _memory = VK_NULL_HANDLE;
         _data = data;
         _type = type;
         generateBuffer();

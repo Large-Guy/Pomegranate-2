@@ -10,6 +10,8 @@ set(POMEGRANATE_GRAPHICS_VULKAN_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/enumerations.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vertex2d.h
         ${CMAKE_CURRENT_SOURCE_DIR}/vertex2d.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vertex3d.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/vertex3d.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/buffer.h
         ${CMAKE_CURRENT_SOURCE_DIR}/buffer.cpp
 )

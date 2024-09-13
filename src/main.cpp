@@ -6,33 +6,9 @@
 #include <graphics/vulkan/graphics.h>
 #include <math/math.h>
 
-Vector2 rotate(float angle)
-{
-    return {cosf(angle), sinf(angle)};
-}
-
-struct Position : Reflectable
-{
-    float x;
-    float y;
-
-    Position() {
-        x = 0;
-        y = 0;
-        property("x",&x);
-        property("y",&y);
-    }
-
-    void serialize(Archive& a) const override {
-        a << x << y;
-    }
-
-    void deserialize(Archive& a) override {
-        a >> x >> y;
-    }
-};
-
 int main() {
+
+#define GRAPHICS
 
 #ifdef GRAPHICS
 
@@ -50,28 +26,27 @@ int main() {
 
     RenderInfo renderInfo = {
             .renderMode = RenderMode::Fill,
-            .cullMode = CullMode::Back,
+            .cullMode = CullMode::None,
     };
 
-    Shader shader(vertexShader, fragmentShader, renderInfo);
+    Shader shader = Shader<Vertex3D>(vertexShader, fragmentShader, renderInfo);
 //endregion
 
 //region Model
-//RGB Square model
-    std::vector<Vertex2D> vertices = {
-            {{0.5f, 0.5f}, {1.0,0.0},{0.0f, 1.0f, 0.0f}},
-            {{0.5f, -0.5f}, {1.0,1.0},{0.0f, 0.0f, 1.0f}},
-            {{-0.5f, -0.5f}, {0.0,1.0},{1.0f, 1.0f, 1.0f}},
-            {{-0.5f, 0.5f}, {0.0,0.0},{1.0f, 0.0f, 0.0f}},
+//RGB triangle model
+    std::vector<Vertex3D> vertices = {
+            {{0.0, 0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {1.0, 0.0, 0.0}},
+            {{0.5, -0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {0.0, 1.0, 0.0}},
+            {{-0.5, -0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0}},
     };
 
-    std::vector<uint16_t> indicies = {
-            2, 1, 0, 0, 3, 2
+    std::vector<uint16_t> indices = {
+            0, 1, 2
     };
 
     //Buffer
-    Buffer<Vertex2D> vertexBuffer(vertices, BufferType::VertexBuffer);
-    Buffer<uint16_t> indexBuffer(indicies,BufferType::IndexBuffer);
+    Buffer<Vertex3D> vertexBuffer(vertices, BufferType::VertexBuffer);
+    Buffer<uint16_t> indexBuffer(indices,BufferType::IndexBuffer);
 //endregion
 
     Window window;
@@ -86,7 +61,7 @@ int main() {
         window.draw.begin();
         window.draw.clear({0.0, 0.0, 0.0, 1.0});
 
-        window.draw.drawBuffers(&vertexBuffer,&indexBuffer,&shader);
+        window.draw.drawBuffers(vertexBuffer,indexBuffer,&shader);
 
         window.draw.end();
     }

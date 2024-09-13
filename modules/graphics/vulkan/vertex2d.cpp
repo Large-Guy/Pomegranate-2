@@ -9,8 +9,8 @@ VkVertexInputBindingDescription Vertex2D::getBindingDescription() {
     return bindingDescription;
 }
 
-std::array<VkVertexInputAttributeDescription,3> Vertex2D::getAttributeDescriptions() {
-    std::array<VkVertexInputAttributeDescription,3> attributeDescriptions{};
+std::vector<VkVertexInputAttributeDescription> Vertex2D::getAttributeDescriptions() {
+    std::vector<VkVertexInputAttributeDescription> attributeDescriptions(3);
 
     attributeDescriptions[0].binding = 0;
     attributeDescriptions[0].location = 0;

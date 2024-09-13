@@ -5,6 +5,7 @@
 #include <math/math.h>
 #include "buffer.h"
 #include "vertex2d.h"
+#include "vertex3d.h"
 
 class Window {
 public:
@@ -15,7 +16,8 @@ public:
         void begin();
         void end();
         void clear(Vector4 color);
-        void drawBuffers(Buffer<Vertex2D>* vertexBuffer, Buffer<uint16_t>* indexBuffer, Shader* shader);
+        void drawBuffers(Buffer<Vertex2D>& vertexBuffer, Buffer<uint16_t>& indexBuffer, ShaderBase* shader);
+        void drawBuffers(Buffer<Vertex3D>& vertexBuffer, Buffer<uint16_t>& indexBuffer, ShaderBase* shader);
     };
 
     GLFWwindow* _window;

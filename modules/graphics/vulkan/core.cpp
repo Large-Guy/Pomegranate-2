@@ -266,7 +266,7 @@ void Graphics::createRenderPass(Window* window) {
     Debug::AssertIf::isFalse(vkCreateRenderPass(_logicalDevice,&renderPassInfo,nullptr,&window->_renderPass) == VK_SUCCESS, "Failed to create render pass!");
 }
 
-Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(Shader* shader, Window* window, RenderMode renderMode, CullMode cullMode) {
+Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions,ShaderBase* shader, Window* window, RenderMode renderMode, CullMode cullMode) {
     GraphicsPipelineGroup group{};
 
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
@@ -295,9 +295,6 @@ Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(Shader* shader,
     dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
     dynamicState.pDynamicStates = dynamicStates.data();
-
-    auto bindingDescription = Vertex2D::getBindingDescription();
-    auto attributeDescriptions = Vertex2D::getAttributeDescriptions();
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

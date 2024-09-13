@@ -119,7 +119,7 @@ void Window::createCommandBuffer() {
     Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, _commandBuffers.data()) == VK_SUCCESS, "Failed to allocate command buffers!");
 }
 
-void Window::Draw::drawBuffers(Buffer<Vertex2D>* vertexBuffer, Buffer<uint16_t>* indexBuffer, Shader* shader) {
+void Window::Draw::drawBuffers(Buffer<Vertex2D>& vertexBuffer, Buffer<uint16_t>& indexBuffer, ShaderBase* shader) {
     VkCommandBuffer& commandBuffer = window->getCurrentCommandBuffer();
 
     VkViewport viewport{};
@@ -138,13 +138,41 @@ void Window::Draw::drawBuffers(Buffer<Vertex2D>* vertexBuffer, Buffer<uint16_t>*
 
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[window].pipeline);
 
-    VkBuffer vertexBuffers[] = {vertexBuffer->_buffer};
+    VkBuffer vertexBuffers[] = {vertexBuffer._buffer};
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(commandBuffer,indexBuffer->_buffer,0,VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(commandBuffer,indexBuffer._buffer,0,VK_INDEX_TYPE_UINT16);
 
-    vkCmdDrawIndexed(commandBuffer,(uint32_t)indexBuffer->_data.size(),1,0,0,0);
+    vkCmdDrawIndexed(commandBuffer,(uint32_t)indexBuffer._data.size(),1,0,0,0);
+}
+
+void Window::Draw::drawBuffers(Buffer<Vertex3D>& vertexBuffer, Buffer<uint16_t>& indexBuffer, ShaderBase* shader) {
+    VkCommandBuffer& commandBuffer = window->getCurrentCommandBuffer();
+
+    VkViewport viewport{};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = static_cast<float>(window->_swapExtent.width);
+    viewport.height = static_cast<float>(window->_swapExtent.height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+    VkRect2D scissor{};
+    scissor.offset = {0, 0};
+    scissor.extent = window->_swapExtent;
+    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[window].pipeline);
+
+    VkBuffer vertexBuffers[] = {vertexBuffer._buffer};
+    VkDeviceSize offsets[] = {0};
+    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(commandBuffer,indexBuffer._buffer,0,VK_INDEX_TYPE_UINT16);
+
+    vkCmdDrawIndexed(commandBuffer,(uint32_t)indexBuffer._data.size(),1,0,0,0);
 }
 
 void Window::beginCommandBuffer() {

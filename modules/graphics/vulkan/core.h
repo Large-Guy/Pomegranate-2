@@ -21,7 +21,7 @@
 #include "enumerations.h"
 
 struct Window;
-struct Shader;
+struct ShaderBase;
 
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -57,7 +57,7 @@ public:
     std::vector<const char*> deviceExtensions;
 
     std::vector<Window*> _windows;
-    std::vector<Shader*> _shaders;
+    std::vector<ShaderBase*> _shaders;
 
     VkCommandPool _commandPool;
 
@@ -85,7 +85,7 @@ public:
     static const int MAX_FRAMES_IN_FLIGHT;
 
     void createRenderPass(Window* window);
-    GraphicsPipelineGroup createGraphicsPipeline(Shader* shader, Window* window, RenderMode renderMode, CullMode cullMode);
+    GraphicsPipelineGroup createGraphicsPipeline(VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions,ShaderBase* shader, Window* window, RenderMode renderMode, CullMode cullMode);
     void createSyncObjects();
     static bool enableValidationLayers;
     Graphics();
@@ -94,7 +94,7 @@ public:
     static Graphics* getInstance();
 
     friend class Window;
-    friend class Shader;
+    friend class ShaderBase;
 };
 
 
