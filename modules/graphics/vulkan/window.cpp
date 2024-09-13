@@ -1,5 +1,7 @@
 #include "window.h"
 #include "shader.h"
+#include "buffer.h"
+#include "mesh3d.h"
 
 void Window::createSwapChain() {
     SwapChainSupportDetails swapChainSupport = Graphics::getInstance()->getSwapChainSupport(Graphics::getInstance()->_physicalDevice, &_surface);
@@ -84,7 +86,7 @@ void Window::createImageViews() {
     Debug::Log::pass("Created image views");
 }
 
-void Window::createFramebuffers() {
+void Window::createFrameBuffers() {
     _swapChainFramebuffers.resize(_swapChainImageViews.size());
 
     for (int i = 0; i < _swapChainImageViews.size(); ++i) {
@@ -117,62 +119,6 @@ void Window::createCommandBuffer() {
     allocInfo.commandBufferCount = _commandBuffers.size();
 
     Debug::AssertIf::isFalse(vkAllocateCommandBuffers(Graphics::getInstance()->_logicalDevice, &allocInfo, _commandBuffers.data()) == VK_SUCCESS, "Failed to allocate command buffers!");
-}
-
-void Window::Draw::drawBuffers(Buffer<Vertex2D>& vertexBuffer, Buffer<uint16_t>& indexBuffer, ShaderBase* shader) {
-    VkCommandBuffer& commandBuffer = window->getCurrentCommandBuffer();
-
-    VkViewport viewport{};
-    viewport.x = 0.0f;
-    viewport.y = 0.0f;
-    viewport.width = static_cast<float>(window->_swapExtent.width);
-    viewport.height = static_cast<float>(window->_swapExtent.height);
-    viewport.minDepth = 0.0f;
-    viewport.maxDepth = 1.0f;
-    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-    VkRect2D scissor{};
-    scissor.offset = {0, 0};
-    scissor.extent = window->_swapExtent;
-    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[window].pipeline);
-
-    VkBuffer vertexBuffers[] = {vertexBuffer._buffer};
-    VkDeviceSize offsets[] = {0};
-    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-    vkCmdBindIndexBuffer(commandBuffer,indexBuffer._buffer,0,VK_INDEX_TYPE_UINT16);
-
-    vkCmdDrawIndexed(commandBuffer,(uint32_t)indexBuffer._data.size(),1,0,0,0);
-}
-
-void Window::Draw::drawBuffers(Buffer<Vertex3D>& vertexBuffer, Buffer<uint16_t>& indexBuffer, ShaderBase* shader) {
-    VkCommandBuffer& commandBuffer = window->getCurrentCommandBuffer();
-
-    VkViewport viewport{};
-    viewport.x = 0.0f;
-    viewport.y = 0.0f;
-    viewport.width = static_cast<float>(window->_swapExtent.width);
-    viewport.height = static_cast<float>(window->_swapExtent.height);
-    viewport.minDepth = 0.0f;
-    viewport.maxDepth = 1.0f;
-    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-    VkRect2D scissor{};
-    scissor.offset = {0, 0};
-    scissor.extent = window->_swapExtent;
-    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[window].pipeline);
-
-    VkBuffer vertexBuffers[] = {vertexBuffer._buffer};
-    VkDeviceSize offsets[] = {0};
-    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-    vkCmdBindIndexBuffer(commandBuffer,indexBuffer._buffer,0,VK_INDEX_TYPE_UINT16);
-
-    vkCmdDrawIndexed(commandBuffer,(uint32_t)indexBuffer._data.size(),1,0,0,0);
 }
 
 void Window::beginCommandBuffer() {
@@ -227,7 +173,7 @@ Window::Window() {
     createSwapChain();
     createImageViews();
     Graphics::getInstance()->createRenderPass(this);
-    createFramebuffers();
+    createFrameBuffers();
     createCommandBuffer();
     for(auto shader : Graphics::getInstance()->_shaders) {
         shader->requestPipeline(this);
@@ -417,4 +363,34 @@ void Window::Draw::clear(Vector4 color) {
     clearRect.rect.extent = window->_swapExtent;
 
     vkCmdClearAttachments(window->getCurrentCommandBuffer(), 1, &clearAttachment, 1, &clearRect);
+}
+
+void Window::Draw::buffers(BufferBase<BUFFER_TYPE_VERTEX>* vertexBuffer, BufferBase<BUFFER_TYPE_INDEX>* indexBuffer, ShaderBase* shader) {
+    VkCommandBuffer& commandBuffer = window->getCurrentCommandBuffer();
+
+    VkViewport viewport{};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = static_cast<float>(window->_swapExtent.width);
+    viewport.height = static_cast<float>(window->_swapExtent.height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+    VkRect2D scissor{};
+    scissor.offset = {0, 0};
+    scissor.extent = window->_swapExtent;
+    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[window].pipeline);
+
+    vertexBuffer->bind(window);
+
+    indexBuffer->bind(window);
+
+    vkCmdDrawIndexed(commandBuffer,(uint32_t)indexBuffer->size,1,0,0,0);
+}
+
+void Window::Draw::mesh(Mesh3D& mesh) {
+    buffers(mesh._vertexBuffer,mesh._indexBuffer,mesh.shader);
 }

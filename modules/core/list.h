@@ -3,6 +3,7 @@
 #include "serializable.h"
 #include <iterator>
 #include <vector>
+#include <initializer_list>
 
 template <typename T>
 struct List {
@@ -17,7 +18,11 @@ public:
     {
         this->_data = std::vector<T>(size);
     }
-    explicit List(const std::vector<T>& data)
+    List(const std::vector<T>& data)
+    {
+        this->_data = data;
+    }
+    List(std::initializer_list<T> data)
     {
         this->_data = data;
     }

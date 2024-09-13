@@ -266,7 +266,7 @@ void Graphics::createRenderPass(Window* window) {
     Debug::AssertIf::isFalse(vkCreateRenderPass(_logicalDevice,&renderPassInfo,nullptr,&window->_renderPass) == VK_SUCCESS, "Failed to create render pass!");
 }
 
-Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions,ShaderBase* shader, Window* window, RenderMode renderMode, CullMode cullMode) {
+Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* shader, Window* window, RenderMode renderMode, CullMode cullMode, VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions, VkDescriptorSetLayout* descriptorLayout) {
     GraphicsPipelineGroup group{};
 
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages;

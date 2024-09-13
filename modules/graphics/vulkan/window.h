@@ -3,9 +3,13 @@
 #include "core.h"
 #include <core/core.h>
 #include <math/math.h>
-#include "buffer.h"
 #include "vertex2d.h"
 #include "vertex3d.h"
+
+
+template<BufferType Type> class BufferBase;
+template <typename T, BufferType BufferType> class Buffer;
+struct Mesh3D;
 
 class Window {
 public:
@@ -16,8 +20,8 @@ public:
         void begin();
         void end();
         void clear(Vector4 color);
-        void drawBuffers(Buffer<Vertex2D>& vertexBuffer, Buffer<uint16_t>& indexBuffer, ShaderBase* shader);
-        void drawBuffers(Buffer<Vertex3D>& vertexBuffer, Buffer<uint16_t>& indexBuffer, ShaderBase* shader);
+        void buffers(BufferBase<BUFFER_TYPE_VERTEX>* vertexBuffer, BufferBase<BUFFER_TYPE_INDEX>* indexBuffer, ShaderBase* shader);
+        void mesh(Mesh3D& mesh);
     };
 
     GLFWwindow* _window;
@@ -45,16 +49,16 @@ public:
     void createSwapChain();
     void createImageViews();
     VkExtent2D getExtents(const VkSurfaceCapabilitiesKHR& capabilities);
-    VkCommandBuffer& getCurrentCommandBuffer();
 public:
     Draw draw;
     Window();
     ~Window();
 
-    void createFramebuffers();
+    void createFrameBuffers();
     void createCommandBuffer();
     void beginCommandBuffer();
     void endCommandBuffer();
+    VkCommandBuffer& getCurrentCommandBuffer();
 
     void setTitle(const String& title);
     void setSize(Vector2i size);

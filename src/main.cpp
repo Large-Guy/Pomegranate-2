@@ -25,8 +25,8 @@ int main() {
     auto fragmentShader = fragmentFile.readBuffer();
 
     RenderInfo renderInfo = {
-            .renderMode = RenderMode::Fill,
-            .cullMode = CullMode::None,
+            .renderMode = RENDER_MODE_FILL,
+            .cullMode = CULL_MODE_NONE,
     };
 
     Shader shader = Shader<Vertex3D>(vertexShader, fragmentShader, renderInfo);
@@ -34,19 +34,17 @@ int main() {
 
 //region Model
 //RGB triangle model
-    std::vector<Vertex3D> vertices = {
-            {{0.0, 0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {1.0, 0.0, 0.0}},
-            {{0.5, -0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {0.0, 1.0, 0.0}},
-            {{-0.5, -0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0}},
+    List<Vertex3D> vertices = {
+            {{0.0, -0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {1.0, 0.0, 0.0}},
+            {{0.5, 0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {0.0, 1.0, 0.0}},
+            {{-0.5, 0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0}},
     };
 
-    std::vector<uint16_t> indices = {
+    List<uint16_t> indices = {
             0, 1, 2
     };
 
-    //Buffer
-    Buffer<Vertex3D> vertexBuffer(vertices, BufferType::VertexBuffer);
-    Buffer<uint16_t> indexBuffer(indices,BufferType::IndexBuffer);
+    Mesh3D mesh(vertices,indices, &shader);
 //endregion
 
     Window window;
@@ -61,7 +59,7 @@ int main() {
         window.draw.begin();
         window.draw.clear({0.0, 0.0, 0.0, 1.0});
 
-        window.draw.drawBuffers(vertexBuffer,indexBuffer,&shader);
+        window.draw.mesh(mesh);
 
         window.draw.end();
     }
