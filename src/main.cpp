@@ -27,7 +27,7 @@ int main() {
     RenderInfo renderInfo = {
             .renderMode = RENDER_MODE_FILL,
             .cullMode = CULL_MODE_NONE,
-            .topologyMode = TOPOLOGY_TRIANGLE_INDEXED
+            .topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED
     };
 
     Shader shader = Shader<Vertex3D>(vertexShader, fragmentShader, renderInfo);

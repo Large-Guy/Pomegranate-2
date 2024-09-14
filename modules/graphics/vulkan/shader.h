@@ -19,7 +19,7 @@ public:
     RenderInfo _info = {
             .renderMode = RENDER_MODE_FILL,
             .cullMode = CULL_MODE_BACK,
-            .topologyMode = TOPOLOGY_TRIANGLE_INDEXED
+            .topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED
     };
     VkVertexInputBindingDescription _bindingDescription;
     std::vector<VkVertexInputAttributeDescription> _attributeDescriptions;
