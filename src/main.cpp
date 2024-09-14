@@ -1,3 +1,4 @@
+
 #include <utility>
 #include <core/core.h>
 #include <ecs/ecs.h>
@@ -67,6 +68,7 @@ int main() {
 
     return 0;
 #else
+
     const EventID function = Event::getEventId("function");
 
     Event::on(function,[&](float arg){
@@ -74,5 +76,6 @@ int main() {
     });
 
     Event::call(function,1.0f);
+
 #endif
 }

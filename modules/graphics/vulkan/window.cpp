@@ -94,7 +94,7 @@ void Window::createFrameBuffers() {
                 _swapChainImageViews[i]
         };
 
-        VkFramebufferCreateInfo framebufferCreateInfo;
+        VkFramebufferCreateInfo framebufferCreateInfo{};
         framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferCreateInfo.renderPass = _renderPass;
         framebufferCreateInfo.attachmentCount = 1;
@@ -384,9 +384,10 @@ void Window::Draw::buffers(BufferBase<BUFFER_TYPE_VERTEX>* vertexBuffer, BufferB
 
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,shader->_pipelines[window].pipeline);
 
+    Debug::AssertIf::isNull(vertexBuffer,"Vertex buffer cannot be null!");
     vertexBuffer->bind(window);
-
-    indexBuffer->bind(window);
+    if(indexBuffer != nullptr)
+        indexBuffer->bind(window);
 
     vkCmdDrawIndexed(commandBuffer,(uint32_t)indexBuffer->size,1,0,0,0);
 }

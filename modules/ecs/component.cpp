@@ -48,6 +48,7 @@ size_t ComponentList::add() {
             }
         }
     }
+    throw std::runtime_error("No empty slots found!");
 }
 
 void* ComponentList::get(size_t i) const {

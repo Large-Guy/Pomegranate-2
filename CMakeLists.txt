@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(PomegranateEngine)
 
 add_compile_options( -Wreturn-type)
+add_compile_options( -Wuninitialized)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
