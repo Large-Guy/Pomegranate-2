@@ -27,7 +27,7 @@ int main() {
 
     RenderInfo renderInfo = {
             .renderMode = RENDER_MODE_FILL,
-            .cullMode = CULL_MODE_NONE,
+            .cullMode = CULL_MODE_BACK,
             .topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED
     };
 
@@ -37,13 +37,15 @@ int main() {
 //region Model
 //RGB triangle model
     List<Vertex3D> vertices = {
-            {{0.0, -0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {1.0, 0.0, 0.0}},
-            {{0.5, 0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {0.0, 1.0, 0.0}},
-            {{-0.5, 0.5, 0.0}, {0.0, 0.0}, {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0}},
+            {{-1.0,-1.0,0.0},{0.0,0.0},{0.0,0.0,1.0}},
+            {{1.0,-1.0,0.0},{1.0,0.0},{0.0,1.0,0.0}},
+            {{-1.0,1.0,0.0},{0.0,1.0},{1.0,0.0,0.0}},
+            {{1.0,1.0,0.0},{1.0,1.0},{1.0,1.0,1.0}}
     };
 
     List<uint16_t> indices = {
-            0, 1, 2
+            0, 1, 2,
+            2, 1, 3
     };
 
     Mesh3D mesh(vertices,indices, &shader);
@@ -55,6 +57,9 @@ int main() {
     window.setSize(800, 600);
     window.show();
 
+    double lastTime = glfwGetTime();
+    double deltaTime = 0.0;
+
     while(window.isOpen()) {
         window.poll();
 
@@ -64,6 +69,12 @@ int main() {
         window.draw.mesh(mesh);
 
         window.draw.end();
+
+        double currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        Debug::Log::info("FPS: ",1.0/deltaTime);
     }
 
     return 0;
