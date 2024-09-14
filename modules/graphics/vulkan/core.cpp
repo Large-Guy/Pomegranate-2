@@ -266,7 +266,7 @@ void Graphics::createRenderPass(Window* window) {
     Debug::AssertIf::isFalse(vkCreateRenderPass(_logicalDevice,&renderPassInfo,nullptr,&window->_renderPass) == VK_SUCCESS, "Failed to create render pass!");
 }
 
-Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* shader, Window* window, RenderMode renderMode, CullMode cullMode, VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions, VkDescriptorSetLayout* descriptorLayout) {
+Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* shader, Window* window, RenderInfo renderInfo, VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions, VkDescriptorSetLayout* descriptorLayout) {
     GraphicsPipelineGroup group{};
 
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
@@ -305,7 +305,7 @@ Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* sha
 
     VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
     inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.topology = (VkPrimitiveTopology)renderInfo.topologyMode;
     inputAssembly.primitiveRestartEnable = VK_FALSE;
 
     VkViewport viewport;
@@ -331,9 +331,9 @@ Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* sha
     rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     rasterizer.depthClampEnable = VK_FALSE;
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
-    rasterizer.polygonMode = (VkPolygonMode)renderMode;
+    rasterizer.polygonMode = (VkPolygonMode)renderInfo.renderMode;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.cullMode = (VkCullModeFlagBits)cullMode;
+    rasterizer.cullMode = (VkCullModeFlagBits)renderInfo.cullMode;
     rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
     rasterizer.depthBiasEnable = VK_FALSE;
     rasterizer.depthBiasConstantFactor = 0.0f;

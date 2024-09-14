@@ -32,6 +32,7 @@ VkShaderModule ShaderBase::createShaderModule(const List<char> &code) {
 }
 
 void ShaderBase::requestPipeline(Window *window) {
-    Graphics::GraphicsPipelineGroup group = Graphics::getInstance()->createGraphicsPipeline(this, window, _renderMode, _cullMode,_bindingDescription,_attributeDescriptions,&descriptorSetLayout);
+
+    Graphics::GraphicsPipelineGroup group = Graphics::getInstance()->createGraphicsPipeline(this, window, _info,_bindingDescription,_attributeDescriptions,&descriptorSetLayout);
     _pipelines[window] = group;
 }

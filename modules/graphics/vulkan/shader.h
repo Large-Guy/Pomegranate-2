@@ -16,8 +16,11 @@ class ShaderBase{
 public:
     VkShaderModule _fragment;
     VkShaderModule _vertex;
-    RenderMode _renderMode = RENDER_MODE_FILL;
-    CullMode _cullMode = CULL_MODE_BACK;
+    RenderInfo _info = {
+            .renderMode = RENDER_MODE_FILL,
+            .cullMode = CULL_MODE_BACK,
+            .topologyMode = TOPOLOGY_TRIANGLE_INDEXED
+    };
     VkVertexInputBindingDescription _bindingDescription;
     std::vector<VkVertexInputAttributeDescription> _attributeDescriptions;
     VkDescriptorSetLayout descriptorSetLayout;
@@ -42,8 +45,8 @@ public:
         _bindingDescription = VertexType::getBindingDescription();
         _attributeDescriptions = VertexType::getAttributeDescriptions();
 
-        _renderMode = info.renderMode;
-        _cullMode = info.cullMode;
+        _info = info;
+
         _vertex = createShaderModule(vertex);
         _fragment = createShaderModule(fragment);
 

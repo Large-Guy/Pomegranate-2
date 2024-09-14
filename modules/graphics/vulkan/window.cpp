@@ -393,4 +393,6 @@ void Window::Draw::buffers(BufferBase<BUFFER_TYPE_VERTEX>* vertexBuffer, BufferB
 
 void Window::Draw::mesh(Mesh3D& mesh) {
     buffers(mesh._vertexBuffer,mesh._indexBuffer,mesh.shader);
+
+
 }
