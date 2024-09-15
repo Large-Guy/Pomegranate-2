@@ -4,7 +4,7 @@
 #include "vector3.h"
 #include <cmath>
 
-struct Matrix4x4 {
+struct Matrix4x4{
     Vector4 x = Vector4();
     Vector4 y = Vector4();
     Vector4 z = Vector4();
@@ -26,6 +26,8 @@ struct Matrix4x4 {
 
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
+
+    [[nodiscard]] std::array<float, 16> get() const;
 };
 
 template<>

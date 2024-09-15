@@ -119,3 +119,7 @@ Matrix4x4 Matrix4x4::rotateZ(float angle) const {
 Matrix4x4 Matrix4x4::createTransform(Vector3 pos, Vector3 scale, Vector3 rotation) {
     return Matrix4x4().scale(scale).rotateX(rotation.x).rotateY(rotation.y).rotateZ(rotation.z).translate(pos);
 }
+
+std::array<float, 16> Matrix4x4::get() const {
+    return {x.x, y.x, z.x, w.x, x.y, y.y, z.y, w.y, x.z, y.z, z.z, w.z, x.w, y.w, z.w, w.w};
+}

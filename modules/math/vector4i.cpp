@@ -188,3 +188,8 @@ void Vector4i::deserialize(Archive& a)
 {
     a >> x >> y >> z >> w;
 }
+
+std::array<int, 4> Vector4i::get() const
+{
+    return {x, y, z, w};
+}

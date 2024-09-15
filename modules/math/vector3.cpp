@@ -178,3 +178,8 @@ void Vector3::deserialize(Archive& a)
 {
     a >> x >> y >> z;
 }
+
+std::array<float, 3> Vector3::get() const
+{
+    return {x, y, z};
+}

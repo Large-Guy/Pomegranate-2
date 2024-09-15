@@ -166,3 +166,7 @@ void Vector2i::serialize(Archive& a) const {
 void Vector2i::deserialize(Archive& a) {
     a >> x >> y;
 }
+
+std::array<int, 2> Vector2i::get() const {
+    return {x, y};
+}

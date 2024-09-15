@@ -39,6 +39,8 @@ struct Vector3i {
 
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
+
+    [[nodiscard]] std::array<int, 3> get() const;
 };
 
 template<>

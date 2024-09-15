@@ -27,7 +27,7 @@ int main() {
 
     RenderInfo renderInfo = {
             .renderMode = RENDER_MODE_FILL,
-            .cullMode = CULL_MODE_BACK,
+            .cullMode = CULL_MODE_NONE,
             .topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED
     };
 
@@ -37,10 +37,10 @@ int main() {
 //region Model
 //RGB triangle model
     List<Vertex3D> vertices = {
-            {{-0.5,-0.5,0.0},{0.0,0.0},{0.0,0.0,1.0},{1.0,0.0,0.0}},
-            {{0.5,-0.5,0.0},{1.0,0.0},{0.0,0.0,1.0},{0.0,1.0,0.0}},
-            {{-0.5,0.5,0.0},{0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0}},
-            {{0.5,0.5,0.0},{1.0,1.0},{0.0,0.0,1.0},{0.0,0.0,1.0}}
+            {{-0.5,-0.5,0.5},{0.0,0.0},{0.0,0.0,1.0},{1.0,0.0,0.0}},
+            {{0.5,-0.5,0.5},{1.0,0.0},{0.0,0.0,1.0},{0.0,1.0,0.0}},
+            {{-0.5,0.5,0.5},{0.0,1.0},{0.0,0.0,1.0},{1.0,1.0,0.0}},
+            {{0.5,0.5,0.5},{1.0,1.0},{0.0,0.0,1.0},{0.0,0.0,1.0}}
     };
 
     List<uint16_t> indices = {
@@ -63,8 +63,10 @@ int main() {
     while(window.isOpen()) {
         window.poll();
 
+        shader.updateUniformBuffer(window._currentFrame);
+
         window.draw.begin();
-        window.draw.clear({0.0, 0.0, 0.0, 1.0});
+        window.draw.clear({0.1, 0.1, 0.1, 1.0});
 
         window.draw.mesh(mesh);
 

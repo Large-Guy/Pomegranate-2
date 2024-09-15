@@ -16,8 +16,8 @@ layout(location = 1) out vec2 FRAG_TEXCOORD;
 layout(location = 2) out vec3 FRAG_COLOR;
 
 void main() {
-    gl_Position = vec4(POSITION, 1.0);
-    FRAG_POSITION = vec3(gl_Position);
+    gl_Position = perspective.projection * perspective.view * perspective.model * vec4(POSITION, 1.0);
+    FRAG_POSITION = POSITION;
     FRAG_TEXCOORD = TEXCOORD;
     FRAG_COLOR = COLOR;
 }

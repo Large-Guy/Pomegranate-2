@@ -180,3 +180,8 @@ void Vector3i::deserialize(Archive& a)
 {
     a >> x >> y >> z;
 }
+
+std::array<int, 3> Vector3i::get() const
+{
+    return {x, y, z};
+}

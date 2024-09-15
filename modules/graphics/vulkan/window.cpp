@@ -389,11 +389,11 @@ void Window::Draw::buffers(BufferBase<BUFFER_TYPE_VERTEX>* vertexBuffer, BufferB
     if(indexBuffer != nullptr)
         indexBuffer->bind(window);
 
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->_pipelines[window].layout, 0, 1, &shader->descriptorSets[window->_currentFrame], 0, nullptr);
+
     vkCmdDrawIndexed(commandBuffer,(uint32_t)indexBuffer->size,1,0,0,0);
 }
 
 void Window::Draw::mesh(Mesh3D& mesh) {
     buffers(mesh._vertexBuffer,mesh._indexBuffer,mesh.shader);
-
-
 }

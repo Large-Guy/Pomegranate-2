@@ -38,6 +38,7 @@ struct Vector4 {
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
 
+    [[nodiscard]] std::array<float, 4> get() const;
 };
 
 template<>

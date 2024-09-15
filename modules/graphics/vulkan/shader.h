@@ -13,6 +13,8 @@ struct Perspective {
 };
 
 class ShaderBase{
+private:
+    void createBuffer(VkDeviceSize size, VkBufferUsageFlagBits usage,VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 public:
     VkShaderModule _fragment;
     VkShaderModule _vertex;
@@ -27,12 +29,19 @@ public:
     std::vector<VkBuffer> uniformBuffers;
     std::vector<VkDeviceMemory> uniformBuffersMemory;
     std::vector<void*> uniformBuffersMapped;
+    VkDescriptorPool descriptorPool;
+    std::vector<VkDescriptorSet> descriptorSets;
 
     std::unordered_map<Window*, Graphics::GraphicsPipelineGroup> _pipelines;
     void createDescriptionSetLayout();
     VkShaderModule createShaderModule(const List<char>& code);
     void requestPipeline(Window* window);
     void createUniformBuffers();
+    void createDescriptorPool();
+    void createDescriptorSets();
+    void updateUniformBuffer(uint32_t currentImage);
+
+    virtual ~ShaderBase() = default;
 
     friend Graphics;
 };
@@ -42,6 +51,11 @@ class Shader : public ShaderBase{
 public:
     Shader(List<char> vertex, List<char> fragment, RenderInfo info = {.renderMode = RENDER_MODE_FILL, .cullMode = CULL_MODE_BACK})
     {
+        createDescriptionSetLayout();
+        createUniformBuffers();
+        createDescriptorPool();
+        createDescriptorSets();
+
         _bindingDescription = VertexType::getBindingDescription();
         _attributeDescriptions = VertexType::getAttributeDescriptions();
 
@@ -68,6 +82,7 @@ public:
         //Remove from shaders list
         Graphics::getInstance()->_shaders.erase(std::remove(Graphics::getInstance()->_shaders.begin(), Graphics::getInstance()->_shaders.end(), this), Graphics::getInstance()->_shaders.end());
 
+        vkDestroyDescriptorPool(Graphics::getInstance()->_logicalDevice, descriptorPool, nullptr);
         vkDestroyDescriptorSetLayout(Graphics::getInstance()->_logicalDevice, descriptorSetLayout, nullptr);
     }
     friend Graphics;

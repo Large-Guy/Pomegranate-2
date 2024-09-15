@@ -3,7 +3,7 @@
 #include <core/serializable.h>
 #include <cmath>
 
-struct Vector4i {
+struct Vector4i{
     int x = 0, y = 0, z = 0, w = 0;
     Vector4i();
     Vector4i(int v);
@@ -38,6 +38,7 @@ struct Vector4i {
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
 
+    [[nodiscard]] std::array<int, 4> get() const;
 };
 
 template<>

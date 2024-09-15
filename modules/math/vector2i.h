@@ -3,7 +3,7 @@
 #include <core/serializable.h>
 #include <cmath>
 
-class Vector2i {
+class Vector2i{
 public:
     int x = 0, y = 0;
     Vector2i();
@@ -40,6 +40,8 @@ public:
 
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
+
+    [[nodiscard]] std::array<int, 2> get() const;
 };
 
 template<>
