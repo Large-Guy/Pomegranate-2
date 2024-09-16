@@ -2,6 +2,7 @@
 #define POMEGRANATE_ENGINE_MATH_VECTOR3I_H
 #include <core/serializable.h>
 #include <cmath>
+#include <array>
 
 struct Vector3i {
     int x = 0, y = 0, z = 0;

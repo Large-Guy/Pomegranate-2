@@ -2,6 +2,7 @@
 #define POMEGRANATE_ENGINE_MATH_VEC2_H
 #include <core/serializable.h>
 #include <cmath>
+#include <array>
 
 struct Vector2 {
     float x = 0, y = 0;

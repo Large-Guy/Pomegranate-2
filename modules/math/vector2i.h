@@ -2,6 +2,7 @@
 #define POMEGRANATE_ENGINE_MATH_VECTOR2I_H
 #include <core/serializable.h>
 #include <cmath>
+#include <array>
 
 class Vector2i{
 public:

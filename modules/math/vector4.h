@@ -2,6 +2,7 @@
 #define POMEGRANATE_ENGINE_MATH_VECTOR4_H
 #include <core/serializable.h>
 #include <cmath>
+#include <array>
 
 struct Vector4 {
     float x = 0, y = 0, z = 0, w = 0;
