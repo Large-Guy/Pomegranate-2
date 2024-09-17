@@ -96,9 +96,6 @@ public:
                 vkCmdBindIndexBuffer(window->getCurrentCommandBuffer(),_buffer,0,VK_INDEX_TYPE_UINT16);
                 break;
             }
-            case BUFFER_TYPE_UNIFORM: {
-                Debug::Log::warn("Unimplemented!");
-            }
             case BUFFER_TYPE_NONE: {
                 Debug::Log::error("Unable to bind unknown type!");
                 throw std::runtime_error("Unable to bind unknown type!");
