@@ -6,6 +6,10 @@ layout(binding = 0) uniform Perspective {
     mat4 projection;
 } perspective;
 
+layout(binding = 1) uniform Material {
+    vec3 albedo;
+} material;
+
 layout(location = 0) in vec3 POSITION;
 layout(location = 1) in vec2 TEXCOORD;
 layout(location = 2) in vec3 NORMAL;
@@ -19,5 +23,5 @@ void main() {
     gl_Position = perspective.projection * perspective.view * perspective.model * vec4(POSITION, 1.0);
     FRAG_POSITION = POSITION;
     FRAG_TEXCOORD = TEXCOORD;
-    FRAG_COLOR = COLOR;
+    FRAG_COLOR = COLOR * material.albedo;
 }

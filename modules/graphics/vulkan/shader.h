@@ -12,6 +12,20 @@ struct Perspective {
     Matrix4x4 projection;
 };
 
+struct Material {
+    Vector3 albedo;
+};
+
+struct Uniform {
+    std::vector<VkBuffer> buffers;
+    std::vector<VkDeviceMemory> memory;
+    std::vector<void*> mapped;
+    std::vector<VkDescriptorSet> descriptors;
+    VkDescriptorBufferInfo bufferInfo;
+    uint32_t binding;
+    VkDeviceSize size;
+};
+
 class ShaderBase{
 private:
     void createBuffer(VkDeviceSize size, VkBufferUsageFlagBits usage,VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
@@ -25,14 +39,13 @@ public:
     };
     VkVertexInputBindingDescription _bindingDescription;
     std::vector<VkVertexInputAttributeDescription> _attributeDescriptions;
-    VkDescriptorSetLayout descriptorSetLayout;
-    std::vector<VkBuffer> uniformBuffers;
-    std::vector<VkDeviceMemory> uniformBuffersMemory;
-    std::vector<void*> uniformBuffersMapped;
-    VkDescriptorPool descriptorPool;
-    std::vector<VkDescriptorSet> descriptorSets;
 
     std::unordered_map<Window*, Graphics::GraphicsPipelineGroup> _pipelines;
+
+    std::vector<Uniform> uniforms;
+    VkDescriptorPool descriptorPool;
+    VkDescriptorSetLayout descriptorSetLayout;
+
     void createDescriptionSetLayout();
     VkShaderModule createShaderModule(const List<char>& code);
     void requestPipeline(Window* window);
@@ -51,6 +64,14 @@ class Shader : public ShaderBase{
 public:
     Shader(List<char> vertex, List<char> fragment, RenderInfo info = {.renderMode = RENDER_MODE_FILL, .cullMode = CULL_MODE_BACK})
     {
+        uniforms.resize(2);
+        uniforms[0] = {};
+        uniforms[0].size = sizeof(Perspective);
+        uniforms[0].binding = 0;
+        uniforms[1] = {};
+        uniforms[1].size = sizeof(Material);
+        uniforms[1].binding = 1;
+
         createDescriptionSetLayout();
         createUniformBuffers();
         createDescriptorPool();
