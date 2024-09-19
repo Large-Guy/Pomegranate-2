@@ -85,7 +85,7 @@ public:
     static const int MAX_FRAMES_IN_FLIGHT;
 
     void createRenderPass(Window* window);
-    GraphicsPipelineGroup createGraphicsPipeline(ShaderBase* shader, Window* window, RenderInfo renderInfo, VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions, VkDescriptorSetLayout* descriptorLayout);
+    GraphicsPipelineGroup createGraphicsPipeline(ShaderBase* shader, Window* window, RenderInfo renderInfo, VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions);
     void createSyncObjects();
     static bool enableValidationLayers;
     Graphics();

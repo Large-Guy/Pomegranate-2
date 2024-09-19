@@ -6,6 +6,15 @@ class Debug {
 public:
     class Log {
     public:
+        template<typename ...args>
+        Log(args... messages)
+        {
+            std::cout << "\033[1;44m[LOG]\033[0m  ";
+            // Ensure space between messages
+            ((std::cout << messages << ' '), ...);
+            std::cout << std::endl;
+        }
+
         static void info(String message);
         static void warn(String message);
         static void error(String message);

@@ -266,7 +266,7 @@ void Graphics::createRenderPass(Window* window) {
     Debug::AssertIf::isFalse(vkCreateRenderPass(_logicalDevice,&renderPassInfo,nullptr,&window->_renderPass) == VK_SUCCESS, "Failed to create render pass!");
 }
 
-Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* shader, Window* window, RenderInfo renderInfo, VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions, VkDescriptorSetLayout* descriptorLayout) {
+Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* shader, Window* window, RenderInfo renderInfo, VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions) {
     GraphicsPipelineGroup group{};
 
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
@@ -372,8 +372,14 @@ Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* sha
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &shader->descriptorSetLayout;
+    std::vector<VkDescriptorSetLayout> layouts;
+    layouts.reserve(shader->uniforms.size());
+    for(auto& uniform : shader->uniforms)
+    {
+        layouts.push_back(uniform.layout);
+    }
+    pipelineLayoutInfo.setLayoutCount = layouts.size();
+    pipelineLayoutInfo.pSetLayouts = layouts.data();
     pipelineLayoutInfo.pushConstantRangeCount = 0;
     pipelineLayoutInfo.pPushConstantRanges = nullptr;
 

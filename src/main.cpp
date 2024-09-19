@@ -1,4 +1,3 @@
-
 #include <utility>
 #include <core/core.h>
 #include <ecs/ecs.h>
@@ -7,9 +6,14 @@
 #include <graphics/vulkan/graphics.h>
 #include <math/math.h>
 
+void job(int i)
+{
+    (Debug::Log(i));
+}
+
 int main() {
 
-#define GRAPHICS
+//#define GRAPHICS
 
 #ifdef GRAPHICS
 
@@ -82,13 +86,22 @@ int main() {
     return 0;
 #else
 
-    const EventID function = Event::getEventId("function");
+    ThreadPool<void,int> pool;
 
-    Event::on(function,[&](float arg){
-        Debug::Log::info("Hello, World!",arg);
-    });
+    int a = 0;
 
-    Event::call(function,1.0f);
+    pool.start(8);
+
+    while(true)
+    {
+        pool.queue(job, a++);
+        if(a > 1000)
+            break;
+    }
+
+    while(pool.busy());
+
+    pool.stop();
 
 #endif
 }

@@ -22,6 +22,7 @@ struct Uniform {
     std::vector<void*> mapped;
     std::vector<VkDescriptorSet> descriptors;
     VkDescriptorBufferInfo bufferInfo;
+    VkDescriptorSetLayout layout;
     uint32_t binding;
     VkDeviceSize size;
 };
@@ -44,7 +45,6 @@ public:
 
     std::vector<Uniform> uniforms;
     VkDescriptorPool descriptorPool;
-    VkDescriptorSetLayout descriptorSetLayout;
 
     void createDescriptionSetLayout();
     VkShaderModule createShaderModule(const List<char>& code);
@@ -70,7 +70,7 @@ public:
         uniforms[0].binding = 0;
         uniforms[1] = {};
         uniforms[1].size = sizeof(Material);
-        uniforms[1].binding = 1;
+        uniforms[1].binding = 0;
 
         createDescriptionSetLayout();
         createUniformBuffers();
@@ -104,7 +104,10 @@ public:
         Graphics::getInstance()->_shaders.erase(std::remove(Graphics::getInstance()->_shaders.begin(), Graphics::getInstance()->_shaders.end(), this), Graphics::getInstance()->_shaders.end());
 
         vkDestroyDescriptorPool(Graphics::getInstance()->_logicalDevice, descriptorPool, nullptr);
-        vkDestroyDescriptorSetLayout(Graphics::getInstance()->_logicalDevice, descriptorSetLayout, nullptr);
+        for(auto& uniform : uniforms)
+        {
+            vkDestroyDescriptorSetLayout(Graphics::getInstance()->_logicalDevice,uniform.layout, nullptr);
+        }
     }
     friend Graphics;
     friend Window;

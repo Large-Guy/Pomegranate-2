@@ -24,7 +24,6 @@ void ShaderBase::createBuffer(VkDeviceSize size, VkBufferUsageFlagBits usage, Vk
     vkBindBufferMemory(Graphics::getInstance()->_logicalDevice, buffer, bufferMemory, 0);
 }
 void ShaderBase::createDescriptionSetLayout() {
-    std::vector<VkDescriptorSetLayoutBinding> bindings(uniforms.size());
 
     for(auto& uniform : uniforms)
     {
@@ -34,15 +33,14 @@ void ShaderBase::createDescriptionSetLayout() {
         layoutBinding.descriptorCount = 1;
         layoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
         layoutBinding.pImmutableSamplers = nullptr;
-        bindings[uniform.binding] = layoutBinding;
+
+        VkDescriptorSetLayoutCreateInfo layoutInfo{};
+        layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        layoutInfo.bindingCount = 1;
+        layoutInfo.pBindings = &layoutBinding;
+
+        Debug::AssertIf::isFalse(vkCreateDescriptorSetLayout(Graphics::getInstance()->_logicalDevice,&layoutInfo, nullptr,&uniform.layout) == VK_SUCCESS, "Failed to create descriptor layout!");
     }
-
-    VkDescriptorSetLayoutCreateInfo layoutInfo{};
-    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-    layoutInfo.pBindings = bindings.data();
-
-    Debug::AssertIf::isFalse(vkCreateDescriptorSetLayout(Graphics::getInstance()->_logicalDevice,&layoutInfo, nullptr,&descriptorSetLayout) == VK_SUCCESS, "Failed to create descriptor layout!");
 }
 
 void ShaderBase::createUniformBuffers() {
@@ -64,13 +62,14 @@ void ShaderBase::createUniformBuffers() {
 }
 
 void ShaderBase::createDescriptorPool() {
-    std::vector<VkDescriptorPoolSize> poolSizes(uniforms.size());
+    std::vector<VkDescriptorPoolSize> poolSizes;
+    poolSizes.reserve(uniforms.size());
 
     for(auto& uniform : uniforms) {
         VkDescriptorPoolSize poolSize{};
         poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         poolSize.descriptorCount = Graphics::MAX_FRAMES_IN_FLIGHT;
-        poolSizes[uniform.binding] = poolSize;
+        poolSizes.push_back(poolSize);
     }
 
     VkDescriptorPoolCreateInfo poolInfo{};
@@ -84,7 +83,7 @@ void ShaderBase::createDescriptorPool() {
 
 void ShaderBase::createDescriptorSets() {
     for(auto& uniform : uniforms) {
-        std::vector<VkDescriptorSetLayout> layouts(Graphics::MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
+        std::vector<VkDescriptorSetLayout> layouts(Graphics::MAX_FRAMES_IN_FLIGHT, uniform.layout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         allocInfo.descriptorPool = descriptorPool;
@@ -161,6 +160,6 @@ VkShaderModule ShaderBase::createShaderModule(const List<char> &code) {
 
 void ShaderBase::requestPipeline(Window *window) {
 
-    Graphics::GraphicsPipelineGroup group = Graphics::getInstance()->createGraphicsPipeline(this, window, _info,_bindingDescription,_attributeDescriptions,&descriptorSetLayout);
+    Graphics::GraphicsPipelineGroup group = Graphics::getInstance()->createGraphicsPipeline(this, window, _info,_bindingDescription,_attributeDescriptions);
     _pipelines[window] = group;
 }
