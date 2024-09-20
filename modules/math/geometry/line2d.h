@@ -1,10 +1,10 @@
 #ifndef POMEGRANATEENGINE_LINE2D_H
 #define POMEGRANATEENGINE_LINE2D_H
-#include "vector2.h"
+#include "math/vector2.h"
 #include "ray2d.h"
+#include "shape.h"
 
-//This represents a 2D line that extends infinitely in both directions.
-struct Line2D {
+struct Line2D : Shape {
     Vector2 a;
     Vector2 b;
 
@@ -17,12 +17,12 @@ struct Line2D {
 
     [[nodiscard]] Vector2 direction() const;
     [[nodiscard]] Vector2 normal() const;
-    [[nodiscard]] bool contains(const Vector2& point) const;
+    [[nodiscard]] bool contains(const Vector2& point) const override;
     [[nodiscard]] bool intersects(const Line2D& other) const;
-    void cast(const Ray2D& ray, Ray2D::Hit& hit) const;
+    void cast(const Ray2D& ray, Hit2D& hit) const override;
 
-    void serialize(Archive& a) const;
-    void deserialize(Archive& a);
+    void serialize(Archive& a) const override;
+    void deserialize(Archive& a) override;
 };
 
 

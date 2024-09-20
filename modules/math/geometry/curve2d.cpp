@@ -48,7 +48,7 @@ float Curve2D::bezierLength() const {
     return length;
 }
 
-void Curve2D::cast(const Ray2D& ray, Ray2D::Hit& hit) const {
+void Curve2D::cast(const Ray2D& ray, Hit2D& hit) const {
     std::cout << "Not implemented" << std::endl;
 }
 

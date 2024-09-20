@@ -22,20 +22,18 @@ set(POMEGRANATE_MATH_GEOMETRY_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/line2d.h
         ${CMAKE_CURRENT_SOURCE_DIR}/line3d.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/line3d.h
-        plane.cpp
-        plane.h
-        curve2d.cpp
-        curve2d.h
-        curve3d.cpp
-        curve3d.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/plane.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/plane.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/curve2d.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/curve2d.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/curve3d.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/curve3d.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/shape.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/shape.h
 )
 
-set(POMEGRANATE_MATH_GEOMETRY_INCLUDE_DIRS
-        ../
-)
+add_library(PomegranateMathGeometry ${POMEGRANATE_MATH_GEOMETRY_SOURCES})
 
-add_library(PomegranateGeometry ${POMEGRANATE_MATH_GEOMETRY_SOURCES})
+target_include_directories(PomegranateMathGeometry PUBLIC ${POMEGRANATE_MATH_GEOMETRY_INCLUDE_DIRS})
 
-target_include_directories(PomegranateGeometry PUBLIC ${POMEGRANATE_MATH_GEOMETRY_INCLUDE_DIRS})
-
-target_link_libraries(PomegranateGeometry PomegranateCore PomegranateMath)
+target_link_libraries(PomegranateMathGeometry PomegranateCore PomegranateMath)

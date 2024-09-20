@@ -1,9 +1,10 @@
 #ifndef POMEGRANATE_ENGINE_MATH_RECT_H
 #define POMEGRANATE_ENGINE_MATH_RECT_H
-#include "vector2.h"
+#include "math/vector2.h"
 #include "ray2d.h"
+#include "shape.h"
 
-struct Rectangle {
+struct Rectangle : public Shape {
     Vector2 position = Vector2();
     Vector2 size = Vector2();
 
@@ -16,9 +17,10 @@ struct Rectangle {
     [[nodiscard]] Vector2 center() const;
     [[nodiscard]] Vector2 min() const;
     [[nodiscard]] Vector2 max() const;
-    [[nodiscard]] bool contains(const Vector2& point) const;
+    [[nodiscard]] bool contains(const Vector2& point) const override;
     [[nodiscard]] bool intersects(const Rectangle& other) const;
-    void cast(const Ray2D& ray, Ray2D::Hit& hit) const;
+    [[nodiscard]] float area() const;
+    void cast(const Ray2D& ray, Hit2D& hit) const override;
 
     void serialize(Archive& a) const;
     void deserialize(Archive& a);

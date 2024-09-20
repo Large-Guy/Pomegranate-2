@@ -26,6 +26,10 @@ Circle &Circle::operator=(const Circle &other) {
     return *this;
 }
 
+float Circle::area() const {
+    return radius * radius * 3.14159265359f;
+}
+
 bool Circle::contains(const Vector2 &point) const {
     return (point - position).length() <= radius;
 }
@@ -34,7 +38,7 @@ bool Circle::intersects(const Circle &other) const {
     return (position - other.position).length() <= radius + other.radius;
 }
 
-void Circle::cast(const Ray2D &ray, Ray2D::Hit &hit) const {
+void Circle::cast(const Ray2D &ray, Hit2D &hit) const {
     hit.hit = false;
 
     Vector2 oc = ray.origin - position;

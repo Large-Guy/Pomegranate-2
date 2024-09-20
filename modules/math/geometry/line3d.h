@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_LINE3D_H
 #define POMEGRANATEENGINE_LINE3D_H
-#include "vector3.h"
+#include "math/vector3.h"
 
 struct Line3D {
     Vector3 a;

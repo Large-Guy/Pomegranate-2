@@ -32,6 +32,7 @@ add_executable(PomegranateEngine ${SOURCE_FILES})
 # Link the modules
 target_link_libraries(PomegranateEngine PomegranateCore)
 target_link_libraries(PomegranateEngine PomegranateMath)
+target_link_libraries(PomegranateEngine PomegranateMathGeometry)
 target_link_libraries(PomegranateEngine PomegranateECS)
 target_link_libraries(PomegranateEngine PomegranateEvents)
 target_link_libraries(PomegranateEngine PomegranateVulkan)

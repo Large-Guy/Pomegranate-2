@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_TRIANGLE3D_H
 #define POMEGRANATEENGINE_TRIANGLE3D_H
-#include "vector3.h"
+#include "math/vector3.h"
 
 class Triangle3D {
 public:

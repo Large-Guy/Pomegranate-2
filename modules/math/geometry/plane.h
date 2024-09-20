@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_PLANE_H
 #define POMEGRANATEENGINE_PLANE_H
-#include "vector3.h"
+#include "math/vector3.h"
 
 struct Plane {
     Vector3 normal;

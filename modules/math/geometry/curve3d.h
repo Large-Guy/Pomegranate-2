@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_CURVE3D_H
 #define POMEGRANATEENGINE_CURVE3D_H
-#include "vector3.h"
+#include "math/vector3.h"
 #include "core/list.h"
 
 struct Curve3D {

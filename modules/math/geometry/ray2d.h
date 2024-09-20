@@ -1,16 +1,17 @@
 #ifndef POMEGRANATEENGINE_RAY2D_H
 #define POMEGRANATEENGINE_RAY2D_H
-#include "vector2.h"
+#include "math/vector2.h"
+#include "shape.h"
 
 //Ray casting
+struct Hit2D {
+    bool hit;
+    Vector2 point;
+    float distance;
+    Vector2 normal;
+};
 
 struct Ray2D {
-    struct Hit {
-        bool hit;
-        Vector2 point;
-        float distance;
-        Vector2 normal;
-    };
 
     Vector2 origin;
     Vector2 direction;
@@ -30,11 +31,10 @@ struct Ray2D {
     void deserialize(Archive& a);
 
     //RayCasting
-    template<typename T>
-    Hit cast(const T& shape) const {
-        Hit hit{};
+    Hit2D cast(Shape* shape) const {
+        Hit2D hit{};
 
-        shape.cast(*this, hit);
+        shape->cast(*this, hit);
 
         return hit;
     }

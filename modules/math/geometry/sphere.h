@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_SPHERE_H
 #define POMEGRANATEENGINE_SPHERE_H
-#include "vector3.h"
+#include "math/vector3.h"
 
 struct Sphere {
     Vector3 position;

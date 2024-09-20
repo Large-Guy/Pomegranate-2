@@ -1,9 +1,11 @@
 #ifndef POMEGRANATEENGINE_SEGMENT2D_H
 #define POMEGRANATEENGINE_SEGMENT2D_H
-#include "vector2.h"
+#include "math/vector2.h"
 #include "ray2d.h"
+#include "cmath"
+#include "shape.h"
 
-struct Segment2D {
+struct Segment2D : public Shape {
     Vector2 start;
     Vector2 end;
 
@@ -17,10 +19,11 @@ struct Segment2D {
     [[nodiscard]] Vector2 direction() const;
     [[nodiscard]] Vector2 center() const;
     [[nodiscard]] float length() const;
+    [[nodiscard]] Vector2 normal() const;
     [[nodiscard]] Vector2 pointAt(float t) const;
     [[nodiscard]] bool contains(const Vector2& point) const;
     [[nodiscard]] bool intersects(const Segment2D& other) const;
-    void cast(const Ray2D& ray, Ray2D::Hit& hit) const;
+    void cast(const Ray2D& ray, Hit2D& hit) const override;
 
     void serialize(Archive& a) const;
     void deserialize(Archive& a);

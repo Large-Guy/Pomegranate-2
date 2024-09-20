@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_CUBE_H
 #define POMEGRANATEENGINE_CUBE_H
-#include "vector3.h"
+#include "math/vector3.h"
 
 struct Cube {
     Vector3 position;

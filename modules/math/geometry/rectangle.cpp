@@ -45,7 +45,11 @@ bool Rectangle::intersects(const Rectangle &other) const {
            this->position.y + this->size.y > other.position.y;
 }
 
-void Rectangle::cast(const Ray2D &ray, Ray2D::Hit &hit) const {
+float Rectangle::area() const {
+    return this->size.x * this->size.y;
+}
+
+void Rectangle::cast(const Ray2D &ray, Hit2D &hit) const {
     hit.hit = false;
 
     float tmin = (this->position.x - ray.origin.x) / ray.direction.x;

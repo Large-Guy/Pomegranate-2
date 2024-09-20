@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_SEGMENT3D_H
 #define POMEGRANATEENGINE_SEGMENT3D_H
-#include "vector3.h"
+#include "math/vector3.h"
 
 struct Segment3D {
     Vector3 start;

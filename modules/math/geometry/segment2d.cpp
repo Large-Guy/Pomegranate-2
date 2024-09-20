@@ -38,6 +38,10 @@ float Segment2D::length() const {
     return (end - start).length();
 }
 
+Vector2 Segment2D::normal() const {
+    return Vector2(-(end - start).y, (end - start).x).normalized();
+}
+
 Vector2 Segment2D::pointAt(float t) const {
     return start + direction() * t;
 }
@@ -50,7 +54,7 @@ bool Segment2D::intersects(const Segment2D &other) const {
     return contains(other.start) || contains(other.end);
 }
 
-void Segment2D::cast(const Ray2D &ray, Ray2D::Hit &hit) const {
+void Segment2D::cast(const Ray2D &ray, Hit2D &hit) const {
     hit.hit = false;
 
     Vector2 segDir = end - start;
@@ -58,7 +62,7 @@ void Segment2D::cast(const Ray2D &ray, Ray2D::Hit &hit) const {
 
     float determinant = segDir.x * rayDir.y - segDir.y * rayDir.x;
 
-    if (fabs(determinant) < 1e-6f) {
+    if (abs(determinant) < 1e-6f) {
         return;
     }
 
@@ -70,6 +74,12 @@ void Segment2D::cast(const Ray2D &ray, Ray2D::Hit &hit) const {
         hit.hit = true;
         hit.point = ray.origin + ray.direction * s;
         hit.distance = s;
+
+        Vector2 d = normal();
+        if (d.dot(rayDir) > 0) {
+            d = d * -1;
+        }
+        hit.normal = d;
     }
 }
 

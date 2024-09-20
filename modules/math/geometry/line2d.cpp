@@ -42,7 +42,7 @@ bool Line2D::intersects(const Line2D &other) const {
     return contains(other.a) || contains(other.b);
 }
 
-void Line2D::cast(const Ray2D &ray, Ray2D::Hit &hit) const {
+void Line2D::cast(const Ray2D &ray, Hit2D &hit) const {
     hit.hit = false;
 
     Vector2 lineDir = b - a;
@@ -61,6 +61,12 @@ void Line2D::cast(const Ray2D &ray, Ray2D::Hit &hit) const {
         hit.hit = true;
         hit.point = ray.origin + ray.direction * s;
         hit.distance = s;
+        //Calculate the normal of the line and adjust based on the ray dir later
+        Vector2 d = normal();
+        if (d.dot(rayDir) > 0) {
+            d = d * -1;
+        }
+        hit.normal = d;
     }
 }
 

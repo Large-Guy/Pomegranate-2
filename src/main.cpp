@@ -4,7 +4,6 @@
 #include <events/events.h>
 #include <ecs/extensions/common/common.h>
 #include <graphics/vulkan/graphics.h>
-#include <math/math.h>
 #include <math/geometry/geometry.h>
 
 int main() {
@@ -80,8 +79,22 @@ int main() {
 
     return 0;
 #else
+    Rectangle rect = {{0.0f, 0.0f}, {10.0f, 10.0f}};
+    Circle circle = {{0.0f, 0.0f}, 5.0f};
+    Triangle2D triangle = {{-10.0f, -5.0f}, {0.0f, 5.0f}, {10.0f, -5.0f}};
+    Line2D line = {{0.0f, -10.0f}, {0.0f, 10.0f}};
 
-    Rectangle rect = Rectangle(0,0,10,10);
-    Vector2 point = Vector2(5,5);
+    Ray2D ray = {{10.0f, 0.0f}, {-1.0f, 0.0f}};
+
+    Hit2D hit = ray.cast(&line);
+
+    Debug::Log::info("Hit Info");
+    Debug::Log::info("Hit:", hit.hit);
+    Debug::Log::info("Point:",hit.point.x, hit.point.y);
+    Debug::Log::info("Normal:",hit.normal.x, hit.normal.y);
+    Debug::Log::info("Distance:",hit.distance);
+
+
+
 #endif
 }

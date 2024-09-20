@@ -51,6 +51,26 @@ bool Triangle2D::intersects(const Triangle2D &other) const {
     return contains(other.a) || contains(other.b) || contains(other.c);
 }
 
+void Triangle2D::cast(const Ray2D &ray, Hit2D &hit) const {
+    hit.hit = false;
+
+    Segment2D ab = Segment2D(a, b);
+    Segment2D bc = Segment2D(b, c);
+    Segment2D ca = Segment2D(c, a);
+
+    Hit2D abHit;
+    Hit2D bcHit;
+    Hit2D caHit;
+
+    ab.cast(ray, abHit);
+    bc.cast(ray, bcHit);
+    ca.cast(ray, caHit);
+
+    if (abHit.hit && (!hit.hit || abHit.distance < hit.distance)) {
+        hit = abHit;
+    }
+}
+
 void Triangle2D::serialize(Archive &arc) const {
     arc << a << b << c;
 }
