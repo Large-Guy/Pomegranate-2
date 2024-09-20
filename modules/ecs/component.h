@@ -32,7 +32,9 @@ public:
     template<typename T>
     static ComponentID create(const std::string& component)
     {
-        return create(component, sizeof(T));
+        ComponentID id = create(component,sizeof(T));
+        ECS::component_ids[typeid(T).hash_code()] = id;
+        return id;
     }
     static ComponentID getComponentID(const std::string& component);
     static std::string getComponentName(ComponentID component);

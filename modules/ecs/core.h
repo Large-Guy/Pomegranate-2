@@ -29,6 +29,8 @@ public:
     static std::unordered_map<ComponentID,ArchetypeMap> component_index;
     static std::unordered_map<ComponentID, size_t> component_sizes;
     static std::unordered_map<std::string, ComponentID> component_names;
+    static std::unordered_map<size_t, ComponentID> component_ids;
+    static int threadCount;
 
     template <typename Args>
     static void parallelEach(ComponentID component, std::function<void(Args*)> func);
@@ -71,7 +73,7 @@ public:
     static void each(const std::string& component, std::function<void(void*, Entity&)> func);
 
     static void setThreadCount(int count);
-    static int getMaxThreadCount();
+    static unsigned int getMaxThreadCount();
 };
 
 #endif //POMEGRANATE_ENGINE_CORE_H

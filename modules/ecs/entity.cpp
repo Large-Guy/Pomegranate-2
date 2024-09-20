@@ -17,10 +17,7 @@ EntityRecord::EntityRecord(Archetype *archetype, size_t row) {
 void Entity::moveEntityArchetype(EntityID entity, Archetype *new_archetype) {
     EntityRecord* record = ECS::entity_index[entity];
     Archetype* old_archetype = record->archetype;
-    if(old_archetype == nullptr)
-    {
-        throw std::runtime_error("Somethings gone wrong. Archetype isn't supposed to be null!");
-    }
+    Debug::AssertIf::isNull(old_archetype, "Somethings gone wrong. Most likely an engine bug. Sorry!");
     if(old_archetype == new_archetype)
     {
         return;
@@ -52,10 +49,7 @@ void Entity::moveEntityArchetype(EntityID entity, Archetype *new_archetype) {
 bool Entity::hasComponent(EntityID entity, ComponentID component) {
     EntityRecord* record = ECS::entity_index[entity];
     Archetype* archetype = record->archetype;
-    if(archetype == nullptr)
-    {
-        throw std::runtime_error("Somethings gone wrong. Archetype isn't supposed to be null!");
-    }
+    Debug::AssertIf::isNull(archetype, "Somethings gone wrong. Most likely an engine bug. Sorry!");
     ArchetypeMap& archetype_map = ECS::component_index[component];
     return archetype_map.count(archetype->id) != 0;
 }
@@ -67,10 +61,7 @@ bool Entity::hasComponent(EntityID entity, const std::string &component) {
 void* Entity::getComponent(EntityID entity, ComponentID component) {
     EntityRecord* record = ECS::entity_index[entity];
     Archetype* archetype = record->archetype;
-    if(archetype == nullptr)
-    {
-        throw std::runtime_error("Somethings gone wrong. Archetype isn't supposed to be null!");
-    }
+    Debug::AssertIf::isNull(archetype, "Somethings gone wrong. Most likely an engine bug. Sorry!");
     ArchetypeMap& archetypes = ECS::component_index[component];
     if(archetypes.count(archetype->id) == 0)
     {
@@ -84,10 +75,7 @@ void* Entity::getComponent(EntityID entity, ComponentID component) {
 void Entity::removeComponent(EntityID entity, ComponentID component) {
     EntityRecord* record = ECS::entity_index[entity];
     Archetype* archetype = record->archetype;
-    if(archetype == nullptr)
-    {
-        throw std::runtime_error("Somethings gone wrong. Archetype isn't supposed to be null!");
-    }
+    Debug::AssertIf::isNull(archetype, "Somethings gone wrong. Most likely an engine bug. Sorry!");
     Archetype* next = archetype->removeComponent(component);
     moveEntityArchetype(entity, next);
 }
@@ -103,10 +91,7 @@ void* Entity::getComponent(EntityID entity, const std::string &component) {
 void* Entity::addComponent(EntityID entity, ComponentID component) {
     EntityRecord* record = ECS::entity_index[entity];
     Archetype* archetype = record->archetype;
-    if(archetype == nullptr)
-    {
-        throw std::runtime_error("Somethings gone wrong. Archetype isn't supposed to be null!");
-    }
+    Debug::AssertIf::isNull(archetype, "Somethings gone wrong. Most likely an engine bug. Sorry!");
     Archetype* next = archetype->addComponent(component);
     moveEntityArchetype(entity, next);
     return getComponent(entity,component);
@@ -155,35 +140,41 @@ bool Entity::exists() const {
     return id != 0;
 }
 
-bool Entity::hasComponent(ComponentID component) const {
+bool Entity::has(ComponentID component) const {
     return hasComponent(id,component);
 }
 
-bool Entity::hasComponent(const std::string &component) const {
+bool Entity::has(const std::string &component) const {
     return hasComponent(id,Component::getComponentID(component));
 }
 
-void *Entity::getComponent(ComponentID component) const {
-    return getComponent(id,component);
+void *Entity::get(ComponentID component) const {
+    void* data = getComponent(id,component);
+    if(data == nullptr) {
+        //Warning
+        Debug::Log::warn("Entity does not have component");
+    }
+
+    return data;
 }
 
-void *Entity::getComponent(const std::string &component) const {
+void *Entity::get(const std::string &component) const {
     return getComponent(id,Component::getComponentID(component));
 }
 
-void* Entity::addComponent(ComponentID component) const {
+void* Entity::add(ComponentID component) const {
     return addComponent(id,component);
 }
 
-void* Entity::addComponent(const std::string &component) const {
+void* Entity::add(const std::string &component) const {
     return addComponent(id,Component::getComponentID(component));
 }
 
-void Entity::removeComponent(ComponentID component) const {
+void Entity::remove(ComponentID component) const {
     removeComponent(id,component);
 }
 
-void Entity::removeComponent(const std::string &component) const {
+void Entity::remove(const std::string &component) const {
     removeComponent(id,Component::getComponentID(component));
 }
 

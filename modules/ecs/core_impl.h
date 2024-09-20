@@ -9,17 +9,19 @@
 template <typename Args>
 void ECS::parallelEach(ComponentID component, std::function<void(Args*)> func)
 {
+    ThreadPool<void,Args*> pool{};
+    pool.start(threadCount);
+
     for(auto archetype : ECS::component_index[component])
     {
         ArchetypeRecord& record = archetype.second;
-#pragma omp parallel for
         for(size_t i = 0; i < record.archetype->components[record.column].count; i++)
         {
             //Call the function
-            func((Args*)record.archetype->components[record.column].get(i));
+            pool.queue(func,(Args*)record.archetype->components[record.column].get(i));
         }
     }
-#pragma omp barrier
+    pool.finish();
 }
 
 template <typename Args>
@@ -31,18 +33,19 @@ void ECS::parallelEach(const std::string& component, std::function<void(Args*)> 
 template <typename Args>
 void ECS::parallelEach(ComponentID component, std::function<void(Args*, Entity&)> func)
 {
+    ThreadPool<void,Args*,Entity&> pool{};
+    pool.start(threadCount);
     for(auto archetype : ECS::component_index[component])
     {
         ArchetypeRecord& record = archetype.second;
-#pragma omp parallel for
         for(size_t i = 0; i < record.archetype->components[record.column].count; i++)
         {
             //Call the function
             Entity entity(record.archetype->entities[i]);
-            func((Args*)record.archetype->components[record.column].get(i),entity);
+            pool.queue(func,(Args*)record.archetype->components[record.column].get(i),entity);
         }
     }
-#pragma omp barrier
+    pool.finish();
 }
 
 template <typename Args>

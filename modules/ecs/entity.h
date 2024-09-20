@@ -44,38 +44,53 @@ public:
     bool operator==(const Entity& entity) const;
     explicit operator EntityID() const;
     bool exists() const;
-    [[nodiscard]] bool hasComponent(ComponentID component) const;
-    [[nodiscard]] bool hasComponent(const std::string& component) const;
-    [[nodiscard]] void* getComponent(ComponentID component) const;
-    [[nodiscard]] void* getComponent(const std::string& component) const;
+    [[nodiscard]] bool has(ComponentID component) const;
+    [[nodiscard]] bool has(const std::string& component) const;
+
     template<typename T>
-    T* getComponent(ComponentID component)
+    [[nodiscard]] bool has() const
     {
-        return (T*) getComponent(component);
+        return has(ECS::component_ids[typeid(T).hash_code()]);
+    }
+
+    [[nodiscard]] void* get(ComponentID component) const;
+    [[nodiscard]] void* get(const std::string& component) const;
+    template<typename T>
+    T* get()
+    {
+        return (T*) get(ECS::component_ids[typeid(T).hash_code()]);
     }
     template<typename T>
-    T* getComponent(const std::string& component)
+    T* get(ComponentID component)
     {
-        return (T*) getComponent(component);
+        return (T*) get(component);
     }
-    void* addComponent(ComponentID component) const;
-    void* addComponent(const std::string& component) const;
+    template<typename T>
+    T* get(const std::string& component)
+    {
+        return (T*) get(component);
+    }
+    void* add(ComponentID component) const;
+    void* add(const std::string& component) const;
     template<typename T, typename... Args>
-    T* addComponent(ComponentID component, Args&&... args)
+    T* addNamed(const std::string& component, Args&&... args)
     {
-        void* loc = addComponent(component);
-        new(loc) T(std::forward<Args>(args)...);
-        return (T*)loc;
+        Debug::AssertIf::isFalse(ECS::component_ids.count(typeid(T).hash_code()),"Component not registered!");
+        T* t = (T*) add(component);
+        return new (t) T(std::forward<Args>(args)...);
+        return t;
     }
     template<typename T, typename... Args>
-    T* addComponent(const std::string& component, Args&&... args)
+    T* add(Args&&... args)
     {
-        void* loc = addComponent(component);
-        new(loc) T(std::forward<Args>(args)...);
-        return (T*)loc;
+        Debug::AssertIf::isFalse(ECS::component_ids.count(typeid(T).hash_code()),"Component not registered!");
+        T* t = (T*) add(ECS::component_ids[typeid(T).hash_code()]);
+        return new (t) T(std::forward<Args>(args)...);
+        return t;
     }
-    void removeComponent(ComponentID component) const;
-    void removeComponent(const std::string& component) const;
+
+    void remove(ComponentID component) const;
+    void remove(const std::string& component) const;
     [[nodiscard]] Type getType() const;
 };
 

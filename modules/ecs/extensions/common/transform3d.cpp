@@ -19,12 +19,12 @@ Transform3D::Transform3D(const Vector3& position, const Vector3& scale, const Ve
 }
 
 Vector3 Transform3D::getPosition(Entity& entity) {
-    auto* transform = entity.getComponent<Transform3D>("Transform3D");
+    auto* transform = entity.get<Transform3D>();
     if(transform == nullptr)
     {
         return {};
     }
-    auto* parent = entity.getComponent<Parent>("Parent");
+    auto* parent = entity.get<Parent>();
     if(parent != nullptr)
     {
         return getPosition(parent->parent) + transform->position;
@@ -33,12 +33,12 @@ Vector3 Transform3D::getPosition(Entity& entity) {
 }
 
 Vector3 Transform3D::getScale(Entity& entity) {
-    auto* transform = entity.getComponent<Transform3D>("Transform3D");
+    auto* transform = entity.get<Transform3D>();
     if(transform == nullptr)
     {
         return {};
     }
-    auto* parent = entity.getComponent<Parent>("Parent");
+    auto* parent = entity.get<Parent>();
     if(parent != nullptr)
     {
         return getScale(parent->parent) * transform->scale;
@@ -47,11 +47,11 @@ Vector3 Transform3D::getScale(Entity& entity) {
 }
 
 Vector3 Transform3D::getRotation(Entity& entity) {
-    auto *transform = entity.getComponent<Transform3D>("Transform3D");
+    auto *transform = entity.get<Transform3D>();
     if (transform == nullptr) {
         return {};
     }
-    auto *parent = entity.getComponent<Parent>("Parent");
+    auto *parent = entity.get<Parent>();
     if (parent != nullptr) {
         return getRotation(parent->parent) + transform->rotation;
     }
@@ -60,7 +60,7 @@ Vector3 Transform3D::getRotation(Entity& entity) {
 
 
 Matrix4x4 Transform3D::getMatrix(Entity& entity) {
-    auto* transform = entity.getComponent<Transform3D>("Transform3D");
+    auto* transform = entity.get<Transform3D>();
     if(transform == nullptr)
     {
         return {};

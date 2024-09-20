@@ -6,25 +6,25 @@ Children::Children() {
 }
 
 void Hierarchy::addChildTo(Entity parent, Entity child) {
-    auto* children = parent.getComponent<Children>("Children");
+    auto* children = parent.get<Children>();
     if(children == nullptr)
     {
-        children = parent.addComponent<Children>("Children");
+        children = parent.add<Children>();
     }
     children->children.insert(child);
-    if(child.hasComponent("Parent")) {
-        child.getComponent<Parent>("Parent")->parent = parent;
+    if(child.has("Parent")) {
+        child.get<Parent>()->parent = parent;
     }
     else
     {
-        child.addComponent<Parent>("Parent")->parent = parent;
+        child.add<Parent>()->parent = parent;
     }
 }
 
 void Hierarchy::removeChildFrom(Entity parent, Entity child) {
-    auto* children = parent.getComponent<Children>("Children");
+    auto* children = parent.get<Children>();
     children->children.erase(child);
-    child.getComponent<Parent>("Parent")->parent = NULL_ENTITY;
+    child.get<Parent>()->parent = NULL_ENTITY;
 }
 
 Parent::Parent() {
@@ -33,28 +33,28 @@ Parent::Parent() {
 }
 
 void Hierarchy::orphan(Entity entity) {
-    auto* parent = entity.getComponent<Parent>("Parent");
-    if(parent->parent.hasComponent("Children")) {
-        auto* children = parent->parent.getComponent<Children>("Children");
+    auto* parent = entity.get<Parent>();
+    if(parent->parent.has("Children")) {
+        auto* children = parent->parent.get<Children>();
         children->children.erase(entity);
     }
     parent->parent = NULL_ENTITY;
 }
 
 void Hierarchy::setParentOn(Entity entity, Entity new_parent) {
-    auto* parent = entity.getComponent<Parent>("Parent");
-    if(parent->parent.hasComponent("Children")) {
-        auto* children = parent->parent.getComponent<Children>("Children");
+    auto* parent = entity.get<Parent>();
+    if(parent->parent.has("Children")) {
+        auto* children = parent->parent.get<Children>();
         children->children.erase(entity);
     }
     parent->parent = new_parent;
     //Check if parent has children component
-    if(new_parent.hasComponent("Children")) {
-        auto* children = new_parent.getComponent<Children>("Children");
+    if(new_parent.has("Children")) {
+        auto* children = new_parent.get<Children>();
         children->children.insert(entity);
     }
     else
     {
-        new_parent.addComponent<Children>("Children")->children.insert(entity);
+        new_parent.add<Children>()->children.insert(entity);
     }
 }

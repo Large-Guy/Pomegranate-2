@@ -7,6 +7,8 @@ std::unordered_map<Type, Archetype*, SetHash, SetEqual> ECS::archetype_index;
 std::unordered_map<ComponentID,ArchetypeMap> ECS::component_index;
 std::unordered_map<ComponentID, size_t> ECS::component_sizes;
 std::unordered_map<std::string, ComponentID> ECS::component_names;
+std::unordered_map<size_t, ComponentID> ECS::component_ids;
+int ECS::threadCount = 1;
 
 std::size_t SetHash::operator()(const std::unordered_set<EntityID>& set) const {
     std::size_t hash_value = 0;
@@ -34,35 +36,26 @@ bool SetEqual::operator()(const std::unordered_set<EntityID>& set1, const std::u
 }
 
 void ECS::setThreadCount(int count) {
-#ifndef __APPLE__
-    if(count == omp_get_max_threads())
-    {
-        Debug::Log::warn("Using maximum number of threads may lead to diminishing returns. Consider using a smaller number of threads.");
-    }
-    omp_set_num_threads(count);
-#endif
+    threadCount = count;
 }
 
-int ECS::getMaxThreadCount() {
-#ifndef __APPLE__
-    return omp_get_max_threads();
-#else
-    return 1;
-#endif
+unsigned int ECS::getMaxThreadCount() {
+    return std::thread::hardware_concurrency();
 }
 
 void ECS::parallelEach(ComponentID component, std::function<void(void *)> func) {
+    ThreadPool<void,void*> pool{};
+    pool.start(threadCount);
     for(auto archetype : ECS::component_index[component])
     {
         ArchetypeRecord& record = archetype.second;
-#pragma omp parallel for
         for(size_t i = 0; i < record.archetype->components[record.column].count; i++)
         {
             //Call the function
-            func(record.archetype->components[record.column].get(i));
+            pool.queue(func,record.archetype->components[record.column].get(i));
         }
     }
-#pragma omp barrier
+    pool.finish();
 }
 
 void ECS::parallelEach(const std::string &component, std::function<void(void *)> func) {
@@ -70,18 +63,19 @@ void ECS::parallelEach(const std::string &component, std::function<void(void *)>
 }
 
 void ECS::parallelEach(ComponentID component, std::function<void(void *, Entity &)> func) {
+    ThreadPool<void,void*,Entity&> pool{};
+    pool.start(threadCount);
     for(auto archetype : ECS::component_index[component])
     {
         ArchetypeRecord& record = archetype.second;
-#pragma omp parallel for
         for(size_t i = 0; i < record.archetype->components[record.column].count; i++)
         {
             //Call the function
             Entity entity(record.archetype->entities[i]);
-            func(record.archetype->components[record.column].get(i),entity);
+            pool.queue(func,record.archetype->components[record.column].get(i),entity);
         }
     }
-#pragma omp barrier
+    pool.finish();
 }
 
 void ECS::parallelEach(const std::string &component, std::function<void(void *, Entity &)> func) {

@@ -30,7 +30,7 @@ private:
             {
                 std::unique_lock<std::mutex> lock(_queueMutex);
                 _mutexCondition.wait(lock, [this] {
-                    return !_jobs.empty() || _terminate;
+                    return !_jobs.empty() || _terminate || _autoTerminate;
                 });
 
                 if (_terminate || (_jobs.empty() && _autoTerminate)) {
@@ -56,7 +56,7 @@ public:
     }
 
     ~ThreadPool() {
-        stop();
+        terminate();
     }
 
     void queue(std::function<Ret(Args...)> function, Args... args)
@@ -83,11 +83,26 @@ public:
         return !_jobs.empty();
     }
 
-    void stop()
+    void terminate()
     {
         {
             std::unique_lock<std::mutex> lock(_queueMutex);
             _terminate = true;
+        }
+        _mutexCondition.notify_all();
+
+        for (std::thread& active_thread : _threads) {
+            if (active_thread.joinable()) {
+                active_thread.join();
+            }
+        }
+        _threads.clear();
+    }
+    void finish()
+    {
+        {
+            std::unique_lock<std::mutex> lock(_queueMutex);
+            _autoTerminate = true;
         }
         _mutexCondition.notify_all();
 
