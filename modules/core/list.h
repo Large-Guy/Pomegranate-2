@@ -87,6 +87,12 @@ public:
     {
         return this->_data.at(index);
     }
+    T& pop_back()
+    {
+        T& value = this->_data.back();
+        this->_data.pop_back();
+        return value;
+    }
     T* data()
     {
         return this->_data.data();

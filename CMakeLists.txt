@@ -13,6 +13,7 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/core)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/math)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/math/geometry)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/ecs)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/events)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/graphics/vulkan)

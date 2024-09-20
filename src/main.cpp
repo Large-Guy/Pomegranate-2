@@ -5,20 +5,13 @@
 #include <ecs/extensions/common/common.h>
 #include <graphics/vulkan/graphics.h>
 #include <math/math.h>
-
-void updateEntity(Entity entity) {
-    if(entity.has("Number")) {
-        int* num = entity.get<int>("Number");
-        (*num)++;
-    }
-}
+#include <math/geometry/geometry.h>
 
 int main() {
 
 //#define GRAPHICS
 
 #ifdef GRAPHICS
-
     Graphics::enableValidationLayers = true;
 
 
@@ -88,22 +81,7 @@ int main() {
     return 0;
 #else
 
-    ECS::setThreadCount(8);
-
-    Extensions::Common::init();
-
-    using namespace Extensions::Common;
-
-    Entity entity = Entity::create();
-    entity.add<Transform2D>(Vector2{1,2},Vector2{1,1},0);
-
-    if(entity.has<Transform2D>()) {
-        Debug::Log::pass("Entity has Transform2D component: ");
-        Debug::Log::info("Position:","(", entity.get<Transform2D>()->position.x, ", ", entity.get<Transform2D>()->position.y, ")");
-        Debug::Log::info("Scale:","(", entity.get<Transform2D>()->scale.x, ", ", entity.get<Transform2D>()->scale.y, ")");
-        Debug::Log::info("Rotation:",entity.get<Transform2D>()->rotation);
-    }
-
-    Debug::Log::pass("Done!");
+    Rectangle rect = Rectangle(0,0,10,10);
+    Vector2 point = Vector2(5,5);
 #endif
 }

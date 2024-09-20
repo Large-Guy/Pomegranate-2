@@ -21,10 +21,4 @@ add_library(PomegranateECS ${POMEGRANATE_ECS_SOURCES})
 
 target_include_directories(PomegranateECS PUBLIC ${POMEGRANATE_ECS_INCLUDE_DIRS})
 
-
-if(APPLE)
-    target_link_libraries(PomegranateECS PomegranateCore)
-else()
-    find_package(OpenMP)
-    target_link_libraries(PomegranateECS PomegranateCore OpenMP::OpenMP_CXX)
-endif()
+target_link_libraries(PomegranateECS PomegranateCore)

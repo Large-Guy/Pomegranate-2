@@ -5,9 +5,6 @@
 #include <core/core.h>
 #include "ecs_typedefs.h"
 #include <functional>
-#ifndef __APPLE__
-#include <omp.h>
-#endif
 
 struct Entity;
 struct EntityRecord;
@@ -43,6 +40,12 @@ public:
 
     template <typename Args>
     static void parallelEach(const std::string& component, std::function<void(Args*, Entity&)> func);
+
+    template <typename T>
+    static void parallelEach(std::function<void(T*)> func);
+
+    template <typename T>
+    static void parallelEach(std::function<void(T*, Entity&)> func);
 
     static void parallelEach(ComponentID component, std::function<void(void*)> func);
 

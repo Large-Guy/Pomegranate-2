@@ -2,9 +2,6 @@
 #define POMEGRANATE_ENGINE_ECS_CORE_IMPL_H
 
 #include <ecs/ecs.h>
-#ifndef __APPLE__
-#include <omp.h>
-#endif
 
 template <typename Args>
 void ECS::parallelEach(ComponentID component, std::function<void(Args*)> func)
@@ -52,6 +49,18 @@ template <typename Args>
 void ECS::parallelEach(const std::string& component, std::function<void(Args*, Entity&)> func)
 {
     parallelEach(Component::getComponentID(component), func);
+}
+
+template <typename T>
+void ECS::parallelEach(std::function<void(T*)> func)
+{
+    parallelEach<T>(ECS::component_ids[typeid(T).hash_code()], func);
+}
+
+template <typename T>
+void ECS::parallelEach(std::function<void(T*, Entity&)> func)
+{
+    parallelEach<T>(ECS::component_ids[typeid(T).hash_code()], func);
 }
 
 template <typename Args>

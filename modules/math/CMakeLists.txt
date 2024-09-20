@@ -21,8 +21,8 @@ set(POMEGRANATE_MATH_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/noise1d.h
         ${CMAKE_CURRENT_SOURCE_DIR}/noise2d.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/noise2d.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/rect.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/rect.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/random.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/random.h
         ${CMAKE_CURRENT_SOURCE_DIR}/math.h
 )
 
