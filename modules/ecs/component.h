@@ -38,8 +38,6 @@ public:
     }
     static ComponentID getComponentID(const std::string& component);
     static std::string getComponentName(ComponentID component);
-
-    virtual void validate(){};
 };
 
 #endif //POMEGRANATE_ENGINE_COMPONENT_H

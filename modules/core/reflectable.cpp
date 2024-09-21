@@ -13,6 +13,14 @@ void* Reflectable::get(const char *name) {
     return _members[name].data;
 }
 
+bool Reflectable::has(const char *name) {
+    return _members.contains(name);
+}
+
+size_t Reflectable::type(const char *name) {
+    return _members[name].type;
+}
+
 size_t Reflectable::getSize(const char *name) {
     return _members[name].size;
 }

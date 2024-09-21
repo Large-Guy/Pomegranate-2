@@ -38,6 +38,12 @@ target_link_libraries(PomegranateEngine PomegranateEvents)
 target_link_libraries(PomegranateEngine PomegranateVulkan)
 target_link_libraries(PomegranateEngine PomegranateECSExtensionsCommon)
 
+# You need to put luajit library in external/luajit
+target_link_libraries(PomegranateEngine ${CMAKE_CURRENT_SOURCE_DIR}/external/luajit/src/libluajit.a)
+
+# also add it as an include directory
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/luajit/src)
+
 # Set the output directory for the build
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

@@ -47,6 +47,10 @@ void Entity::moveEntityArchetype(EntityID entity, Archetype *new_archetype) {
 }
 
 bool Entity::hasComponent(EntityID entity, ComponentID component) {
+    if(ECS::component_index.find(component) == ECS::component_index.end())
+    {
+        return false;
+    }
     EntityRecord* record = ECS::entity_index[entity];
     Archetype* archetype = record->archetype;
     Debug::AssertIf::isNull(archetype, "Somethings gone wrong. Most likely an engine bug. Sorry!");
@@ -55,6 +59,10 @@ bool Entity::hasComponent(EntityID entity, ComponentID component) {
 }
 
 bool Entity::hasComponent(EntityID entity, const std::string &component) {
+    if(ECS::component_names.find(component) == ECS::component_names.end())
+    {
+        return false;
+    }
     return hasComponent(entity,Component::getComponentID(component));
 }
 

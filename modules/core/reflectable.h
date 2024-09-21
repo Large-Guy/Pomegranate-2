@@ -30,7 +30,7 @@ private:
         }
     };
 
-    std::unordered_map<const char*, Property, StringHash, StringEqual> _members;
+    std::unordered_map<const char*, Property, StringHash, StringEqual> _members{};
 
 protected:
     void property(const char* name, void* member, size_t size, size_t type);
@@ -51,6 +51,10 @@ public:
     template<typename T> T get(const char* name) {
         return *(T*)_members[name].data;
     }
+
+    bool has(const char* name);
+
+    size_t type(const char* name);
 
     size_t getSize(const char* name);
 

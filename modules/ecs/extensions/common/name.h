@@ -3,7 +3,7 @@
 #include <ecs/ecs.h>
 #include <core/core.h>
 
-struct Name : public Component, public Reflectable {
+struct Name : public Reflectable {
     String name;
     Name();
     Name(const String& name);

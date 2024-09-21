@@ -2,7 +2,7 @@
 #define POMEGRANATE_ENGINE_ECS_EXTENSIONS_COMMON_HIERARCHY_H
 #include <ecs/ecs.h>
 
-struct Children : public Component, public Reflectable {
+struct Children : public Reflectable {
     std::unordered_set<Entity> children;
     Children();
 };
