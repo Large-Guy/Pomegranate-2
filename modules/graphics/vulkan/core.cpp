@@ -110,7 +110,7 @@ void Graphics::createInstance(bool enableValidationLayers) {
             }
         }
 
-        Debug::AssertIf::isFalse(found, String("Required extension not supported: ") + extension);
+        Debug::AssertIf::isFalse(found, std::string("Required extension not supported: ") + extension);
     }
 
     createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
@@ -138,7 +138,7 @@ void Graphics::createPhysicalDevice() {
     vkEnumeratePhysicalDevices(_instance,&deviceCount, nullptr);
 
     Debug::AssertIf::isZero(deviceCount,"Unable to find GPU(s) with Vulkan support!");
-    Debug::Log::pass(String("Found ") + String((int)deviceCount) + " devices with Vulkan support");
+    Debug::Log::pass(std::string("Found ") + std::to_string((int)deviceCount) + " devices with Vulkan support");
 
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
@@ -154,7 +154,7 @@ void Graphics::createPhysicalDevice() {
     Debug::AssertIf::isNull(_physicalDevice, "Failed to find suitable GPU!");
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(_physicalDevice, &deviceProperties);
-    Debug::Log::pass(String("Found suitable GPU - ") + deviceProperties.deviceName);
+    Debug::Log::pass(std::string("Found suitable GPU - ") + deviceProperties.deviceName);
 }
 
 void Graphics::createLogicalDevice(bool enableValidationLayers) {
@@ -507,7 +507,7 @@ QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
         Debug::Log::fail("Failed to create temporary surface");
         const char* error;
         int code = glfwGetError(&error);
-        Debug::Log::fail(String("Error code: ") + String(code) + " - " + String(error));
+        Debug::Log::fail(std::string("Error code: ") + std::to_string(code) + " - " + std::string(error));
         throw std::runtime_error("Failed to create temporary surface");
     }
 

@@ -39,7 +39,7 @@ public:
 
     uint32_t _currentFrame = 0;
 
-    String _title;
+    std::string _title;
     Vector2i _size;
     bool _fullscreen;
     bool _visible;
@@ -60,7 +60,7 @@ public:
     void endCommandBuffer();
     VkCommandBuffer& getCurrentCommandBuffer();
 
-    void setTitle(const String& title);
+    void setTitle(const std::string& title);
     void setSize(Vector2i size);
     void setSize(int width, int height);
     void poll();
@@ -75,7 +75,7 @@ public:
 
     Vector2i getPosition() const;
     Vector2i getSize() const;
-    String getTitle() const;
+    std::string getTitle() const;
     [[nodiscard]] bool isOpen() const;
 
     friend Graphics;

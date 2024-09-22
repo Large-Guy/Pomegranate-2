@@ -24,15 +24,21 @@ struct ComponentList
     bool has(size_t i) const;
 };
 
+template<typename T>
+void constructor(void* ptr)
+{
+    new(ptr) T();
+}
+
 struct Component
 {
 private:
 public:
-    static ComponentID create(const std::string& component,size_t size);
+    static ComponentID create(const std::string& component,size_t size, std::function<void(void*)> constructor);
     template<typename T>
     static ComponentID create(const std::string& component)
     {
-        ComponentID id = create(component,sizeof(T));
+        ComponentID id = create(component,sizeof(T),constructor<T>);
         ECS::component_ids[typeid(T).hash_code()] = id;
         return id;
     }

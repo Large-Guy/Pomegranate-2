@@ -1,13 +1,12 @@
 #include "name.h"
 
 Name::Name() {
-    this->name = "";
-    property("_name", &this->name);
+    property("name", &this->name);
 }
 
-Name::Name(const String& name) {
+Name::Name(const std::string& name) {
     this->name = name;
-    property("_name", &this->name);
+    property("name", &this->name);
 }
 
 void Name::serialize(Archive& a) const {

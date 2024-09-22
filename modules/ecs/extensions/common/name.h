@@ -4,9 +4,9 @@
 #include <core/core.h>
 
 struct Name : public Reflectable {
-    String name;
+    std::string name;
     Name();
-    Name(const String& name);
+    Name(const std::string& name);
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
 };

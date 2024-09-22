@@ -5,7 +5,6 @@
 #include "asset_manager.h"
 #include "serializable.h"
 #include "range.h"
-#include "string.h"
 #include "debug.h"
 #include "file.h"
 #include "directory.h"

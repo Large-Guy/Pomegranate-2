@@ -9,6 +9,8 @@
 
 //Testing lua wrapper stuff
 namespace LuaWrapper {
+    std::unordered_map<std::string, ComponentID> luaComponents;
+
     int Debug_Log_info(lua_State* L) {
         //Get arg count
         int n = lua_gettop(L);
@@ -72,6 +74,39 @@ namespace LuaWrapper {
         return 0;
     }
 
+    int Reflectable_newIndex(lua_State* L) {
+        //Get arg count
+
+        auto* reflectable = (LuaReflectable*)lua_touserdata(L,1);
+
+        int n = lua_gettop(L);
+
+        //Get the key
+        const char* key = lua_tostring(L,2);
+
+        auto properties = reflectable->reflectable->getProperties();
+
+        if(properties.find(key) != properties.end()) {
+            auto property = properties[key];
+            if(property.type == typeid(double).hash_code()) {
+                *(double*)property.data = lua_tonumber(L,3);
+            } else if(property.type == typeid(float).hash_code()) {
+                *(float*)property.data = (float)lua_tonumber(L,3);
+            } else if(property.type == typeid(int).hash_code()) {
+                *(int*)property.data = (int)lua_tointeger(L,3);
+            } else if(property.type == typeid(bool).hash_code()) {
+                *(bool*)property.data = lua_toboolean(L,3);
+            } else if(property.type == typeid(std::string).hash_code()) {
+                *(std::string *) property.data = lua_tostring(L, 3);
+            }
+            return 1;
+        }
+
+        Debug::Log::error("Property not found");
+
+        return 0;
+    }
+
     int Entity_has(lua_State* L)
     {
         Entity* entity = (Entity*)lua_touserdata(L,1);
@@ -110,22 +145,27 @@ namespace LuaWrapper {
         if(ECS::component_names.find(component) == ECS::component_names.end()) {
             //Component doesn't exist create it
             Component::create<LuaComponent>(component);
+            luaComponents[component] = ECS::component_names[component];
         }
+        if(luaComponents.find(component) != luaComponents.end()) {
+            new(entity->add(component)) LuaComponent();
 
-        new(entity->add(component)) LuaComponent();
-
-        if(lua_istable(L,3)) {
-            LuaComponent* luaComponent = entity->get<LuaComponent>(component);
-            lua_pushnil(L);
-            while(lua_next(L,3) != 0) {
-                const char* key = lua_tostring(L,-2);
-                if(lua_isnumber(L,-1)) {
-                    luaComponent->addProperty<double>(key,lua_tonumber(L,-1));
-                } else if(lua_isstring(L,-1)) {
-                    luaComponent->addProperty<std::string>(key,lua_tostring(L,-1));
+            if (lua_istable(L, 3)) {
+                LuaComponent *luaComponent = entity->get<LuaComponent>(component);
+                lua_pushnil(L);
+                while (lua_next(L, 3) != 0) {
+                    const char *key = lua_tostring(L, -2);
+                    if (lua_isnumber(L, -1)) {
+                        luaComponent->addProperty<double>(key, lua_tonumber(L, -1));
+                    } else if (lua_isstring(L, -1)) {
+                        luaComponent->addProperty<std::string>(key, lua_tostring(L, -1));
+                    }
+                    lua_pop(L, 1);
                 }
-                lua_pop(L,1);
             }
+        }
+        else {
+            entity->add(component);
         }
         return 0;
     }
@@ -214,6 +254,9 @@ namespace LuaWrapper {
 
         lua_pushcfunction(L, Reflectable_index);
         lua_setfield(L, -2, "__index");
+
+        lua_pushcfunction(L, Reflectable_newIndex);
+        lua_setfield(L, -2, "__newindex");
     }
 
     void registerFunctions(lua_State* L) {

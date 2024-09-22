@@ -199,7 +199,7 @@ Window::~Window() {
     Graphics::getInstance()->_windows.erase(std::remove(Graphics::getInstance()->_windows.begin(), Graphics::getInstance()->_windows.end(), this), Graphics::getInstance()->_windows.end());
 }
 
-void Window::setTitle(const String& title) {
+void Window::setTitle(const std::string& title) {
     this->_title = title;
     glfwSetWindowTitle(this->_window, this->_title.data());
 }
@@ -279,7 +279,7 @@ Vector2i Window::getSize() const {
     return this->_size;
 }
 
-String Window::getTitle() const {
+std::string Window::getTitle() const {
     return this->_title;
 }
 

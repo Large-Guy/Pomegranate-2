@@ -1,7 +1,8 @@
 player = Entity(1) -- Create a new entity
 
+player:add("Name") -- Add a name component
+
 player:add("Player", {
-    name = "Player 1",
     health = 100,
     mana = 100,
     speed = 10,
@@ -13,7 +14,9 @@ player:add("Weapon",{
     attackSpeed = 1,
 })
 
-Debug.Log.info("Player Name:",player.Player.name) -- Print the name of the player
+player.Name.name = "Player" -- Set the name of the player
+
+Debug.Log.info("Player Name:",player.Name.name) -- Print the name of the player
 Debug.Log.info("Player Health:",player.Player.health) -- Print the health of the player
 Debug.Log.info("Player Mana:",player.Player.mana) -- Print the mana of the player
 Debug.Log.info("Player Speed:",player.Player.speed) -- Print the speed of the player

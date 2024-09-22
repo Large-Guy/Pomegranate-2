@@ -102,7 +102,13 @@ void* Entity::addComponent(EntityID entity, ComponentID component) {
     Debug::AssertIf::isNull(archetype, "Somethings gone wrong. Most likely an engine bug. Sorry!");
     Archetype* next = archetype->addComponent(component);
     moveEntityArchetype(entity, next);
-    return getComponent(entity,component);
+    void* data = getComponent(entity,component);
+    if(ECS::constructors.find(component) != ECS::constructors.end())
+    {
+        if(ECS::constructors[component] != nullptr)
+            ECS::constructors[component](data);
+    }
+    return data;
 }
 
 void* Entity::addComponent(EntityID entity, const std::string &component) {

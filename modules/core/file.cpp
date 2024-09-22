@@ -6,7 +6,7 @@ File::File() {
     this->buffer = List<char>();
 }
 
-File::File(const String& path) {
+File::File(const std::string& path) {
     this->_path = path;
     this->_lines = List<List<char>>();
     this->buffer = List<char>();
@@ -20,7 +20,7 @@ void File::open() {
     this->_file.open(std::string(this->_path.data()));
 }
 
-void File::open(const String& path) {
+void File::open(const std::string& path) {
     this->_path = path;
     this->_file.open(this->_path.data());
 }
@@ -33,16 +33,16 @@ bool File::exists() {
     return this->_file.is_open();
 }
 
-String File::readTextLine() {
-    String line;
+std::string File::readTextLine() {
+    std::string line;
     std::string s;
     std::getline(this->_file, s);
     line = s.c_str();
     return line;
 }
 
-String File::readText() {
-    String text;
+std::string File::readText() {
+    std::string text;
     std::string s;
     while (std::getline(this->_file, s)) {
         text += s.c_str();

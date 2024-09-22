@@ -27,6 +27,7 @@ public:
     static std::unordered_map<ComponentID, size_t> component_sizes;
     static std::unordered_map<std::string, ComponentID> component_names;
     static std::unordered_map<size_t, ComponentID> component_ids;
+    static std::unordered_map<ComponentID, std::function<void(void*)>> constructors;
     static int threadCount;
 
     template <typename Args>
