@@ -29,8 +29,28 @@ namespace LuaWrapper {
         return 0;
     }
 
-    struct LuaComponent : Reflectable {
-        LuaComponent() = default;
+    struct LuaTable : Reflectable {
+        LuaTable() = default;
+        LuaTable(lua_State* L, int idx)
+        {
+            if (lua_istable(L,idx)) {
+                lua_pushnil(L);
+                while (lua_next(L, idx) != 0) {
+                    const char* key = lua_tostring(L, -2);
+                    if (lua_isnumber(L, -1)) {
+                        addProperty<double>(key, lua_tonumber(L, -1));
+                    } else if (lua_isstring(L, -1)) {
+                        addProperty<std::string>(key, lua_tostring(L, -1));
+                    } else if (lua_isboolean(L, -1)) {
+                        addProperty<bool>(key, lua_toboolean(L, -1));
+                    } else if (lua_istable(L, -1)) {
+                        LuaTable* table = new LuaTable(L, lua_gettop(L));
+                        property(key, table);
+                    }
+                    lua_pop(L, 1);
+                }
+            }
+        }
         template <typename T, typename... Args>
         void addProperty(const char* name, Args&&... args) {
             property<T>(name, new T(std::forward<Args>(args)...));
@@ -64,6 +84,15 @@ namespace LuaWrapper {
                 lua_pushboolean(L,ref->get<bool>(key));
             } else if(ref->type(key) == typeid(std::string).hash_code()) {
                 lua_pushstring(L,ref->get<std::string>(key).c_str());
+            } else if(ref->type(key) == typeid(LuaTable).hash_code()) {
+                LuaTable* table = &ref->get<LuaTable>(key);
+                LuaReflectable* luaReflectable = (LuaReflectable*)lua_newuserdata(L,sizeof(LuaReflectable));
+                new (luaReflectable) LuaReflectable();
+                luaReflectable->reflectable = table;
+
+                luaL_getmetatable(L,"Reflectable");
+                lua_setmetatable(L,-2);
+                return 1;
             }
             return 1;
         }
@@ -142,25 +171,11 @@ namespace LuaWrapper {
 
         if(ECS::component_names.find(component) == ECS::component_names.end()) {
             //Component doesn't exist create it
-            Component::create<LuaComponent>(component);
+            Component::create<LuaTable>(component);
             luaComponents[component] = ECS::component_names[component];
         }
         if(luaComponents.find(component) != luaComponents.end()) {
-            new(entity->add(component)) LuaComponent();
-
-            if (lua_istable(L, 3)) {
-                LuaComponent *luaComponent = entity->get<LuaComponent>(component);
-                lua_pushnil(L);
-                while (lua_next(L, 3) != 0) {
-                    const char *key = lua_tostring(L, -2);
-                    if (lua_isnumber(L, -1)) {
-                        luaComponent->addProperty<double>(key, lua_tonumber(L, -1));
-                    } else if (lua_isstring(L, -1)) {
-                        luaComponent->addProperty<std::string>(key, lua_tostring(L, -1));
-                    }
-                    lua_pop(L, 1);
-                }
-            }
+            new(entity->add(component)) LuaTable(L,3);
         }
         else {
             entity->add(component);
@@ -209,6 +224,29 @@ namespace LuaWrapper {
         return 0;
     }
 
+    int Entity_newIndex(lua_State* L)
+    {
+        Entity* entity = (Entity*)lua_touserdata(L,1);
+        const char* key = lua_tostring(L,2);
+
+        if(ECS::component_names.contains(key)) {
+            if(ECS::component_names[key] == luaComponents[key]) {
+                new(entity->add(key)) LuaTable(L,3);
+            }
+            else {
+                entity->add(key);
+            }
+        }
+        else {
+            //Add a new component
+            Component::create<LuaTable>(key);
+            luaComponents[key] = ECS::component_names[key];
+            new(entity->add(key)) LuaTable(L,3);
+        }
+
+        return 0;
+    }
+
     int Entity_new(lua_State* L)
     {
         //Get arg count
@@ -242,6 +280,9 @@ namespace LuaWrapper {
 
         lua_pushcfunction(L,Entity_index);
         lua_setfield(L,-2,"__index");
+
+        lua_pushcfunction(L,Entity_newIndex);
+        lua_setfield(L,-2,"__newindex");
 
         lua_pushcfunction(L,Entity_new);
         lua_setglobal(L,"Entity");
@@ -277,6 +318,9 @@ namespace LuaWrapper {
 
         //Reflectable
         registerReflectable(L);
+
+        //ECS
+        registerECS(L);
     }
 };
 
