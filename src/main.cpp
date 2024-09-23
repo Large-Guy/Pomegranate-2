@@ -5,29 +5,12 @@
 #include <ecs/extensions/common/common.h>
 #include <graphics/vulkan/graphics.h>
 #include <math/geometry/geometry.h>
-#include "lua.hpp"
+#include "lua/lua_script.h"
+#include "lua/debug.h"
 
 //Testing lua wrapper stuff
 namespace LuaWrapper {
     std::unordered_map<std::string, ComponentID> luaComponents;
-
-    int Debug_Log_info(lua_State* L) {
-        //Get arg count
-        int n = lua_gettop(L);
-
-        //Concatenate all args
-        std::string message;
-        for(int i = 1; i <= n; i++) {
-            message += lua_tostring(L, i);
-            if(i != n) {
-                message += " ";
-            }
-        }
-
-        //Log message
-        Debug::Log::info(message);
-        return 0;
-    }
 
     struct LuaTable : Reflectable {
         LuaTable() = default;
@@ -365,19 +348,6 @@ namespace LuaWrapper {
     }
 
     void registerFunctions(lua_State* L) {
-        //Debug namespace
-        lua_newtable(L);
-        lua_pushvalue(L, -1);
-
-        lua_setglobal(L, "Debug");
-
-        //Log
-        lua_newtable(L);
-
-        lua_pushcfunction(L,Debug_Log_info);
-        lua_setfield(L,-2,"info");
-
-        lua_setfield(L,-2,"Log");
 
         //Entity
         registerEntity(L);
@@ -467,33 +437,9 @@ int main() {
     return 0;
 #else
 
-    Extensions::Common::init();
+    LuaScript script = LuaScript(File("assets/scripts/main.lua"));
+    LuaDebug::registerFunctions(script);
+    script.run();
 
-    Entity entity = Entity::create();
-    entity.add<Transform2D>();
-
-    entity.get<Transform2D>()->position = {1.0, 2.0};
-    entity.get<Transform2D>()->rotation = 3.0;
-    entity.get<Transform2D>()->scale = {4.0, 5.0};
-
-    lua_State* L = luaL_newstate();
-    luaL_openlibs(L);
-
-    LuaWrapper::registerFunctions(L);
-
-    luaL_dofile(L, "assets/scripts/main.lua");
-
-    //Check for errors
-    if(lua_isstring(L,-1)) {
-        Debug::Log::error(lua_tostring(L,-1));
-    }
-
-    while(true) {
-        Event::call("update");
-        //Sleep
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
-    }
-
-    lua_close(L);
 #endif
 }
