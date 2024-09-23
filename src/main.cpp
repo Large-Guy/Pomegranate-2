@@ -266,6 +266,49 @@ namespace LuaWrapper {
         return 1;
     }
 
+    int ECS_foreach(lua_State* L) {
+        const char* component = lua_tostring(L,1);
+        lua_pushvalue(L, 2); // Push the callback function
+        int ref = luaL_ref(L, LUA_REGISTRYINDEX); // Store the reference to the callback in the registry
+
+        ECS::each(component, [L, ref](void* table, Entity& entity) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, ref); // Push the callback function to the stack
+            LuaReflectable* luaReflectable = (LuaReflectable*)lua_newuserdata(L,sizeof(LuaReflectable));
+            new (luaReflectable) LuaReflectable();
+            luaReflectable->reflectable = (Reflectable*)table;
+
+            luaL_getmetatable(L,"Reflectable");
+            lua_setmetatable(L,-2);
+
+            if (lua_pcall(L, 1, 0, 0) != LUA_OK) { // Handle Lua errors properly
+                //Get the error message
+                Debug::Log::error(lua_tostring(L, -1));
+            }
+        });
+        return 0;
+    }
+
+    int Event_on(lua_State* L) {
+        const char* event = lua_tostring(L,1);
+        lua_pushvalue(L, 2); // Push the callback function
+        int ref = luaL_ref(L, LUA_REGISTRYINDEX); // Store the reference to the callback in the registry
+
+        Event::on(event, [L, ref]() {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, ref); // Push the callback function to the stack
+            if (lua_pcall(L, 0, 0, 0) != LUA_OK) { // Handle Lua errors properly
+                //Get the error message
+                Debug::Log::error(lua_tostring(L, -1));
+            }
+        });
+        return 0;
+    }
+
+    int Event_call(lua_State* L) {
+        const char* event = lua_tostring(L,1);
+        Event::call(event);
+        return 0;
+    }
+
     void registerEntity(lua_State* L) {
         luaL_newmetatable(L, "Entity");
 
@@ -298,6 +341,29 @@ namespace LuaWrapper {
         lua_setfield(L, -2, "__newindex");
     }
 
+    void registerEvents(lua_State* L) {
+        lua_newtable(L);
+        lua_pushvalue(L, -1);
+
+        lua_setglobal(L, "Event");
+
+        lua_pushcfunction(L,Event_on);
+        lua_setfield(L,-2,"on");
+
+        lua_pushcfunction(L,Event_call);
+        lua_setfield(L,-2,"call");
+    }
+
+    void registerECS(lua_State* L) {
+        lua_newtable(L);
+        lua_pushvalue(L, -1);
+
+        lua_setglobal(L, "ECS");
+
+        lua_pushcfunction(L,ECS_foreach);
+        lua_setfield(L,-2,"foreach");
+    }
+
     void registerFunctions(lua_State* L) {
         //Debug namespace
         lua_newtable(L);
@@ -318,6 +384,9 @@ namespace LuaWrapper {
 
         //Reflectable
         registerReflectable(L);
+
+        //Events
+        registerEvents(L);
 
         //ECS
         registerECS(L);
@@ -417,6 +486,12 @@ int main() {
     //Check for errors
     if(lua_isstring(L,-1)) {
         Debug::Log::error(lua_tostring(L,-1));
+    }
+
+    while(true) {
+        Event::call("update");
+        //Sleep
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 
     lua_close(L);
