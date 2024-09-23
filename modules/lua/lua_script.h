@@ -2,8 +2,17 @@
 #define POMEGRANATEENGINE_LUA_SCRIPT_H
 #include <string>
 #include "external/luajit/src/lua.hpp"
-#include <core/file.h>
-#include <core/debug.h>
+#include <core/core.h>
+
+
+struct LuaTable : Reflectable {
+    LuaTable() = default;
+    LuaTable(lua_State* L, int idx);
+    template <typename T, typename... Args>
+    void addProperty(const char* name, Args&&... args) {
+        property<T>(name, new T(std::forward<Args>(args)...));
+    }
+};
 
 class LuaScript {
 private:
