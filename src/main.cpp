@@ -363,11 +363,6 @@ int main() {
     entity.get<Transform2D>()->rotation = 3.0;
     entity.get<Transform2D>()->scale = {4.0, 5.0};
 
-    entity.add<Name>();
-
-
-
-    /*
     lua_State* L = luaL_newstate();
     luaL_openlibs(L);
 
@@ -381,8 +376,5 @@ int main() {
     }
 
     lua_close(L);
-     */
-
-    Debug::Log::info("Entity Rotation: ", entity.get<Transform2D>()->get<float>("rotation"));
 #endif
 }
