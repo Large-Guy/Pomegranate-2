@@ -25,4 +25,6 @@ Debug.Log.info("Player Damage:",player.Weapon.damage) -- Print the damage of the
 Debug.Log.info("Player Range:",player.Weapon.range) -- Print the range of the player
 Debug.Log.info("Player Attack Speed:",player.Weapon.attackSpeed) -- Print the attack speed of the player
 
+player.Transform2D.rotation = 90 -- Set the rotation of the player
+
 Debug.Log.info("Player Rotation:", player.Transform2D.rotation) -- Print the rotation of the player

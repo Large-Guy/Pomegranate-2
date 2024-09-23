@@ -5,11 +5,13 @@
 struct Children : public Reflectable {
     std::unordered_set<Entity> children;
     Children();
+    Children(const Children& other);
 };
 
 struct Parent : public Component, public Reflectable {
     Entity parent;
     Parent();
+    Parent(const Parent& other);
 };
 
 struct Hierarchy {

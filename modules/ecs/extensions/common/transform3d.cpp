@@ -18,6 +18,15 @@ Transform3D::Transform3D(const Vector3& position, const Vector3& scale, const Ve
     property("rotation", &this->rotation);
 }
 
+Transform3D::Transform3D(const Transform3D& other) {
+    this->position = other.position;
+    this->scale = other.scale;
+    this->rotation = other.rotation;
+    property("position", &this->position);
+    property("scale", &this->scale);
+    property("rotation", &this->rotation);
+}
+
 Vector3 Transform3D::getPosition(Entity& entity) {
     auto* transform = entity.get<Transform3D>();
     if(transform == nullptr)

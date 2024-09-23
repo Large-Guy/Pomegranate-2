@@ -5,6 +5,11 @@ Children::Children() {
     property("children", &this->children);
 }
 
+Children::Children(const Children& other) {
+    this->children = other.children;
+    property("children", &this->children);
+}
+
 void Hierarchy::addChildTo(Entity parent, Entity child) {
     auto* children = parent.get<Children>();
     if(children == nullptr)
@@ -29,6 +34,11 @@ void Hierarchy::removeChildFrom(Entity parent, Entity child) {
 
 Parent::Parent() {
     this->parent = NULL_ENTITY;
+    property("parent", &this->parent);
+}
+
+Parent::Parent(const Parent& other) {
+    this->parent = other.parent;
     property("parent", &this->parent);
 }
 

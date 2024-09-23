@@ -9,6 +9,11 @@ Name::Name(const std::string& name) {
     property("name", &this->name);
 }
 
+Name::Name(const Name& other) {
+    this->name = other.name;
+    property("name", &this->name);
+}
+
 void Name::serialize(Archive& a) const {
     a << this->name;
 }

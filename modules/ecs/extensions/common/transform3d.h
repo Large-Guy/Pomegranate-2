@@ -11,6 +11,7 @@ struct Transform3D : public Reflectable
     Vector3 rotation;
     Transform3D();
     Transform3D(const Vector3& position, const Vector3& scale, const Vector3& rotation);
+    Transform3D(const Transform3D& other);
     static Vector3 getPosition(Entity& entity);
     static Vector3 getScale(Entity& entity);
     static Vector3 getRotation(Entity& entity);

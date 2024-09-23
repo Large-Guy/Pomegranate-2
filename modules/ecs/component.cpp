@@ -1,5 +1,7 @@
 #include "component.h"
 
+#include <utility>
+
 ComponentList::ComponentList(ComponentID component, size_t component_size) {
     this->element_size = component_size;
     this->count = 0;
@@ -70,11 +72,11 @@ bool ComponentList::has(size_t i) const {
     return occupied[i];
 }
 
-ComponentID Component::create(const std::string& component, size_t size, std::function<void(void*)> constructor) {
+ComponentID Component::create(const std::string& component, size_t size, ClassFunctions functions) {
     ComponentID id = ECS::component_sizes.size();
     ECS::component_sizes[id] = size;
     ECS::component_names[component] = id;
-    ECS::constructors[id] = constructor;
+    ECS::functions[id] = std::move(functions);
     return id;
 }
 

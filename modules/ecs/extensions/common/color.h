@@ -7,6 +7,7 @@ struct Color : public Reflectable {
     Vector4 color;
     Color();
     Color(const Vector4& color);
+    Color(const Color& other);
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
 };

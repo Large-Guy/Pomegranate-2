@@ -19,6 +19,13 @@ struct SetEqual {
     bool operator()(const std::unordered_set<EntityID>& set1, const std::unordered_set<EntityID>& set2) const;
 };
 
+struct ClassFunctions {
+    std::function<void(void*)> constructor;
+    std::function<void(void*)> destructor;
+    std::function<void(void*, void*)> copy;
+    std::function<void(void*, void*)> move;
+};
+
 class ECS {
 public:
     static std::unordered_map<EntityID, EntityRecord*> entity_index;
@@ -27,7 +34,7 @@ public:
     static std::unordered_map<ComponentID, size_t> component_sizes;
     static std::unordered_map<std::string, ComponentID> component_names;
     static std::unordered_map<size_t, ComponentID> component_ids;
-    static std::unordered_map<ComponentID, std::function<void(void*)>> constructors;
+    static std::unordered_map<ComponentID, ClassFunctions> functions;
     static int threadCount;
 
     template <typename Args>

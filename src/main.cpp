@@ -51,20 +51,19 @@ namespace LuaWrapper {
         //Get the key
         const char* key = lua_tostring(L,2);
 
-        auto properties = reflectable->reflectable->getProperties();
+        Reflectable* ref = reflectable->reflectable;
 
-        if(properties.find(key) != properties.end()) {
-            auto property = properties[key];
-            if(property.type == typeid(double).hash_code()) {
-                lua_pushnumber(L,*(double*)property.data);
-            } else if(property.type == typeid(float).hash_code()) {
-                lua_pushnumber(L,*(float*)property.data);
-            } else if(property.type == typeid(int).hash_code()) {
-                lua_pushinteger(L,*(int*)property.data);
-            } else if(property.type == typeid(bool).hash_code()) {
-                lua_pushboolean(L,*(bool*)property.data);
-            } else if(property.type == typeid(std::string).hash_code()) {
-                lua_pushstring(L,((std::string*)property.data)->c_str());
+        if(ref->has(key)) {
+            if(ref->type(key) == typeid(double).hash_code()) {
+                lua_pushnumber(L,ref->get<double>(key));
+            } else if(ref->type(key) == typeid(float).hash_code()) {
+                lua_pushnumber(L,ref->get<float>(key));
+            } else if(ref->type(key) == typeid(int).hash_code()) {
+                lua_pushinteger(L,ref->get<int>(key));
+            } else if(ref->type(key) == typeid(bool).hash_code()) {
+                lua_pushboolean(L,ref->get<bool>(key));
+            } else if(ref->type(key) == typeid(std::string).hash_code()) {
+                lua_pushstring(L,ref->get<std::string>(key).c_str());
             }
             return 1;
         }
@@ -82,22 +81,21 @@ namespace LuaWrapper {
         int n = lua_gettop(L);
 
         //Get the key
-        const char* key = lua_tostring(L,2);
+        std::string key = lua_tostring(L,2);
 
-        auto properties = reflectable->reflectable->getProperties();
+        Reflectable* ref = reflectable->reflectable;
 
-        if(properties.find(key) != properties.end()) {
-            auto property = properties[key];
-            if(property.type == typeid(double).hash_code()) {
-                *(double*)property.data = lua_tonumber(L,3);
-            } else if(property.type == typeid(float).hash_code()) {
-                *(float*)property.data = (float)lua_tonumber(L,3);
-            } else if(property.type == typeid(int).hash_code()) {
-                *(int*)property.data = (int)lua_tointeger(L,3);
-            } else if(property.type == typeid(bool).hash_code()) {
-                *(bool*)property.data = lua_toboolean(L,3);
-            } else if(property.type == typeid(std::string).hash_code()) {
-                *(std::string *) property.data = lua_tostring(L, 3);
+        if(ref->has(key)) {
+            if(ref->type(key) == typeid(double).hash_code()) {
+                ref->set<double>(key,lua_tonumber(L,3));
+            } else if(ref->type(key) == typeid(float).hash_code()) {
+                ref->set<float>(key,(float)lua_tonumber(L,3));
+            } else if(ref->type(key) == typeid(int).hash_code()) {
+                ref->set<int>(key,lua_tointeger(L,3));
+            } else if(ref->type(key) == typeid(bool).hash_code()) {
+                ref->set<bool>(key,lua_toboolean(L,3));
+            } else if(ref->type(key) == typeid(std::string).hash_code()) {
+                ref->set<std::string>(key, lua_tostring(L, 3));
             }
             return 1;
         }
@@ -365,6 +363,11 @@ int main() {
     entity.get<Transform2D>()->rotation = 3.0;
     entity.get<Transform2D>()->scale = {4.0, 5.0};
 
+    entity.add<Name>();
+
+
+
+    /*
     lua_State* L = luaL_newstate();
     luaL_openlibs(L);
 
@@ -378,5 +381,8 @@ int main() {
     }
 
     lua_close(L);
+     */
+
+    Debug::Log::info("Entity Rotation: ", entity.get<Transform2D>()->get<float>("rotation"));
 #endif
 }

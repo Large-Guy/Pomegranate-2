@@ -38,7 +38,17 @@ void Entity::moveEntityArchetype(EntityID entity, Archetype *new_archetype) {
         void* data_loc = list.get(record->row);
         ComponentList& new_list = new_archetype->components[ECS::component_index[list.component][new_archetype->id].column];
         void* new_data_loc = new_list.get(row);
-        memcpy(new_data_loc,data_loc,list.element_size);
+        if(ECS::functions.find(list.component) != ECS::functions.end())
+        {
+            if(ECS::functions[list.component].copy != nullptr)
+            {
+                ECS::functions[list.component].copy(new_data_loc,data_loc);
+            }
+            else
+            {
+                memcpy(new_data_loc,data_loc,list.element_size);
+            }
+        }
         list.remove(record->row);
     }
     record->archetype->entities.erase(record->row);
@@ -103,10 +113,10 @@ void* Entity::addComponent(EntityID entity, ComponentID component) {
     Archetype* next = archetype->addComponent(component);
     moveEntityArchetype(entity, next);
     void* data = getComponent(entity,component);
-    if(ECS::constructors.find(component) != ECS::constructors.end())
+    if(ECS::functions.find(component) != ECS::functions.end())
     {
-        if(ECS::constructors[component] != nullptr)
-            ECS::constructors[component](data);
+        if(ECS::functions[component].constructor != nullptr)
+            ECS::functions[component].constructor(data);
     }
     return data;
 }

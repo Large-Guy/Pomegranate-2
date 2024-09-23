@@ -13,52 +13,38 @@ private:
         size_t type;
     };
 
-    struct StringHash {
-        size_t operator()(const char* str) const {
-            size_t hash = 5381;
-            int c;
-            while ((c = *str++)) {
-                hash = ((hash << 5) + hash) + c;
-            }
-            return hash;
-        }
-    };
-
-    struct StringEqual {
-        bool operator()(const char* a, const char* b) const {
-            return strcmp(a, b) == 0;
-        }
-    };
-
-    std::unordered_map<const char*, Property, StringHash, StringEqual> _members{};
+    //This needs a custom map implementation so that it can be memcpy'd
+    std::unordered_map<std::string, Property> _members;
 
 protected:
-    void property(const char* name, void* member, size_t size, size_t type);
+    void property(std::string name, void* member, size_t size, size_t type);
 
-    template<typename T> void property(const char* name, T* member) {
+    template<typename T> void property(std::string name, T* member) {
         _members[name] = {(void*)member, sizeof(T), typeid(T).hash_code()};
     }
 
 public:
-    void set(const char* name, void* value);
+    Reflectable();
 
-    template<typename T> void set(const char* name, T value) {
+    void set(std::string name, void* value);
+
+    template<typename T> void set(std::string name, T value) {
         memcpy(_members[name].data, &value, _members[name].size);
     }
 
-    void* get(const char* name);
+    void* get(std::string name);
 
-    template<typename T> T get(const char* name) {
+    template<typename T> T& get(std::string name) {
         return *(T*)_members[name].data;
     }
 
-    bool has(const char* name);
+    bool has(std::string name);
 
-    size_t type(const char* name);
+    size_t type(std::string name);
 
-    size_t getSize(const char* name);
+    size_t getSize(std::string name);
 
-    std::unordered_map<const char*, Property, StringHash, StringEqual>& getProperties();
+    std::unordered_map<std::string, Property>& getProperties();
 
     virtual void serialize(Archive& archive) const{};
     virtual void deserialize(Archive& archive){};

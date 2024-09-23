@@ -7,6 +7,7 @@ struct Name : public Reflectable {
     std::string name;
     Name();
     Name(const std::string& name);
+    Name(const Name& other);
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
 };

@@ -10,6 +10,11 @@ Color::Color(const Vector4& color) {
     property("color", &this->color);
 }
 
+Color::Color(const Color& other) {
+    this->color = other.color;
+    property("color", &this->color);
+}
+
 void Color::serialize(Archive& a) const {
     a << this->color;
 }

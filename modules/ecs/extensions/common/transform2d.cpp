@@ -20,6 +20,16 @@ Transform2D::Transform2D(const Vector2& position, const Vector2& scale, float ro
     property("rotation", &this->rotation);
 }
 
+Transform2D::Transform2D(const Transform2D& other) {
+    this->_initalized = false;
+    this->position = other.position;
+    this->scale = other.scale;
+    this->rotation = other.rotation;
+    property("position", &this->position);
+    property("scale", &this->scale);
+    property("rotation", &this->rotation);
+}
+
 Vector2 Transform2D::getPosition(Entity& entity) {
     auto* transform = entity.get<Transform2D>();
     if(transform == nullptr)

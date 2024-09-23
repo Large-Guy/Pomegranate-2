@@ -8,7 +8,7 @@ std::unordered_map<ComponentID,ArchetypeMap> ECS::component_index;
 std::unordered_map<ComponentID, size_t> ECS::component_sizes;
 std::unordered_map<std::string, ComponentID> ECS::component_names;
 std::unordered_map<size_t, ComponentID> ECS::component_ids;
-std::unordered_map<ComponentID, std::function<void(void*)>> ECS::constructors;
+std::unordered_map<ComponentID, ClassFunctions> ECS::functions;
 int ECS::threadCount = 1;
 
 std::size_t SetHash::operator()(const std::unordered_set<EntityID>& set) const {

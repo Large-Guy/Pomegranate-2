@@ -18,6 +18,7 @@ public:
     float rotation;
     Transform2D();
     Transform2D(const Vector2& position, const Vector2& scale, float rotation);
+    Transform2D(const Transform2D& other);
     static Vector2 getPosition(Entity& entity);
     static Vector2 getScale(Entity& entity);
     static float getRotation(Entity& entity);
