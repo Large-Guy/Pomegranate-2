@@ -43,7 +43,7 @@ public:
 
     std::unordered_map<Window*, Graphics::GraphicsPipelineGroup> _pipelines;
 
-    std::vector<Uniform> uniforms;
+    Uniform uniform;
     VkDescriptorPool descriptorPool;
 
     void createDescriptionSetLayout();
@@ -64,13 +64,9 @@ class Shader : public ShaderBase{
 public:
     Shader(List<char> vertex, List<char> fragment, RenderInfo info = {.renderMode = RENDER_MODE_FILL, .cullMode = CULL_MODE_BACK})
     {
-        uniforms.resize(2);
-        uniforms[0] = {};
-        uniforms[0].size = sizeof(Perspective);
-        uniforms[0].binding = 0;
-        uniforms[1] = {};
-        uniforms[1].size = sizeof(Material);
-        uniforms[1].binding = 0;
+        uniform = {};
+        uniform.size = sizeof(Perspective);
+        uniform.binding = 0;
 
         createDescriptionSetLayout();
         createUniformBuffers();
@@ -96,18 +92,17 @@ public:
     ~Shader() {
         vkDestroyShaderModule(Graphics::getInstance()->_logicalDevice, _vertex, nullptr);
         vkDestroyShaderModule(Graphics::getInstance()->_logicalDevice, _fragment, nullptr);
-        for(auto window : Graphics::getInstance()->_windows) {
+        for (auto window: Graphics::getInstance()->_windows) {
             vkDestroyPipeline(Graphics::getInstance()->_logicalDevice, _pipelines[window].pipeline, nullptr);
             vkDestroyPipelineLayout(Graphics::getInstance()->_logicalDevice, _pipelines[window].layout, nullptr);
         }
         //Remove from shaders list
-        Graphics::getInstance()->_shaders.erase(std::remove(Graphics::getInstance()->_shaders.begin(), Graphics::getInstance()->_shaders.end(), this), Graphics::getInstance()->_shaders.end());
+        Graphics::getInstance()->_shaders.erase(
+                std::remove(Graphics::getInstance()->_shaders.begin(), Graphics::getInstance()->_shaders.end(), this),
+                Graphics::getInstance()->_shaders.end());
 
         vkDestroyDescriptorPool(Graphics::getInstance()->_logicalDevice, descriptorPool, nullptr);
-        for(auto& uniform : uniforms)
-        {
-            vkDestroyDescriptorSetLayout(Graphics::getInstance()->_logicalDevice,uniform.layout, nullptr);
-        }
+        vkDestroyDescriptorSetLayout(Graphics::getInstance()->_logicalDevice, uniform.layout, nullptr);
     }
     friend Graphics;
     friend Window;

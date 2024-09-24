@@ -373,11 +373,8 @@ Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* sha
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     std::vector<VkDescriptorSetLayout> layouts;
-    layouts.reserve(shader->uniforms.size());
-    for(auto& uniform : shader->uniforms)
-    {
-        layouts.push_back(uniform.layout);
-    }
+    layouts.reserve(1);
+    layouts.push_back(shader->uniform.layout);
     pipelineLayoutInfo.setLayoutCount = layouts.size();
     pipelineLayoutInfo.pSetLayouts = layouts.data();
     pipelineLayoutInfo.pushConstantRangeCount = 0;

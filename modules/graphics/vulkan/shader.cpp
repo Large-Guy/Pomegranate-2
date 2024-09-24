@@ -24,53 +24,46 @@ void ShaderBase::createBuffer(VkDeviceSize size, VkBufferUsageFlagBits usage, Vk
     vkBindBufferMemory(Graphics::getInstance()->_logicalDevice, buffer, bufferMemory, 0);
 }
 void ShaderBase::createDescriptionSetLayout() {
+    VkDescriptorSetLayoutBinding layoutBinding{};
+    layoutBinding.binding = uniform.binding;
+    layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    layoutBinding.descriptorCount = 1;
+    layoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    layoutBinding.pImmutableSamplers = nullptr;
 
-    for(auto& uniform : uniforms)
-    {
-        VkDescriptorSetLayoutBinding layoutBinding{};
-        layoutBinding.binding = uniform.binding;
-        layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        layoutBinding.descriptorCount = 1;
-        layoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-        layoutBinding.pImmutableSamplers = nullptr;
+    VkDescriptorSetLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = 1;
+    layoutInfo.pBindings = &layoutBinding;
 
-        VkDescriptorSetLayoutCreateInfo layoutInfo{};
-        layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        layoutInfo.bindingCount = 1;
-        layoutInfo.pBindings = &layoutBinding;
-
-        Debug::AssertIf::isFalse(vkCreateDescriptorSetLayout(Graphics::getInstance()->_logicalDevice,&layoutInfo, nullptr,&uniform.layout) == VK_SUCCESS, "Failed to create descriptor layout!");
-    }
+    Debug::AssertIf::isFalse(vkCreateDescriptorSetLayout(Graphics::getInstance()->_logicalDevice, &layoutInfo, nullptr,
+                                                         &uniform.layout) == VK_SUCCESS,
+                             "Failed to create descriptor layout!");
 }
 
 void ShaderBase::createUniformBuffers() {
-    for(auto& uniform : uniforms) {
-        VkDeviceSize bufferSize = uniform.size;
+    VkDeviceSize bufferSize = uniform.size;
 
-        uniform.buffers.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
-        uniform.memory.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
-        uniform.mapped.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
+    uniform.buffers.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
+    uniform.memory.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
+    uniform.mapped.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
 
-        for (int i = 0; i < Graphics::MAX_FRAMES_IN_FLIGHT; ++i) {
-            createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniform.buffers[i],
-                         uniform.memory[i]);
-            vkMapMemory(Graphics::getInstance()->_logicalDevice, uniform.memory[i], 0, bufferSize, 0,
-                        &uniform.mapped[i]);
-        }
+    for (int i = 0; i < Graphics::MAX_FRAMES_IN_FLIGHT; ++i) {
+        createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniform.buffers[i],
+                     uniform.memory[i]);
+        vkMapMemory(Graphics::getInstance()->_logicalDevice, uniform.memory[i], 0, bufferSize, 0,
+                    &uniform.mapped[i]);
     }
 }
 
 void ShaderBase::createDescriptorPool() {
     std::vector<VkDescriptorPoolSize> poolSizes;
-    poolSizes.reserve(uniforms.size());
-
-    for(auto& uniform : uniforms) {
-        VkDescriptorPoolSize poolSize{};
-        poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        poolSize.descriptorCount = Graphics::MAX_FRAMES_IN_FLIGHT;
-        poolSizes.push_back(poolSize);
-    }
+    poolSizes.reserve(1);
+    VkDescriptorPoolSize poolSize{};
+    poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSize.descriptorCount = Graphics::MAX_FRAMES_IN_FLIGHT;
+    poolSizes.push_back(poolSize);
 
     VkDescriptorPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -78,46 +71,48 @@ void ShaderBase::createDescriptorPool() {
     poolInfo.pPoolSizes = poolSizes.data();
     poolInfo.maxSets = Graphics::MAX_FRAMES_IN_FLIGHT;
 
-    Debug::AssertIf::isFalse(vkCreateDescriptorPool(Graphics::getInstance()->_logicalDevice, &poolInfo, nullptr, &descriptorPool) == VK_SUCCESS, "Failed to create descriptor pool!");
+    Debug::AssertIf::isFalse(
+            vkCreateDescriptorPool(Graphics::getInstance()->_logicalDevice, &poolInfo, nullptr, &descriptorPool) ==
+            VK_SUCCESS, "Failed to create descriptor pool!");
 }
 
 void ShaderBase::createDescriptorSets() {
-    for(auto& uniform : uniforms) {
-        std::vector<VkDescriptorSetLayout> layouts(Graphics::MAX_FRAMES_IN_FLIGHT, uniform.layout);
-        VkDescriptorSetAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = descriptorPool;
-        allocInfo.descriptorSetCount = Graphics::MAX_FRAMES_IN_FLIGHT;
-        allocInfo.pSetLayouts = layouts.data();
+    std::vector<VkDescriptorSetLayout> layouts(Graphics::MAX_FRAMES_IN_FLIGHT, uniform.layout);
+    VkDescriptorSetAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocInfo.descriptorPool = descriptorPool;
+    allocInfo.descriptorSetCount = Graphics::MAX_FRAMES_IN_FLIGHT;
+    allocInfo.pSetLayouts = layouts.data();
 
-        uniform.descriptors.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
-        Debug::AssertIf::isFalse(
-                vkAllocateDescriptorSets(Graphics::getInstance()->_logicalDevice, &allocInfo, uniform.descriptors.data()) == VK_SUCCESS,
-                "Failed to allocate descriptor sets!"
-        );
+    uniform.descriptors.resize(Graphics::MAX_FRAMES_IN_FLIGHT);
+    Debug::AssertIf::isFalse(
+            vkAllocateDescriptorSets(Graphics::getInstance()->_logicalDevice, &allocInfo, uniform.descriptors.data()) ==
+            VK_SUCCESS,
+            "Failed to allocate descriptor sets!"
+    );
 
-        std::vector<VkWriteDescriptorSet> descriptorWrites(Graphics::MAX_FRAMES_IN_FLIGHT);
+    std::vector<VkWriteDescriptorSet> descriptorWrites(Graphics::MAX_FRAMES_IN_FLIGHT);
 
-        for (size_t i = 0; i < Graphics::MAX_FRAMES_IN_FLIGHT; i++) {
-            VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = uniform.buffers[i];
-            bufferInfo.offset = 0;
-            bufferInfo.range = uniform.size;  // Use the correct size for each uniform
+    for (size_t i = 0; i < Graphics::MAX_FRAMES_IN_FLIGHT; i++) {
+        VkDescriptorBufferInfo bufferInfo{};
+        bufferInfo.buffer = uniform.buffers[i];
+        bufferInfo.offset = 0;
+        bufferInfo.range = uniform.size;  // Use the correct size for each uniform
 
-            VkWriteDescriptorSet descriptorWrite{};
-            descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrite.dstSet = uniform.descriptors[i];
-            descriptorWrite.dstBinding = uniform.binding;  // Use the correct binding for each uniform
-            descriptorWrite.dstArrayElement = 0;
-            descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            descriptorWrite.descriptorCount = 1;
-            descriptorWrite.pBufferInfo = &bufferInfo;
+        VkWriteDescriptorSet descriptorWrite{};
+        descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrite.dstSet = uniform.descriptors[i];
+        descriptorWrite.dstBinding = uniform.binding;  // Use the correct binding for each uniform
+        descriptorWrite.dstArrayElement = 0;
+        descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptorWrite.descriptorCount = 1;
+        descriptorWrite.pBufferInfo = &bufferInfo;
 
-            descriptorWrites[i] = descriptorWrite;
-        }
-
-        vkUpdateDescriptorSets(Graphics::getInstance()->_logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+        descriptorWrites[i] = descriptorWrite;
     }
+
+    vkUpdateDescriptorSets(Graphics::getInstance()->_logicalDevice, static_cast<uint32_t>(descriptorWrites.size()),
+                           descriptorWrites.data(), 0, nullptr);
 }
 
 void ShaderBase::updateUniformBuffer(uint32_t currentImage) {
@@ -140,11 +135,7 @@ void ShaderBase::updateUniformBuffer(uint32_t currentImage) {
                               0.0f, 0.0f, 1.0f, 0.0f,
                               0.0f, 0.0f, 0.0f, 1.0f};
 
-    memcpy(uniforms[0].mapped[currentImage],&perspective,sizeof(perspective));
-
-    Material material{};
-    material.albedo = {1.0, 0.0, 0.0};
-    memcpy(uniforms[1].mapped[currentImage],&material,sizeof(material));
+    memcpy(uniform.mapped[currentImage],&perspective,sizeof(perspective));
 }
 
 VkShaderModule ShaderBase::createShaderModule(const List<char> &code) {
