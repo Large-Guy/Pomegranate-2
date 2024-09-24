@@ -46,6 +46,7 @@ std::string File::readText() {
     std::string s;
     while (std::getline(this->_file, s)) {
         text += s.c_str();
+        text += '\n';
     }
     return text;
 }
