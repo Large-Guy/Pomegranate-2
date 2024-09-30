@@ -16,16 +16,7 @@ struct Material {
     Vector3 albedo;
 };
 
-struct Uniform {
-    std::vector<VkBuffer> buffers;
-    std::vector<VkDeviceMemory> memory;
-    std::vector<void*> mapped;
-    std::vector<VkDescriptorSet> descriptors;
-    VkDescriptorBufferInfo bufferInfo;
-    VkDescriptorSetLayout layout;
-    uint32_t binding;
-    VkDeviceSize size;
-};
+
 
 class ShaderBase{
 private:
@@ -43,16 +34,8 @@ public:
 
     std::unordered_map<Window*, Graphics::GraphicsPipelineGroup> _pipelines;
 
-    Uniform uniform;
-    VkDescriptorPool descriptorPool;
-
-    void createDescriptionSetLayout();
     VkShaderModule createShaderModule(const List<char>& code);
     void requestPipeline(Window* window);
-    void createUniformBuffers();
-    void createDescriptorPool();
-    void createDescriptorSets();
-    void updateUniformBuffer(uint32_t currentImage);
 
     virtual ~ShaderBase() = default;
 
@@ -64,15 +47,6 @@ class Shader : public ShaderBase{
 public:
     Shader(List<char> vertex, List<char> fragment, RenderInfo info = {.renderMode = RENDER_MODE_FILL, .cullMode = CULL_MODE_BACK})
     {
-        uniform = {};
-        uniform.size = sizeof(Perspective);
-        uniform.binding = 0;
-
-        createDescriptionSetLayout();
-        createUniformBuffers();
-        createDescriptorPool();
-        createDescriptorSets();
-
         _bindingDescription = VertexType::getBindingDescription();
         _attributeDescriptions = VertexType::getAttributeDescriptions();
 
@@ -101,8 +75,6 @@ public:
                 std::remove(Graphics::getInstance()->_shaders.begin(), Graphics::getInstance()->_shaders.end(), this),
                 Graphics::getInstance()->_shaders.end());
 
-        vkDestroyDescriptorPool(Graphics::getInstance()->_logicalDevice, descriptorPool, nullptr);
-        vkDestroyDescriptorSetLayout(Graphics::getInstance()->_logicalDevice, uniform.layout, nullptr);
     }
     friend Graphics;
     friend Window;

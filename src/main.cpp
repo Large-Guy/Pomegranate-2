@@ -65,8 +65,6 @@ int main() {
     while(window.isOpen()) {
         window.poll();
 
-        shader.updateUniformBuffer(window._currentFrame);
-
         window.draw.begin();
         window.draw.clear({0.1, 0.1, 0.1, 1.0});
 

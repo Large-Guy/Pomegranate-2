@@ -4,6 +4,9 @@ project(PomegranateEngine)
 add_compile_options( -Wreturn-type)
 add_compile_options( -Wuninitialized)
 
+# Enable MVK_CONFIG_USE_METAL_ARGUMENT_BUFFERS
+add_compile_options(-DMVK_CONFIG_USE_METAL_ARGUMENT_BUFFERS=1)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
