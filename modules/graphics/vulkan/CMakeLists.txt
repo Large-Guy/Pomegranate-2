@@ -6,6 +6,8 @@ set(POMEGRANATE_GRAPHICS_VULKAN_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/window.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/shader.h
         ${CMAKE_CURRENT_SOURCE_DIR}/shader.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/uniform.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/uniform.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/enumerations.h
         ${CMAKE_CURRENT_SOURCE_DIR}/enumerations.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vertex2d.h

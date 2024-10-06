@@ -5,6 +5,7 @@
 #include "enumerations.h"
 #include "vertex3d.h"
 #include "math/math.h"
+#include "uniform.h"
 
 struct Perspective {
     Matrix4x4 model;
@@ -15,8 +16,6 @@ struct Perspective {
 struct Material {
     Vector3 albedo;
 };
-
-
 
 class ShaderBase{
 private:
@@ -34,9 +33,13 @@ public:
 
     std::unordered_map<Window*, Graphics::GraphicsPipelineGroup> _pipelines;
 
+    //Uniforms
+    DescriptorSet _perspectiveSet;
+
     VkShaderModule createShaderModule(const List<char>& code);
     void requestPipeline(Window* window);
 
+    ShaderBase() = default;
     virtual ~ShaderBase() = default;
 
     friend Graphics;
@@ -47,6 +50,11 @@ class Shader : public ShaderBase{
 public:
     Shader(List<char> vertex, List<char> fragment, RenderInfo info = {.renderMode = RENDER_MODE_FILL, .cullMode = CULL_MODE_BACK})
     {
+
+        _perspectiveSet = DescriptorSet({
+                                                Uniform(0, sizeof(Perspective)),
+                                        }, VK_SHADER_STAGE_VERTEX_BIT);
+
         _bindingDescription = VertexType::getBindingDescription();
         _attributeDescriptions = VertexType::getAttributeDescriptions();
 
