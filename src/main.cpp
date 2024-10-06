@@ -76,7 +76,7 @@ int main() {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        Debug::Log::info("FPS: ",1.0/deltaTime);
+        //Debug::Log::info("FPS: ",1.0/deltaTime);
     }
 
     return 0;

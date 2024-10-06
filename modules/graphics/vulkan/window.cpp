@@ -182,6 +182,9 @@ Window::Window() {
 }
 
 Window::~Window() {
+    //Await device to be idle
+    vkDeviceWaitIdle(Graphics::getInstance()->_logicalDevice);
+
     for(auto framebuffer : _swapChainFramebuffers) {
         vkDestroyFramebuffer(Graphics::getInstance()->_logicalDevice,framebuffer, nullptr);
     }
