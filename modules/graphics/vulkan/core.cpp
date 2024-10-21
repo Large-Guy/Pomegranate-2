@@ -4,8 +4,55 @@
 #include "vertex2d.h"
 
 Graphics Graphics::_graphicsInstance{};
+#ifdef POMEGRANATE_GRAPHICS_VULKAN_VALIDATION_LAYERS
+bool Graphics::enableValidationLayers = true;
+#else
 bool Graphics::enableValidationLayers = false;
+#endif
 const int Graphics::MAX_FRAMES_IN_FLIGHT = 2;
+
+VkResult Graphics::CreateDebugUtilsMessengerEXT(VkInstance instance,
+                                      const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+                                      const VkAllocationCallbacks* pAllocator,
+                                      VkDebugUtilsMessengerEXT* pDebugMessenger) {
+    auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    if (func != nullptr) {
+        return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+    } else {
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
+}
+
+void Graphics::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+    if (func != nullptr) {
+        func(instance, debugMessenger, pAllocator);
+    }
+}
+
+
+static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+    if(messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+    {
+        Debug::Log::warn(pCallbackData->pMessage);
+    }
+    else if(messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
+    {
+        Debug::Log::info(pCallbackData->pMessage);
+    }
+    else if(messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
+    {
+        Debug::Log::info(pCallbackData->pMessage);
+    }
+    else if(messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+    {
+        Debug::Log::error(pCallbackData->pMessage);
+    }
+    else {
+        Debug::Log::info(pCallbackData->pMessage);
+    }
+    return VK_FALSE;
+}
 
 Graphics::Graphics() {
     _instance = VK_NULL_HANDLE;
@@ -23,9 +70,10 @@ Graphics::Graphics() {
     Debug::AssertIf::isFalse(glfwInit() == GLFW_TRUE, "Failed to initialize GLFW");
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    Graphics::createInstance(enableValidationLayers);
+    createInstance();
+    setupDebugMessenger();
     createPhysicalDevice();
-    createLogicalDevice(Graphics::enableValidationLayers);
+    createLogicalDevice();
     createCommandPool();
     createSyncObjects();
 }
@@ -39,22 +87,27 @@ Graphics::~Graphics() {
         vkDestroyFence(_logicalDevice, inFlightFences[i], nullptr);
     }
 
-    for(auto& shader : _shaders)
-    {
-        delete shader;
-    }
-
     for(auto& window : _windows)
     {
         delete window;
     }
 
+    for(auto& shader : _shaders)
+    {
+        delete shader;
+    }
+
     vkDestroyDevice(_logicalDevice, nullptr);
+
+    if(enableValidationLayers) {
+        DestroyDebugUtilsMessengerEXT(_instance, _debugMessenger, nullptr);
+    }
+
     vkDestroyInstance(_instance, nullptr);
     glfwTerminate();
 }
 
-void Graphics::createInstance(bool enableValidationLayers) {
+void Graphics::createInstance() {
 
     if(enableValidationLayers)
     {
@@ -98,6 +151,12 @@ void Graphics::createInstance(bool enableValidationLayers) {
     requiredExtensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
     requiredExtensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
 
+    //Add extensions for VK_EXT_debug_utils
+    if(enableValidationLayers)
+    {
+        requiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    }
+
     //Ensure extensions are supported
 
     for (const char* extension : requiredExtensions) {
@@ -118,16 +177,40 @@ void Graphics::createInstance(bool enableValidationLayers) {
     createInfo.enabledExtensionCount = (uint32_t)requiredExtensions.size();
     createInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
+
     if(enableValidationLayers)
     {
         createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
         createInfo.ppEnabledLayerNames = validationLayers.data();
+
+        debugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+        debugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+        debugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+        debugCreateInfo.pfnUserCallback = debugCallback;
+        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
     }
     else {
         createInfo.enabledLayerCount = 0;
+        createInfo.pNext = nullptr;
     }
 
     Debug::AssertIf::isFalse(vkCreateInstance(&createInfo, nullptr, &_instance) == VK_SUCCESS, "Failed to create Vulkan instance");
+}
+
+void Graphics::setupDebugMessenger() {
+    if(!enableValidationLayers)
+        return;
+
+    VkDebugUtilsMessengerCreateInfoEXT createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    createInfo.pfnUserCallback = debugCallback;
+    createInfo.pUserData = nullptr;
+
+    Debug::AssertIf::isFalse(CreateDebugUtilsMessengerEXT(_instance, &createInfo, nullptr, &_debugMessenger) == VK_SUCCESS, "Failed to set up debug messenger!");
+    Debug::Log::pass("Successfully set up debug messenger!");
 }
 
 void Graphics::createPhysicalDevice() {
@@ -157,7 +240,7 @@ void Graphics::createPhysicalDevice() {
     Debug::Log::pass(std::string("Found suitable GPU - ") + deviceProperties.deviceName);
 }
 
-void Graphics::createLogicalDevice(bool enableValidationLayers) {
+void Graphics::createLogicalDevice() {
     if(_logicalDevice != VK_NULL_HANDLE)
         return;
 
@@ -372,7 +455,7 @@ Graphics::GraphicsPipelineGroup Graphics::createGraphicsPipeline(ShaderBase* sha
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.setLayoutCount = 0;
     pipelineLayoutInfo.pSetLayouts = &shader->_perspectiveSet.descriptorSetLayout;
     pipelineLayoutInfo.pushConstantRangeCount = 0;
     pipelineLayoutInfo.pPushConstantRanges = nullptr;
@@ -526,6 +609,7 @@ QueueFamilyIndices Graphics::getQueueFamilies(VkPhysicalDevice device) {
     }
 
     glfwDestroyWindow(tempWindow);
+    vkDestroySurfaceKHR(_instance,tempSurface, nullptr);
     return indices;
 }
 
@@ -563,8 +647,10 @@ SwapChainSupportDetails Graphics::getSwapChainSupport(VkPhysicalDevice device, V
         details.presentModes.resize(presentModeCount);
         vkGetPhysicalDeviceSurfacePresentModesKHR(device,tempSurface,&presentModeCount,details.presentModes.data());
     }
-    if(tempWindow != nullptr)
+    if(tempWindow != nullptr) {
         glfwDestroyWindow(tempWindow);
+        vkDestroySurfaceKHR(_instance,tempSurface, nullptr);
+    }
 
     return details;
 }

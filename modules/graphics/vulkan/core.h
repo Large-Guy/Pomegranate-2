@@ -22,6 +22,8 @@
 
 struct Window;
 struct ShaderBase;
+template<BufferType Type> class BufferBase;
+template <typename T, BufferType BufferType> class Buffer;
 
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -49,6 +51,7 @@ public:
     };
 
     VkInstance _instance;
+    VkDebugUtilsMessengerEXT _debugMessenger;
     VkPhysicalDevice _physicalDevice;
     VkDevice _logicalDevice;
     Queues _queues;
@@ -59,11 +62,15 @@ public:
     std::vector<Window*> _windows;
     std::vector<ShaderBase*> _shaders;
 
+
     VkCommandPool _commandPool;
 
-    void createInstance(bool enableValidationLayers);
+    void createInstance();
+    void setupDebugMessenger();
+    VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
+    void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
     void createPhysicalDevice();
-    void createLogicalDevice(bool enableValidationLayers);
+    void createLogicalDevice();
     void createCommandPool();
 
     bool hasValidationLayerSupport();

@@ -81,6 +81,12 @@ public:
         _buffer = VK_NULL_HANDLE;
         _memory = VK_NULL_HANDLE;
     }
+    ~BufferBase()
+    {
+        vkDeviceWaitIdle(Graphics::getInstance()->_logicalDevice);
+        vkDestroyBuffer(Graphics::getInstance()->_logicalDevice, _buffer, nullptr);
+        vkFreeMemory(Graphics::getInstance()->_logicalDevice, _memory, nullptr);
+    }
 
     void bind(Window* window)
     {
@@ -140,12 +146,6 @@ public:
         _data = data;
         this->size = data.size();
         generateBuffer();
-    }
-
-    ~Buffer()
-    {
-        vkDestroyBuffer(Graphics::getInstance()->_logicalDevice, this->_buffer, nullptr);
-        vkFreeMemory(Graphics::getInstance()->_logicalDevice, this->_memory, nullptr);
     }
 
     List<T> data() const

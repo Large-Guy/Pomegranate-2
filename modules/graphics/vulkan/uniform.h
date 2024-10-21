@@ -12,10 +12,10 @@ struct Uniform {
 };
 
 struct UniformBuffer {
-    std::vector<VkBuffer> uniformBuffers;
-    std::vector<VkDeviceMemory> uniformBuffersMemory;
-    std::vector<void*> mappedMemory;
     Uniform uniform;
+    std::vector<VkBuffer> buffer;
+    std::vector<VkDeviceMemory> memory;
+    std::vector<void*> mapped;
     UniformBuffer(const Uniform& uniform);
     ~UniformBuffer();
     void createBuffer(VkDeviceSize size, VkBufferUsageFlagBits usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory);
@@ -29,6 +29,15 @@ struct DescriptorSet {
     std::vector<VkDescriptorSet> descriptorSets;
     VkDescriptorPool descriptorPool;
     VkDescriptorSetLayout descriptorSetLayout;
+
+    template <typename T>
+    void set(Window* window,size_t binding, T& data) {
+        for (size_t i = 0; i < uniforms.size(); i++) {
+            if (uniforms[i].binding == binding) {
+                memcpy(uniformBuffers[i].mapped[window->_currentFrame], &data, sizeof(T));
+            }
+        }
+    }
 
     DescriptorSet();
     DescriptorSet(std::vector<Uniform> uniforms, VkShaderStageFlagBits type);

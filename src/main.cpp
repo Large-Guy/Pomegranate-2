@@ -15,7 +15,13 @@ int main() {
 #define GRAPHICS
 
 #ifdef GRAPHICS
-    Graphics::enableValidationLayers = true;
+    Graphics::getInstance();
+
+    Window window;
+
+    window.setTitle("Pomegranate Engine - Vulkan");
+    window.setSize(800, 600);
+    window.show();
 
 
 //region Shader
@@ -34,6 +40,7 @@ int main() {
     };
 
     Shader shader = Shader<Vertex3D>(vertexShader, fragmentShader, renderInfo);
+
 //endregion
 
 //region Model
@@ -50,25 +57,30 @@ int main() {
             2, 1, 3
     };
 
-    Mesh3D mesh(vertices,indices, &shader);
+    Mesh3D* mesh = new Mesh3D(vertices,indices, &shader);
 //endregion
 
-    Window window;
-
-    window.setTitle("Pomegranate Engine - Vulkan");
-    window.setSize(800, 600);
-    window.show();
 
     double lastTime = glfwGetTime();
     double deltaTime = 0.0;
 
+    Perspective perspective;
+
+    //For now, we'll just use the identity matrix
+    perspective.model = Matrix4x4();
+    perspective.view = Matrix4x4();
+    perspective.projection = Matrix4x4();
+
+
     while(window.isOpen()) {
         window.poll();
+
+        shader._perspectiveSet.set(&window,0, perspective);
 
         window.draw.begin();
         window.draw.clear({0.1, 0.1, 0.1, 1.0});
 
-        window.draw.mesh(mesh);
+        window.draw.mesh(*mesh);
 
         window.draw.end();
 
@@ -76,8 +88,12 @@ int main() {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        Debug::Log::info("FPS: ",1.0/deltaTime);
+        //Debug::Log::info("FPS: ",1.0/deltaTime);
     }
+
+    delete mesh;
+
+    Debug::Log::info("------------------------------------------------------ Exiting... ------------------------------------------------------");
 
     return 0;
 #else

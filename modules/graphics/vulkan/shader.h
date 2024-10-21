@@ -72,6 +72,8 @@ public:
         }
     }
     ~Shader() {
+        vkDeviceWaitIdle(Graphics::getInstance()->_logicalDevice);
+
         vkDestroyShaderModule(Graphics::getInstance()->_logicalDevice, _vertex, nullptr);
         vkDestroyShaderModule(Graphics::getInstance()->_logicalDevice, _fragment, nullptr);
         for (auto window: Graphics::getInstance()->_windows) {

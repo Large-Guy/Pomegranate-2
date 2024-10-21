@@ -182,6 +182,9 @@ Window::Window() {
 }
 
 Window::~Window() {
+    //Wait for command buffers to finish
+    vkDeviceWaitIdle(Graphics::getInstance()->_logicalDevice);
+
     for(auto framebuffer : _swapChainFramebuffers) {
         vkDestroyFramebuffer(Graphics::getInstance()->_logicalDevice,framebuffer, nullptr);
     }
@@ -306,8 +309,10 @@ void Window::Draw::begin() {
     renderPassInfo.renderArea.offset = {0,0};
     renderPassInfo.renderArea.extent = window->_swapExtent;
 
-    renderPassInfo.clearValueCount = 0;
-    renderPassInfo.pClearValues = nullptr;
+    VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+
+    renderPassInfo.clearValueCount = 1;
+    renderPassInfo.pClearValues = &clearColor;
 
     vkCmdBeginRenderPass(window->getCurrentCommandBuffer(),&renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
@@ -388,6 +393,8 @@ void Window::Draw::buffers(BufferBase<BUFFER_TYPE_VERTEX>* vertexBuffer, BufferB
     vertexBuffer->bind(window);
     if(indexBuffer != nullptr)
         indexBuffer->bind(window);
+
+    //vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->_pipelines[window].layout, 0, 1, &shader->_perspectiveSet.descriptorSets[window->_currentFrame], 0, nullptr);
 
     vkCmdDrawIndexed(commandBuffer,(uint32_t)indexBuffer->size,1,0,0,0);
 }
