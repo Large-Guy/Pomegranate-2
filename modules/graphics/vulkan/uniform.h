@@ -31,10 +31,10 @@ struct DescriptorSet {
     VkDescriptorSetLayout descriptorSetLayout;
 
     template <typename T>
-    void set(Window* window,size_t binding, T& data) {
+    void set(int frame,size_t binding, T& data) {
         for (size_t i = 0; i < uniforms.size(); i++) {
             if (uniforms[i].binding == binding) {
-                memcpy(uniformBuffers[i].mapped[window->_currentFrame], &data, sizeof(T));
+                memcpy(uniformBuffers[i].mapped[frame], &data, sizeof(T));
             }
         }
     }

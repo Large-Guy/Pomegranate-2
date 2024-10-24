@@ -75,7 +75,7 @@ int main() {
     while(window.isOpen()) {
         window.poll();
 
-        shader._perspectiveSet.set(&window,0, perspective);
+        shader._perspectiveSet.set(window._currentFrame,0, perspective);
 
         window.draw.begin();
         window.draw.clear({0.1, 0.1, 0.1, 1.0});
