@@ -1,12 +1,12 @@
 #ifndef POMEGRANATEENGINE_EVENTS_H
 #define POMEGRANATEENGINE_EVENTS_H
 #include "events/events.h"
-#include "lua_script.h"
+#include "lua_state.h"
 
 namespace LuaEvents {
     int on(lua_State *L);
     int call(lua_State *L);
-    void registerFunctions(LuaScript& script);
+    void registerFunctions(LuaState& script);
 }
 
 

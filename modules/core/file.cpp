@@ -30,6 +30,11 @@ void File::close() {
 }
 
 bool File::exists() {
+    std::ifstream file(this->_path);
+    return file.good();
+}
+
+bool File::isOpen() {
     return this->_file.is_open();
 }
 

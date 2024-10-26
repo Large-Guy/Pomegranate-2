@@ -22,16 +22,11 @@ int LuaEvents::call(lua_State* L) {
     return 0;
 }
 
-void LuaEvents::registerFunctions(LuaScript &script) {
-    lua_State* L = script.getLuaState();
-    lua_newtable(L);
-    lua_pushvalue(L, -1);
+void LuaEvents::registerFunctions(LuaState &script) {
+    lua_State* L = script._lua;
+    script.nameSpace("Event");
 
-    lua_setglobal(L, "Event");
+    script.function("on",LuaEvents::on);
 
-    lua_pushcfunction(L,on);
-    lua_setfield(L,-2,"on");
-
-    lua_pushcfunction(L,call);
-    lua_setfield(L,-2,"call");
+    script.function("call",LuaEvents::call);
 }

@@ -17,6 +17,7 @@ public:
     void open(const std::string& path);
     void close();
     bool exists();
+    bool isOpen();
     std::string readTextLine();
     std::string readText();
     List<List<char>>& readBufferLine();

@@ -235,8 +235,8 @@ int LuaECS::foreach(lua_State* L) {
     return 0;
 }
 
-void LuaECS::registerFunctions(LuaScript &script) {
-    lua_State* L = script.getLuaState();
+void LuaECS::registerFunctions(LuaState &script) {
+    lua_State* L = script._lua;
 
     luaL_newmetatable(L, "Entity");
 
@@ -266,10 +266,7 @@ void LuaECS::registerFunctions(LuaScript &script) {
     lua_pushcfunction(L, LuaReflection::newIndex);
     lua_setfield(L, -2, "__newindex");
 
-    lua_newtable(L);
-    lua_pushvalue(L, -1);
-
-    lua_setglobal(L, "ECS");
+    script.nameSpace("ECS");
 
     lua_pushcfunction(L,LuaECS::foreach);
     lua_setfield(L,-2,"foreach");

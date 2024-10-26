@@ -1,7 +1,7 @@
 #ifndef POMEGRANATEENGINE_ECS_H
 #define POMEGRANATEENGINE_ECS_H
 #include "ecs/ecs.h"
-#include "lua_script.h"
+#include "lua_state.h"
 
 namespace LuaECS {
     extern std::unordered_map<std::string, ComponentID> luaComponents;
@@ -25,7 +25,7 @@ namespace LuaECS {
 
     int foreach(lua_State* L);
 
-    void registerFunctions(LuaScript& script);
+    void registerFunctions(LuaState& script);
 }
 
 

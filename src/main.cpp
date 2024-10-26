@@ -5,14 +5,14 @@
 #include <ecs/extensions/common/common.h>
 #include <graphics/vulkan/graphics.h>
 #include <math/geometry/geometry.h>
-#include "lua/lua_script.h"
+#include "lua/lua_state.h"
 #include "lua/debug.h"
 #include "lua/events.h"
 #include "lua/ecs.h"
 
 int main() {
 
-#define GRAPHICS
+//#define GRAPHICS
 
 #ifdef GRAPHICS
     Graphics::getInstance();
@@ -98,16 +98,13 @@ int main() {
     return 0;
 #else
 
-    LuaScript script = LuaScript(File("assets/scripts/main.lua"));
-    LuaDebug::registerFunctions(script);
-    LuaEvents::registerFunctions(script);
-    LuaECS::registerFunctions(script);
-    script.run();
+    LuaState script = LuaState();
 
-    while(true) {
-        Event::call("update");
-        std::this_thread::sleep_for(std::chrono::milliseconds(32));
-    }
+    LuaEvents::registerFunctions(script);
+    LuaDebug::registerFunctions(script);
+    LuaECS::registerFunctions(script);
+
+    script.open(File("assets/scripts/main.lua"));
 
 #endif
 }

@@ -90,13 +90,10 @@ int LuaDebug::LuaLog::error(lua_State *L) {
     return 0;
 }
 
-void LuaDebug::registerFunctions(LuaScript& script) {
-    lua_State* L = script.getLuaState();
+void LuaDebug::registerFunctions(LuaState& script) {
+    lua_State* L = script._lua;
 
-    lua_newtable(L);
-    lua_pushvalue(L, -1);
-
-    lua_setglobal(L, "Debug");
+    script.nameSpace("Debug");
 
     //Log
     lua_newtable(L);

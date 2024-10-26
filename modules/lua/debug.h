@@ -1,6 +1,6 @@
 #ifndef POMEGRANATEENGINE_DEBUG_H
 #define POMEGRANATEENGINE_DEBUG_H
-#include "lua_script.h"
+#include "lua_state.h"
 #include "core/core.h"
 
 namespace LuaDebug {
@@ -11,7 +11,7 @@ namespace LuaDebug {
         int warn(lua_State *L);
         int error(lua_State *L);
     }
-    void registerFunctions(LuaScript& script);
+    void registerFunctions(LuaState& script);
 }
 
 #endif //POMEGRANATEENGINE_DEBUG_H
