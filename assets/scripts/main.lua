@@ -7,3 +7,4 @@ entity:add("Name",{name=1})
 
 transform = entity:get("Transform")
 print("Transform component: ", transform.x, transform.y)
+Debug.Log.info("main.lua finished!")

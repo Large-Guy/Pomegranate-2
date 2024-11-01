@@ -91,27 +91,16 @@ int LuaDebug::LuaLog::error(lua_State *L) {
 }
 
 void LuaDebug::registerFunctions(LuaState& script) {
-    lua_State* L = script._lua;
-
     script.beginNamespace("Debug");
 
     //Log
     script.beginNamespace("Log");
 
-    lua_pushcfunction(L, LuaLog::info);
-    lua_setfield(L,-2,"info");
-
-    lua_pushcfunction(L, LuaLog::pass);
-    lua_setfield(L,-2,"pass");
-
-    lua_pushcfunction(L, LuaLog::fail);
-    lua_setfield(L,-2,"fail");
-
-    lua_pushcfunction(L, LuaLog::warn);
-    lua_setfield(L,-2,"warn");
-
-    lua_pushcfunction(L, LuaLog::error);
-    lua_setfield(L,-2,"error");
+    script.function("info", LuaLog::info);
+    script.function("pass", LuaLog::pass);
+    script.function("fail", LuaLog::fail);
+    script.function("warn", LuaLog::warn);
+    script.function("error", LuaLog::error);
 
     script.endNamespace();
 
