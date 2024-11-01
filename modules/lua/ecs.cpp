@@ -39,8 +39,8 @@ int LuaECS::LuaReflection::index(lua_State* L) {
     }
 
     Debug::Log::error("Property not found");
-
-    return 0;
+    lua_pushnil(L);
+    return 1;
 }
 
 int LuaECS::LuaReflection::newIndex(lua_State* L) {
@@ -71,8 +71,8 @@ int LuaECS::LuaReflection::newIndex(lua_State* L) {
     }
 
     Debug::Log::error("Property not found");
-
-    return 0;
+    lua_pushnil(L);
+    return 1;
 }
 
 int LuaECS::LuaEntity::has(lua_State* L)
@@ -109,7 +109,7 @@ int LuaECS::LuaEntity::get(lua_State* L)
 
 int LuaECS::LuaEntity::add(lua_State* L)
 {
-    Entity* entity = (Entity*)lua_touserdata(L,1);
+    auto* entity = (Entity*)lua_touserdata(L, 1);
     const char* component = lua_tostring(L,2);
 
     if(ECS::component_names.find(component) == ECS::component_names.end()) {
@@ -130,43 +130,45 @@ int LuaECS::LuaEntity::index(lua_State* L)
 {
     using namespace LuaReflection;
 
-    Entity* entity = (Entity*)lua_touserdata(L,1);
-    const char* key = lua_tostring(L,2);
+    // Retrieve the entity
+    Entity* entity = (Entity*)lua_touserdata(L, 1);
 
-    // Check if the key matches a method name
-    lua_getmetatable(L, 1);      // Push metatable of the entity
-    lua_pushstring(L, key);      // Push the method name (key)
-    lua_rawget(L, -2);           // Try to get the function from the metatable
+    // Retrieve the key
+    const char* key = lua_tostring(L, 2);
 
-    // If it's a function, return it
-    if (lua_isfunction(L, -1)) {
+    // Use luaL_getmetafield to check if the key is a method in the metatable
+    if (luaL_getmetafield(L, 1, key)) {
+        if (lua_isfunction(L, -1)) {
+            return 1;  // Function found and pushed onto the stack
+        }
+        lua_pop(L, 1);  // Clean up if it's not a function
+    }
+
+    // Check if the key is "id"
+    if (strcmp(key, "id") == 0) {
+        lua_pushinteger(L, entity->id);
         return 1;
     }
 
-    if(strcmp(key,"id") == 0) {
-        lua_pushinteger(L,entity->id);
-        return 1;
-    }
+    // Check for a component
+    if (ECS::component_names.contains(key) && entity->has(key)) {
+        void* data = Entity::getComponent(entity->id, key);
 
-    if(ECS::component_names.contains(key) && entity->has(key)) {
-        void* data = Entity::getComponent(entity->id,key);
-
-        //Assume data is a reflectable object
+        // Assume data is a reflectable object
         Reflectable* reflectable = (Reflectable*)data;
 
-        LuaReflectable* luaReflectable = (LuaReflectable*)lua_newuserdata(L,sizeof(LuaReflectable));
+        LuaReflectable* luaReflectable = (LuaReflectable*)lua_newuserdata(L, sizeof(LuaReflectable));
         new (luaReflectable) LuaReflectable();
         luaReflectable->reflectable = reflectable;
 
-        luaL_getmetatable(L,"Reflectable");
-        lua_setmetatable(L,-2);
+        luaL_getmetatable(L, "Reflectable");
+        lua_setmetatable(L, -2);
         return 1;
     }
 
-    Debug::Log::warn("Property not found");
-
-
-    return 0;
+    Debug::Log::warn("Property not found: ", key);
+    lua_pushnil(L);
+    return 1;
 }
 
 int LuaECS::LuaEntity::newIndex(lua_State* L)
@@ -199,10 +201,10 @@ int LuaECS::LuaEntity::newEntity(lua_State* L)
 
     Entity* entity = (Entity*)lua_newuserdata(L,sizeof(Entity));
 
-    if(n == 1) {
-        entity->id = lua_tointeger(L,1);
+    if(n >= 1) {
+        new(entity) Entity(lua_tointeger(L,1));
     } else {
-        entity->id = Entity::create().id;
+        new(entity) Entity(Entity::create().id);
     }
 
     luaL_getmetatable(L,"Entity");
@@ -236,38 +238,35 @@ int LuaECS::foreach(lua_State* L) {
 }
 
 void LuaECS::registerFunctions(LuaState &script) {
-    lua_State* L = script._lua;
+    script.beginClass("Entity"); //Entity class
 
-    luaL_newmetatable(L, "Entity");
+    script.function("__index",LuaEntity::index);
+    script.function("__newindex",LuaEntity::newIndex);
+    script.function("has",LuaEntity::has);
+    script.function("get",LuaEntity::get);
+    script.function("add",LuaEntity::add);
 
-    lua_pushcfunction(L,LuaEntity::has);
-    lua_setfield(L,-2,"has");
+    script.endClass();
 
-    lua_pushcfunction(L,LuaEntity::add);
-    lua_setfield(L,-2,"add");
 
-    lua_pushcfunction(L,LuaEntity::get);
-    lua_setfield(L,-2,"get");
+    script.beginNamespace("Entity"); // Entity static functions
 
-    lua_pushcfunction(L,LuaEntity::index);
-    lua_setfield(L,-2,"__index");
+    script.function("new",LuaEntity::newEntity);
 
-    lua_pushcfunction(L,LuaEntity::newIndex);
-    lua_setfield(L,-2,"__newindex");
+    script.endNamespace();
 
-    lua_pushcfunction(L,LuaEntity::newEntity);
-    lua_setglobal(L,"Entity");
 
-    luaL_newmetatable(L, "Reflectable");
+    script.beginClass("Reflectable"); //Reflectables class
 
-    lua_pushcfunction(L, LuaReflection::index);
-    lua_setfield(L, -2, "__index");
+    script.function("__index",LuaReflection::index);
+    script.function("__newindex",LuaReflection::newIndex);
 
-    lua_pushcfunction(L, LuaReflection::newIndex);
-    lua_setfield(L, -2, "__newindex");
+    script.endClass();
 
-    script.nameSpace("ECS");
 
-    lua_pushcfunction(L,LuaECS::foreach);
-    lua_setfield(L,-2,"foreach");
+    script.beginNamespace("ECS"); //ECS
+
+    script.function("foreach",LuaECS::foreach);
+
+    script.endNamespace();
 }

@@ -106,25 +106,7 @@ int main() {
 
     script.open(File("assets/scripts/main.lua"));
 
-    while(true)
-    {
-        script.global("update");
-        LuaType type = script.type();
-        script.args(3.0);
-        script.call(3);
-        int a,b,c;
-        a = script.asInt();
-        b = script.asInt();
-        c = script.asInt();
-        Debug::Log::info(a,b,c);
-
-        script.global("var");
-        int var = script.asInt();
-
-        Debug::Log::info(var);
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
-    }
+    return 0;
 
 #endif
 }

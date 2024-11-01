@@ -24,9 +24,11 @@ int LuaEvents::call(lua_State* L) {
 
 void LuaEvents::registerFunctions(LuaState &script) {
     lua_State* L = script._lua;
-    script.nameSpace("Event");
+    script.beginNamespace("Event");
 
     script.function("on",LuaEvents::on);
 
     script.function("call",LuaEvents::call);
+
+    script.endNamespace();
 }

@@ -1,8 +1,9 @@
-var = 42
-
-function update(dt)
-    Debug.Log.info("Hello from Lua!")
-    return 1, 2, 3
-end
-
 Debug.Log.info("main.lua loaded!")
+
+entity = Entity.new()
+print("Entity created! ", entity, entity.id)
+entity:add("Transform",{x=2,y=5})
+entity:add("Name",{name=1})
+
+transform = entity:get("Transform")
+print("Transform component: ", transform.x, transform.y)

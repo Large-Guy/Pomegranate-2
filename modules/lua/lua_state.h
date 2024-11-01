@@ -3,6 +3,7 @@
 #include <string>
 #include "external/luajit/src/lua.hpp"
 #include <core/core.h>
+#include <stack>
 
 
 struct LuaTable : Reflectable {
@@ -26,31 +27,22 @@ enum LuaType {
     LUA_TYPE_LIGHTUSERDATA = LUA_TLIGHTUSERDATA,
 };
 
+struct LuaFunction {
+    lua_CFunction _function;
+};
+
 class LuaState {
 public:
     lua_State* _lua;
     int _args;
     std::string _source;
+    std::stack<std::string> _tableStack;
 
     LuaState();
     ~LuaState();
 
-    void open(const std::string& source) {
-        _source = source;
-        int result = luaL_dostring(_lua, source.c_str());
-        if (result != LUA_OK) {
-            Debug::Log::error(lua_tostring(_lua, -1));
-            lua_pop(_lua, 1);
-        }
-    }
-    void open(File file) {
-        Debug::AssertIf::isFalse(file.exists(), "File does not exist");
-        if(!file.isOpen())
-        {
-            file.open();
-        }
-        open(file.readText());
-    }
+    void open(const std::string& source);
+    void open(File file);
 
     bool global(const std::string& name) {
         lua_getglobal(_lua, name.c_str());
@@ -114,44 +106,25 @@ public:
         return table;
     }
 
-    void arg(int arg) {
-        lua_pushinteger(_lua, arg);
-        _args++;
-    }
+    void arg(int arg);
+    void arg(float arg);
+    void arg(double arg);
+    void arg(const std::string& arg);
+    void arg(const char* arg);
+    void arg(bool arg);
 
-    void arg(float arg) {
-        lua_pushnumber(_lua, arg);
-        _args++;
-    }
+    void function(const std::string& name, lua_CFunction function, bool global = false);
 
-    void arg(double arg) {
-        lua_pushnumber(_lua, arg);
-        _args++;
-    }
+    void beginClass(const std::string& name);
+    void endClass();
 
-    void arg(const std::string& arg) {
-        lua_pushstring(_lua, arg.c_str());
-        _args++;
-    }
-
-    void arg(const char* arg) {
-        lua_pushstring(_lua, arg);
-        _args++;
-    }
-
-    void arg(bool arg) {
-        lua_pushboolean(_lua, arg);
-        _args++;
-    }
-
-    template<typename Function>
-    void function(const std::string& name, Function function) {
-        lua_pushcfunction(_lua, function);
-        lua_setglobal(_lua, name.c_str());
-    }
-
-    void nameSpace(const std::string& name);
+    void beginNamespace(const std::string& name);
+    void endNamespace();
 };
 
+class LuaModule {
+public:
+    virtual void init(LuaState& script) = 0;
+};
 
 #endif //POMEGRANATEENGINE_LUA_STATE_H

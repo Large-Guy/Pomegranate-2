@@ -93,10 +93,10 @@ int LuaDebug::LuaLog::error(lua_State *L) {
 void LuaDebug::registerFunctions(LuaState& script) {
     lua_State* L = script._lua;
 
-    script.nameSpace("Debug");
+    script.beginNamespace("Debug");
 
     //Log
-    lua_newtable(L);
+    script.beginNamespace("Log");
 
     lua_pushcfunction(L, LuaLog::info);
     lua_setfield(L,-2,"info");
@@ -113,5 +113,7 @@ void LuaDebug::registerFunctions(LuaState& script) {
     lua_pushcfunction(L, LuaLog::error);
     lua_setfield(L,-2,"error");
 
-    lua_setfield(L, -2, "Log");
+    script.endNamespace();
+
+    script.endNamespace();
 }

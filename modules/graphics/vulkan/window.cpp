@@ -128,13 +128,13 @@ void Window::beginCommandBuffer() {
     beginInfo.flags = 0;
     beginInfo.pInheritanceInfo = nullptr;
 
-    Debug::AssertIf::isFalse(vkBeginCommandBuffer(commandBuffer,&beginInfo) == VK_SUCCESS, "Failed to begin recording command buffer!");
+    Debug::AssertIf::isFalse(vkBeginCommandBuffer(commandBuffer,&beginInfo) == VK_SUCCESS, "Failed to beginNamespace recording command buffer!");
 }
 
 void Window::endCommandBuffer() {
     vkCmdEndRenderPass(getCurrentCommandBuffer());
 
-    Debug::AssertIf::isFalse(vkEndCommandBuffer(getCurrentCommandBuffer()) == VK_SUCCESS, "Failed to end command buffer!");
+    Debug::AssertIf::isFalse(vkEndCommandBuffer(getCurrentCommandBuffer()) == VK_SUCCESS, "Failed to endNamespace command buffer!");
 }
 
 VkExtent2D Window::getExtents(const VkSurfaceCapabilitiesKHR &capabilities) {
