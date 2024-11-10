@@ -98,13 +98,11 @@ int main() {
     return 0;
 #else
 
-    LuaState script = LuaState();
+    Event::on("@update", Function::create<void, int>([](int i){
+        Debug::Log::info("Update", i);
+    }));
 
-    LuaEvents::registerFunctions(script);
-    LuaDebug::registerFunctions(script);
-    LuaECS::registerFunctions(script);
-
-    script.open(File("assets/scripts/main.lua"));
+    Event::emit("@update",1.0f, 2.0f);
 
     return 0;
 

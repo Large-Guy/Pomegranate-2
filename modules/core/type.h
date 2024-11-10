@@ -3,12 +3,14 @@
 #include <typeinfo>
 //Stuff for demangling
 #include <cxxabi.h>
+#include <iostream>
+#include <cstring>
 
 struct TypeInfo {
     size_t size;
     size_t type;
-    const char* name;
-    const char* mangledName;
+    std::string name;
+    std::string mangledName;
 
     TypeInfo();
 
@@ -24,22 +26,22 @@ struct TypeInfo {
 
     template<typename T>
     static TypeInfo get() {
-        TypeInfo t{};
-        t.size = sizeof(T);
-        t.type = typeid(T).hash_code();
-        t.name = abi::__cxa_demangle(typeid(T).name(),nullptr,nullptr,nullptr);
-        t.mangledName = typeid(T).name();
-        return t;
-    }
-
-    template<>
-    static TypeInfo get<void>() {
-        TypeInfo t{};
-        t.size = 0;
-        t.type = typeid(void).hash_code();
-        t.name = "void";
-        t.mangledName = typeid(void).name();
-        return t;
+        if constexpr (std::is_void<T>()) {
+            TypeInfo t{};
+            t.size = 0;
+            t.type = typeid(T).hash_code();
+            t.name = abi::__cxa_demangle(typeid(T).name(), nullptr, nullptr, nullptr);
+            t.mangledName = typeid(T).name();
+            return t;
+        }
+        else {
+            TypeInfo t{};
+            t.size = sizeof(T);
+            t.type = typeid(T).hash_code();
+            t.name = abi::__cxa_demangle(typeid(T).name(), nullptr, nullptr, nullptr);
+            t.mangledName = typeid(T).name();
+            return t;
+        }
     }
 
     template<typename T>
@@ -62,7 +64,9 @@ struct TypeInfo {
     }
 
 
-    bool operator==(const TypeInfo& other) const;
+    bool compare(const TypeInfo& other) const;
+
+    bool safeCompare(const TypeInfo& other) const;
 };
 
 

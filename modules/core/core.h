@@ -10,5 +10,7 @@
 #include "directory.h"
 #include "reflectable.h"
 #include "thread_pool.h"
+#include "function.h"
+#include "type.h"
 
 #endif //POMEGRANATE_ENGINE_CORE_CORE_H

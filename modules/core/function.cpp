@@ -14,7 +14,13 @@ TypeInfo Function::FunctionBase::getReturn() const {
 
 Function::Function() : _function(nullptr) {}
 
-Function::Function(Function::FunctionBase *function)  : _function(function) {}
+Function::Function(const Function& function) {
+    _function = function._function->clone();
+}
+
+Function::Function(Function::FunctionBase *function) {
+    _function = function;
+}
 
 Function::~Function() {
     delete _function;

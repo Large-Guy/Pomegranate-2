@@ -2,6 +2,7 @@
 #define ANYFUNCTIONS_FUNCTION_H
 #include <vector>
 #include "type.h"
+#include "core/debug.h"
 
 class Function {
 public:
@@ -23,27 +24,12 @@ public:
     private:
         FunctionType _function;
 
-        template <typename T>
-        void addArg() {
-            TypeInfo param{};
-            param.size = sizeof(T);
-            param.type = typeid(T).hash_code();
-            param.name = typeid(T).name();
-            _parameters.push_back(param);
-        }
     public:
         explicit FunctionImpl(FunctionType function) : _function(function) {
-            (addArg<Args>(), ...);
+            _parameters = std::vector<TypeInfo>();
+            (_parameters.push_back(TypeInfo::get<Args>()), ...);
 
-            if constexpr (!std::is_void_v<Return>) {
-                _return.size = sizeof(Return);          // Size of Return type
-                _return.type = typeid(Return).hash_code();  // Type identifier hash
-                _return.name = typeid(Return).name();       // Type name
-            } else {
-                _return.size = 0;          // No size for void type
-                _return.type = typeid(void).hash_code();  // Use void's type hash
-                _return.name = "void";     // Explicitly indicate "void"
-            }
+            _return = TypeInfo::get<Return>();
         }
         FunctionImpl(const FunctionImpl& function) : _function(function._function) {
             _parameters = function._parameters;
@@ -55,6 +41,11 @@ public:
         }
         template<typename...CallArgs>
         Return call(CallArgs...args) {
+            if(_function == nullptr)
+            {
+                Debug::Log::error("Function is null");
+                return Return();
+            }
             return ((Return(*)(CallArgs...))_function)(args...);
         }
 
@@ -71,6 +62,7 @@ private:
     FunctionBase* _function;
 public:
     explicit Function();
+    explicit Function(const Function& function);
     explicit Function(FunctionBase* function);
     ~Function();
 
@@ -88,6 +80,24 @@ public:
 
     template<typename Return,typename...CallArgs>
     Return call(CallArgs...args) {
+#ifdef DEBUG
+        std::vector<TypeInfo> parameters = getParameters();
+        std::vector<TypeInfo> callParameters = {TypeInfo::get<CallArgs>()...};
+
+        if(parameters.size() != callParameters.size())
+        {
+            Debug::Log::error("Parameter count mismatch, expected:",parameters.size()," got:",callParameters.size());
+        }
+
+        for(size_t i = 0; i < std::min(parameters.size(),callParameters.size()); i++)
+        {
+            if(parameters[i].safeCompare(callParameters[i]))
+            {
+                Debug::Log::error("Parameter type mismatch, arg:",i);
+            }
+        }
+#endif
+
         return (*(FunctionImpl<Return,CallArgs...>*)_function).call(args...);
     }
 

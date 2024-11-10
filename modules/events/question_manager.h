@@ -9,42 +9,6 @@
 #include <memory>
 #include <core/core.h>
 
-class QuestionFunctionBase {
-public:
-    virtual ~QuestionFunctionBase() = default;
-};
-
-template <typename ret,typename... Args>
-class QuestionFunctionImpl : public QuestionFunctionBase {
-private:
-    std::function<ret(Args...)> _function;
-public:
-    explicit QuestionFunctionImpl(const std::function<ret(Args...)>& function) : _function(function) {}
-    QuestionFunctionImpl(const QuestionFunctionImpl& other) : _function(other._function) {}
-    QuestionFunctionImpl& operator=(const QuestionFunctionImpl& other) {
-        _function = other._function;
-        return *this;
-    }
-
-    ret call(Args... args) {
-        return _function(args...);
-    }
-};
-
-class QuestionFunction {
-private:
-    std::shared_ptr<QuestionFunctionBase> _function;
-public:
-    template<typename Ret,typename... Args>
-    QuestionFunction(std::function<Ret(Args...)> f) : _function(std::make_shared<QuestionFunctionImpl<Ret,Args...>>(f)) {}
-    QuestionFunction(const QuestionFunction& other) : _function(std::move(other._function)) {}
-
-
-    template<typename Ret, typename... Args> Ret call(Args... args) {
-        return static_cast<QuestionFunctionImpl<Ret,Args...>*>(_function.get())->call(args...);
-    }
-};
-
 namespace Resolver {
 
     template<typename Ret>
@@ -170,14 +134,14 @@ namespace Resolver {
 
 class Question {
 private:
-    static std::unordered_map<QuestionID, std::vector<QuestionFunction>> _events;
+    static std::unordered_map<QuestionID, std::vector<Function>> _events;
     static std::unordered_map<std::string, QuestionID> _eventIndex;
     static QuestionID _eventCounter;
 
     static QuestionID createQuestion();
 public:
-    static void answer(EventID id, const QuestionFunction& callback);
-    static void answer(const std::string& name, const QuestionFunction& callback);
+    static void answer(EventID id, const Function& callback);
+    static void answer(const std::string& name, const Function& callback);
     template <typename Ret, template<typename T> class Resolver,
             typename RetOverride = Ret,typename... Args> static RetOverride ask(EventID id, Args... args) {
         Resolver<Ret> answer;
