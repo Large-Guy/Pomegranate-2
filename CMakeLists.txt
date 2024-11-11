@@ -4,6 +4,7 @@ project(PomegranateEngine)
 add_compile_options( -Wreturn-type)
 add_compile_options( -Wuninitialized)
 add_definitions(-DPOMEGRANATE_GRAPHICS_VULKAN_VALIDATION_LAYERS)
+add_definitions(-DPOMEGRANATE_FUNCTION_VALIDATION_LAYERS)
 
 # Enable MVK_CONFIG_USE_METAL_ARGUMENT_BUFFERS
 add_compile_options(-DMVK_CONFIG_USE_METAL_ARGUMENT_BUFFERS=1)

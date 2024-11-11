@@ -44,7 +44,8 @@ size_t Function::getParameterCount() const {
     return _function->getParameterCount();
 }
 const std::vector<TypeInfo>& Function::getParameters() const {
-    return _function->getParameters();
+    auto& parameters = _function->getParameters();
+    return parameters;
 }
 
 TypeInfo Function::getReturn() const {

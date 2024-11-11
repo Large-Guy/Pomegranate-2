@@ -102,7 +102,7 @@ int main() {
         Debug::Log::info("Update", i);
     }));
 
-    Event::emit("@update",1.0f, 2.0f);
+    Event::emit("@update",1);
 
     return 0;
 
