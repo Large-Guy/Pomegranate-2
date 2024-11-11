@@ -25,19 +25,19 @@ struct ComponentList
 };
 
 template<typename T>
-void constructor(void* ptr)
+void _constructor(void* ptr)
 {
     new(ptr) T();
 }
 
 template<typename T>
-void destructor(void* ptr)
+void _destructor(void* ptr)
 {
     ((T*)ptr)->~T();
 }
 
 template<typename T>
-void copy(void* dest, void* src)
+void _copy(void* dest, void* src)
 {
     //Make sure to use the copy constructor because some objects are not trivially copyable
     T* d = (T*)dest;
@@ -46,12 +46,23 @@ void copy(void* dest, void* src)
 }
 
 template<typename T>
-void move(void* dest, void* src)
+void _move(void* dest, void* src)
 {
     //Make sure to use the move constructor because some objects are not trivially copyable
     new(dest) T(std::move(*(T*)src));
 }
 
+template<typename T>
+void _serialize(Archive& archive, void* ptr)
+{
+    ((T *) ptr)->serialize(archive);
+}
+
+template<typename T>
+void _deserialize(Archive& archive, void* ptr)
+{
+    ((T *) ptr)->deserialize(archive);
+}
 
 
 struct Component
@@ -62,11 +73,13 @@ public:
     template<typename T>
     static ComponentID create(const std::string& component)
     {
-        ComponentID id = create(component,sizeof(T),{
-            constructor<T>,
-            destructor<T>,
-            copy<T>,
-            move<T>
+        ComponentID id = create(component,sizeof(T), ClassFunctions{
+                _constructor<T>,
+                _destructor<T>,
+                _copy<T>,
+                _move<T>,
+                _serialize<T>,
+                _deserialize<T>
         });
         ECS::component_ids[typeid(T).hash_code()] = id;
         return id;

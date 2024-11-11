@@ -10,6 +10,30 @@
 #include "lua/events.h"
 #include "lua/ecs.h"
 
+struct Position : Reflectable {
+    float x, y, z;
+    Position() : x(0), y(0), z(0) {
+        property("x", &x);
+        property("y", &y);
+        property("z", &z);
+    }
+    Position(float x, float y, float z) : x(x), y(y), z(z) {
+        property("x", &x);
+        property("y", &y);
+        property("z", &z);
+    }
+    void serialize(Archive &a) const override {
+        a << x;
+        a << y;
+        a << z;
+    }
+    void deserialize(Archive &a) override {
+        a >> x;
+        a >> y;
+        a >> z;
+    }
+};
+
 int main() {
 
 //#define GRAPHICS
@@ -98,11 +122,21 @@ int main() {
     return 0;
 #else
 
-    Event::on("@update", Function::create<void, int>([](int i){
-        Debug::Log::info("Update", i);
-    }));
+    Component::create<Vector2>("Position");
 
-    Event::emit("@update",1);
+    Entity entity = Entity::create();
+    entity.add<Vector2>(1,2);
+
+    Archive archive;
+    entity.serialize(archive);
+    archive.writeToFile("entity.bin");
+
+    Entity entity2 = Entity::create();
+
+    entity2.deserialize(archive);
+
+    auto* position = entity2.get<Vector2>();
+    Debug::Log::info("Position:", position->x, ",", position->y);
 
     return 0;
 

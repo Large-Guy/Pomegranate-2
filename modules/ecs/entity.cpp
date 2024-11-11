@@ -205,3 +205,31 @@ void Entity::remove(const std::string &component) const {
 Type Entity::getType() const {
     return ECS::entity_index[id]->archetype->type;
 }
+
+void Entity::serialize(Archive &archive) const {
+    EntityRecord* record = ECS::entity_index[id];
+    Archetype* archetype = record->archetype;
+    Debug::AssertIf::isNull(archetype, "Somethings gone wrong. Most likely an engine bug. Sorry!");
+
+    for(auto& list : archetype->components)
+    {
+        void* componentData = list.get(record->row);
+        archive << list.component;
+        Archive component{};
+        ECS::functions[list.component].serialize(component,componentData);
+        archive << component;
+    }
+}
+
+void Entity::deserialize(Archive &archive) {
+    while(!archive.isEnd())
+    {
+        ComponentID component;
+        archive >> component;
+        Archive component_archive;
+        archive >> component_archive;
+        void* data = addComponent(id,component);
+        void* reflectable = (Reflectable*)data;
+        ECS::functions[component].deserialize(component_archive,reflectable);
+    }
+}
