@@ -10,30 +10,6 @@
 #include "lua/events.h"
 #include "lua/ecs.h"
 
-struct Position : Reflectable {
-    float x, y, z;
-    Position() : x(0), y(0), z(0) {
-        property("x", &x);
-        property("y", &y);
-        property("z", &z);
-    }
-    Position(float x, float y, float z) : x(x), y(y), z(z) {
-        property("x", &x);
-        property("y", &y);
-        property("z", &z);
-    }
-    void serialize(Archive &a) const override {
-        a << x;
-        a << y;
-        a << z;
-    }
-    void deserialize(Archive &a) override {
-        a >> x;
-        a >> y;
-        a >> z;
-    }
-};
-
 int main() {
 
 //#define GRAPHICS
@@ -122,21 +98,33 @@ int main() {
     return 0;
 #else
 
-    Component::create<Vector2>("Position");
+    Extensions::Common::init();
 
-    Entity entity = Entity::create();
-    entity.add<Vector2>(1,2);
+    Entity parent = Entity::create();
+    parent.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
+    parent.add<Name>("Parent");
 
-    Archive archive;
-    entity.serialize(archive);
-    archive.writeToFile("entity.bin");
+    Entity child = Entity::create();
+    child.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
+    child.add<Name>("Child");
 
-    Entity entity2 = Entity::create();
+    Entity child2 = Entity::create();
+    child2.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
+    child2.add<Name>("Child2");
 
-    entity2.deserialize(archive);
+    Hierarchy::addChildTo(parent,child);
+    Hierarchy::addChildTo(parent,child2);
 
-    auto* position = entity2.get<Vector2>();
-    Debug::Log::info("Position:", position->x, ",", position->y);
+    Debug::Log::info("Parent: ",parent.get<Name>()->name);
+    Debug::Log::info("Child: ",child.get<Name>()->name);
+    Debug::Log::info("Child2: ",child2.get<Name>()->name);
+
+    SERIALIZE_TO_FILE(parent,"parent.bin");
+    SERIALIZE_TO_FILE(child,"child1.bin");
+    SERIALIZE_TO_FILE(child2,"child2.bin");
+
+
+
 
     return 0;
 

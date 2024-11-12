@@ -92,6 +92,8 @@ public:
     void remove(const std::string& component) const;
     [[nodiscard]] Type getType() const;
 
+    void destroy();
+
     void serialize(Archive& archive) const override;
     void deserialize(Archive& archive) override;
 };
