@@ -78,6 +78,12 @@ int LuaECS::LuaReflection::newIndex(lua_State* L) {
 int LuaECS::LuaEntity::has(lua_State* L)
 {
     Entity* entity = (Entity*)lua_touserdata(L,1);
+
+    if(entity == nullptr)
+    {
+        return 0;
+    }
+
     const char* component = lua_tostring(L,2);
 
     bool has = Entity::hasComponent(entity->id,component);
@@ -91,6 +97,12 @@ int LuaECS::LuaEntity::get(lua_State* L)
     using namespace LuaReflection;
 
     Entity* entity = (Entity*)lua_touserdata(L,1);
+
+    if(entity == nullptr)
+    {
+        return 0;
+    }
+
     const char* component = lua_tostring(L,2);
 
     void* data = Entity::getComponent(entity->id,component);
@@ -110,6 +122,12 @@ int LuaECS::LuaEntity::get(lua_State* L)
 int LuaECS::LuaEntity::add(lua_State* L)
 {
     auto* entity = (Entity*)lua_touserdata(L, 1);
+
+    if(entity == nullptr)
+    {
+        return 0;
+    }
+
     const char* component = lua_tostring(L,2);
 
     if(ECS::component_names.find(component) == ECS::component_names.end()) {
