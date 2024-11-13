@@ -23,6 +23,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/events)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/graphics/vulkan)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/ecs/extensions/common)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/lua)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/modules/audio)
 
 set(SOURCE_FILES
     ${SOURCE_DIR}/main.cpp
@@ -43,6 +44,7 @@ target_link_libraries(PomegranateEngine PomegranateEvents)
 target_link_libraries(PomegranateEngine PomegranateVulkan)
 target_link_libraries(PomegranateEngine PomegranateECSExtensionsCommon)
 target_link_libraries(PomegranateEngine PomegranateLua)
+target_link_libraries(PomegranateEngine PomegranateAudio)
 
 
 # Set the output directory for the build

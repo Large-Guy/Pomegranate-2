@@ -4,11 +4,14 @@
 #include <events/events.h>
 #include <ecs/extensions/common/common.h>
 #include <graphics/vulkan/graphics.h>
+#include <audio/audio.h>
 #include <math/geometry/geometry.h>
 #include "lua/lua_state.h"
 #include "lua/debug.h"
 #include "lua/events.h"
 #include "lua/ecs.h"
+
+
 
 int main() {
 
@@ -98,11 +101,37 @@ int main() {
     return 0;
 #else
 
-    Event::on("@update", Function::create<void, int>([](int i){
-        Debug::Log::info("Update", i);
+    /*std::vector<float> samples;
+    for(int i = 0; i < 44100; i++) {
+        samples.push_back(sin(2 * M_PI * 440 * i / 44100));
+    }
+
+    AudioSample sample = AudioSample(samples, 1, 44100);*/
+
+    Audio::getInstance();
+
+    Stream stream = Stream();
+
+    stream.setCustomCallback(Function::create<void,Stream::CallbackInfo>([](Stream::CallbackInfo info) {
+        //Generate a sine wave
+
+        for(int i = 0; i < info.frameCount; i++) {
+            float left = 0.5f * std::sin((info.time + info.frameDeltaTime * (float)i) * 2.0 * M_PI * 440.0f);
+            float right = 0.5f * std::sin((info.time + info.frameDeltaTime * (float)i) * 2.0 * M_PI * 440.0f);
+
+            *info.output++ = left;
+            *info.output++ = right;
+        }
     }));
 
-    Event::emit("@update",1.0f, 2.0f);
+    stream.start();
+
+    while (true)
+    {
+
+    }
+
+    stream.stop();
 
     return 0;
 
