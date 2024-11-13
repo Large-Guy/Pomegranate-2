@@ -6,12 +6,16 @@ struct Children : public Reflectable {
     std::unordered_set<Entity> children;
     Children();
     Children(const Children& other);
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 struct Parent : public Component, public Reflectable {
     Entity parent;
     Parent();
     Parent(const Parent& other);
+    void serialize(Archive& a) const;
+    void deserialize(Archive& a);
 };
 
 struct Hierarchy {

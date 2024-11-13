@@ -4,14 +4,11 @@
 #include <events/events.h>
 #include <ecs/extensions/common/common.h>
 #include <graphics/vulkan/graphics.h>
-#include <audio/audio.h>
 #include <math/geometry/geometry.h>
 #include "lua/lua_state.h"
 #include "lua/debug.h"
 #include "lua/events.h"
 #include "lua/ecs.h"
-
-
 
 int main() {
 
@@ -101,37 +98,33 @@ int main() {
     return 0;
 #else
 
-    /*std::vector<float> samples;
-    for(int i = 0; i < 44100; i++) {
-        samples.push_back(sin(2 * M_PI * 440 * i / 44100));
-    }
+    Extensions::Common::init();
 
-    AudioSample sample = AudioSample(samples, 1, 44100);*/
+    Entity parent = Entity::create();
+    parent.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
+    parent.add<Name>("Parent");
 
-    Audio::getInstance();
+    Entity child = Entity::create();
+    child.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
+    child.add<Name>("Child");
 
-    Stream stream = Stream();
+    Entity child2 = Entity::create();
+    child2.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
+    child2.add<Name>("Child2");
 
-    stream.setCustomCallback(Function::create<void,Stream::CallbackInfo>([](Stream::CallbackInfo info) {
-        //Generate a sine wave
+    Hierarchy::addChildTo(parent,child);
+    Hierarchy::addChildTo(parent,child2);
 
-        for(int i = 0; i < info.frameCount; i++) {
-            float left = 0.5f * std::sin((info.time + info.frameDeltaTime * (float)i) * 2.0 * M_PI * 440.0f);
-            float right = 0.5f * std::sin((info.time + info.frameDeltaTime * (float)i) * 2.0 * M_PI * 440.0f);
+    Debug::Log::info("Parent: ",parent.get<Name>()->name);
+    Debug::Log::info("Child: ",child.get<Name>()->name);
+    Debug::Log::info("Child2: ",child2.get<Name>()->name);
 
-            *info.output++ = left;
-            *info.output++ = right;
-        }
-    }));
+    SERIALIZE_TO_FILE(parent,"parent.bin");
+    SERIALIZE_TO_FILE(child,"child1.bin");
+    SERIALIZE_TO_FILE(child2,"child2.bin");
 
-    stream.start();
 
-    while (true)
-    {
 
-    }
-
-    stream.stop();
 
     return 0;
 

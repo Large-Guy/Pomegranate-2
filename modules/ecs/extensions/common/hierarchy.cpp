@@ -5,9 +5,26 @@ Children::Children() {
     property("children", &this->children);
 }
 
-Children::Children(const Children& other) {
+Children::Children(const Children& other)  : Reflectable(other) {
     this->children = other.children;
     property("children", &this->children);
+}
+
+void Children::serialize(Archive& a) const {
+    a << children.size();
+    for(auto& child : children) {
+        a << child.id;
+    }
+}
+
+void Children::deserialize(Archive& a) {
+    size_t size = 0;
+    a >> size;
+    for(size_t i = 0; i < size; i++) {
+        EntityID id = 0;
+        a >> id;
+        children.insert(Entity(id));
+    }
 }
 
 void Hierarchy::addChildTo(Entity parent, Entity child) {
@@ -40,6 +57,16 @@ Parent::Parent() {
 Parent::Parent(const Parent& other) {
     this->parent = other.parent;
     property("parent", &this->parent);
+}
+
+void Parent::serialize(Archive& a) const {
+    a << parent.id;
+}
+
+void Parent::deserialize(Archive& a) {
+    EntityID id = 0;
+    a >> id;
+    parent = Entity(id);
 }
 
 void Hierarchy::orphan(Entity entity) {

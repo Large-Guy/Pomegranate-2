@@ -116,6 +116,17 @@ Archive& Archive::operator<<(const std::string& i){
     return *this;
 }
 
+Archive& Archive::operator<<(Archive& archive){
+    // Add the size of the archive
+    *this << (unsigned long)archive.size();
+    // Add the bytes from the archive to the _data
+    for (int i = 0; i < archive.size(); i++)
+    {
+        _data.push_back(archive.getBytes()[i]);
+    }
+    return *this;
+}
+
 Archive& Archive::operator>>(long& i){
     // Convert char array to long
     char* c = new char[sizeof(long)];
@@ -274,12 +285,34 @@ Archive& Archive::operator>>(std::string& i){
     return *this;
 }
 
+Archive& Archive::operator>>(Archive& archive){
+    // Get the size of the archive
+    size_t size;
+    *this >> size;
+    // Get the bytes from the _data
+    std::vector<char> v;
+    for (int i = 0; i < size; i++)
+    {
+        v.push_back(_data[i]);
+    }
+    // Remove the bytes from the _data
+    _data.erase(_data.begin(), _data.begin() + size);
+    // Set the archive
+    archive = Archive();
+    archive._data = v;
+    return *this;
+}
+
 size_t Archive::size(){
     return _data.size();
 }
 
-char* Archive::getBytes(){
-    return _data.data();
+const std::vector<char>& Archive::getBytes(){
+    return _data;
+}
+
+bool Archive::isEnd() {
+    return _index >= _data.size();
 }
 
 void Archive::writeToFile(const char* filename) {

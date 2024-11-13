@@ -26,8 +26,7 @@ public:
 
     public:
         explicit FunctionImpl(FunctionType function) : _function(function) {
-            _parameters = std::vector<TypeInfo>();
-            (_parameters.push_back(TypeInfo::get<Args>()), ...);
+            _parameters = {TypeInfo::get<Args>()...};
 
             _return = TypeInfo::get<Return>();
         }
@@ -80,20 +79,20 @@ public:
 
     template<typename Return,typename...CallArgs>
     Return call(CallArgs...args) {
-#ifdef DEBUG
-        std::vector<TypeInfo> parameters = getParameters();
-        std::vector<TypeInfo> callParameters = {TypeInfo::get<CallArgs>()...};
+#ifdef POMEGRANATE_FUNCTION_VALIDATION_LAYERS
+        auto& parameters = getParameters();
+        const std::vector<TypeInfo> callParameters = {TypeInfo::get<CallArgs>()...};
 
         if(parameters.size() != callParameters.size())
         {
-            Debug::Log::error("Parameter count mismatch, expected:",parameters.size()," got:",callParameters.size());
+            Debug::Log::warn("Parameter count mismatch, expected:",parameters.size(),"\b, got:",callParameters.size());
         }
 
         for(size_t i = 0; i < std::min(parameters.size(),callParameters.size()); i++)
         {
-            if(parameters[i].safeCompare(callParameters[i]))
+            if(!parameters[i].safeCompare(callParameters[i]))
             {
-                Debug::Log::error("Parameter type mismatch, arg:",i);
+                Debug::Log::warn("Parameter type mismatch, arg:",i,"\b, expected:",parameters[i].name,"\b, got:",callParameters[i].name);
             }
         }
 #endif

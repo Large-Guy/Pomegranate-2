@@ -24,6 +24,8 @@ struct ClassFunctions {
     std::function<void(void*)> destructor;
     std::function<void(void*, void*)> copy;
     std::function<void(void*, void*)> move;
+    std::function<void(Archive&, void*)> serialize;
+    std::function<void(Archive&, void*)> deserialize;
 };
 
 class ECS {

@@ -27,6 +27,7 @@ public:
     Archive& operator<<(float i);
     Archive& operator<<(bool i);
     Archive& operator<<(const std::string& i);
+    Archive& operator<<(Archive& archive);
 
     Archive& operator>>(long& i);
     Archive& operator>>(unsigned long& i);
@@ -40,6 +41,7 @@ public:
     Archive& operator>>(float& i);
     Archive& operator>>(bool& i);
     Archive& operator>>(std::string& i);
+    Archive& operator>>(Archive& archive);
 
     template<typename T> Archive& operator<<(T object){
         object.serialize(*this);
@@ -70,19 +72,20 @@ public:
     }
 
     size_t size();
-    char* getBytes();
+    const std::vector<char>& getBytes();
+    bool isEnd();
     void writeToFile(const char* filename);
     void readFromFile(const char* filename);
 };
 
 template<typename T> void serialize(T& object, Archive& archive)
 {
-    object.serialize(archive);
+    object._serialize(archive);
 }
 
 template<typename T> void deserialize(T& object, Archive& archive)
 {
-    object.deserialize(archive);
+    object._deserialize(archive);
 }
 
 template<typename T> T duplicate(T& object)

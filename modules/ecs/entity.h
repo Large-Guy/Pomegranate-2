@@ -17,7 +17,7 @@ struct EntityRecord
     EntityRecord(Archetype* archetype, size_t row);
 };
 
-class Entity
+class Entity : public Reflectable
 {
 public:
     static Entity create();
@@ -91,6 +91,11 @@ public:
     void remove(ComponentID component) const;
     void remove(const std::string& component) const;
     [[nodiscard]] Type getType() const;
+
+    void destroy();
+
+    void serialize(Archive& archive) const override;
+    void deserialize(Archive& archive) override;
 };
 
 template<>
