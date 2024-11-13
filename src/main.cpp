@@ -9,6 +9,7 @@
 #include "lua/debug.h"
 #include "lua/events.h"
 #include "lua/ecs.h"
+#include "audio/audio.h"
 
 int main() {
 
@@ -98,33 +99,23 @@ int main() {
     return 0;
 #else
 
-    Extensions::Common::init();
+    Audio::getInstance();
 
-    Entity parent = Entity::create();
-    parent.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
-    parent.add<Name>("Parent");
+    Stream stream;
 
-    Entity child = Entity::create();
-    child.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
-    child.add<Name>("Child");
+    stream.setCustomCallback(Function::create<void,Stream::CallbackInfo>([](Stream::CallbackInfo info) {
+        for (int i = 0; i < info.frameCount; i++) {
+            float sample = sinf(2.0f * M_PI * 440.0f * (info.time + info.frameDeltaTime * (float)i));
 
-    Entity child2 = Entity::create();
-    child2.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
-    child2.add<Name>("Child2");
+            for (int j = 0; j < info.channels; j++) {
+                info.output[i * info.channels + j] = sample;
+            }
+        }
+    }));
 
-    Hierarchy::addChildTo(parent,child);
-    Hierarchy::addChildTo(parent,child2);
+    stream.start();
 
-    Debug::Log::info("Parent: ",parent.get<Name>()->name);
-    Debug::Log::info("Child: ",child.get<Name>()->name);
-    Debug::Log::info("Child2: ",child2.get<Name>()->name);
-
-    SERIALIZE_TO_FILE(parent,"parent.bin");
-    SERIALIZE_TO_FILE(child,"child1.bin");
-    SERIALIZE_TO_FILE(child2,"child2.bin");
-
-
-
+    while(true);
 
     return 0;
 
