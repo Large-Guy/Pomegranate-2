@@ -2,7 +2,7 @@
 #define POMEGRANATEENGINE_STREAM_H
 
 #include "core.h"
-#include<portaudio.h>
+#include<portaudio/portaudio.h>
 
 class Stream {
     PaStream *stream;

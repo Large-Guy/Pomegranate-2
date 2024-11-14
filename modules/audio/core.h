@@ -1,7 +1,7 @@
 #ifndef POMEGRANATEENGINE_AUDIO_CORE_H
 #define POMEGRANATEENGINE_AUDIO_CORE_H
 
-#include<portaudio.h>
+#include<portaudio/portaudio.h>
 #include<core/core.h>
 #include<cmath>
 #include<vector>
