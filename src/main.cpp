@@ -3,12 +3,34 @@
 #include <ecs/ecs.h>
 #include <events/events.h>
 #include <ecs/extensions/common/common.h>
-#include <graphics/vulkan/graphics.h>
+#include <graphics/opengl/graphics.h>
 #include <math/geometry/geometry.h>
 #include "lua/lua_state.h"
 #include "lua/debug.h"
 #include "lua/events.h"
 #include "lua/ecs.h"
+
+struct Vertex {
+    Vector3 position;
+
+    static VertexBindingInfo getBindingInfo() {
+        return {
+            .stride = sizeof(Vertex),
+            .offset = 0
+        };
+    }
+
+    static std::vector<VertexAttributeInfo> getAttributeInfo() {
+        std::vector<VertexAttributeInfo> attributeInfo(1);
+
+        attributeInfo[0].location = 0;
+        attributeInfo[0].binding = 0;
+        attributeInfo[0].offset = offsetof(Vertex,position);
+        attributeInfo[0].type = ATTRIBUTE_TYPE_FLOAT3;
+
+        return attributeInfo;
+    }
+};
 
 int main() {
 
@@ -98,33 +120,52 @@ int main() {
     return 0;
 #else
 
-    Extensions::Common::init();
+    Graphics::getInstance();
 
-    Entity parent = Entity::create();
-    parent.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
-    parent.add<Name>("Parent");
+    Window window{};
 
-    Entity child = Entity::create();
-    child.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
-    child.add<Name>("Child");
+    window.setTitle("Pomegranate Engine - OpenGL");
+    window.setSize(800, 600);
+    window.show();
 
-    Entity child2 = Entity::create();
-    child2.add<Transform2D>(Vector2(0.0,0.0),Vector2(1.0,1.0),0.0f);
-    child2.add<Name>("Child2");
+    File vertexFile("assets/graphics/shaders/opengl/shader.vert");
+    vertexFile.open();
+    File fragmentFile("assets/graphics/shaders/opengl/shader.frag");
+    fragmentFile.open();
 
-    Hierarchy::addChildTo(parent,child);
-    Hierarchy::addChildTo(parent,child2);
+    RenderInfo renderInfo = {
+            .renderMode = RENDER_MODE_FILL,
+            .cullMode = CULL_MODE_NONE,
+            .topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED
+    };
 
-    Debug::Log::info("Parent: ",parent.get<Name>()->name);
-    Debug::Log::info("Child: ",child.get<Name>()->name);
-    Debug::Log::info("Child2: ",child2.get<Name>()->name);
+    Shader<Vertex3D> shader(vertexFile.readBuffer(), fragmentFile.readBuffer(), renderInfo);
 
-    SERIALIZE_TO_FILE(parent,"parent.bin");
-    SERIALIZE_TO_FILE(child,"child1.bin");
-    SERIALIZE_TO_FILE(child2,"child2.bin");
+    // Triangle vertices using Vertex structs
+    List<Vertex3D> vertices = {
+            {{0.0f,  0.5f, 0.0f},{0.0f,0.0f},{0.0f,0.0f,1.0f},{1.0f,0.0f,0.0f}}, // top
+            {{-0.5f, -0.5f, 0.0f},{0.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,1.0f,0.0f}}, // bottom left
+            {{0.5f, -0.5f, 0.0f},{0.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,1.0f}}  // bottom right
+    };
 
+    List<unsigned int> indices = {
+            0, 1, 2  // draw a triangle
+    };
 
+    Mesh<Vertex3D, unsigned int> mesh(vertices, indices);
 
+    while(window.isOpen()) {
+        window.draw.begin();
+
+        window.draw.clear({0.1,0.1,0.1,1.0});
+
+        window.draw.shader(&shader);
+
+        window.draw.mesh(&mesh);
+
+        window.draw.end();
+        window.poll();
+    }
 
     return 0;
 
