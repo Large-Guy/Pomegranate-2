@@ -10,7 +10,6 @@ protected:
     unsigned int _vao, _vbo, _ebo;
 public:
     virtual void apply() = 0;
-    void bind();
     virtual size_t getVertexCount() = 0;
     virtual size_t getIndexCount() = 0;
     virtual ~MeshBase() {
@@ -18,6 +17,7 @@ public:
         glDeleteBuffers(1, &_vbo);
         glDeleteBuffers(1, &_ebo);
     }
+    friend class Window;
 };
 
 template<typename Vertex, typename Index>

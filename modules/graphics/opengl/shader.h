@@ -14,10 +14,7 @@ public:
     ShaderBase() = default;
     virtual ~ShaderBase() = default;
 
-    void bind();
-
-    friend Graphics;
-    friend Window;
+    friend class Window;
 };
 
 template <typename VertexType>

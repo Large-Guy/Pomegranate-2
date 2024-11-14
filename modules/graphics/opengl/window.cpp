@@ -144,7 +144,7 @@ void Window::Draw::buffers(BufferBase<BUFFER_TYPE_VERTEX>* vertexBuffer, BufferB
 
 void Window::Draw::shader(ShaderBase* shader) {
     _info = shader->_info;
-    shader->bind();
+    glUseProgram(shader->_program);
 }
 
 void Window::Draw::mesh(MeshBase* mesh) {
@@ -158,6 +158,6 @@ void Window::Draw::mesh(MeshBase* mesh) {
     }
 
     glPolygonMode(GL_FRONT_AND_BACK, _info.renderMode);
-    mesh->bind();
+    glBindVertexArray(mesh->_vao);
     glDrawElements(_topologyMode, mesh->getIndexCount(), GL_UNSIGNED_INT, nullptr);
 }
