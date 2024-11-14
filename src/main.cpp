@@ -10,28 +10,6 @@
 #include "lua/events.h"
 #include "lua/ecs.h"
 
-struct Vertex {
-    Vector3 position;
-
-    static VertexBindingInfo getBindingInfo() {
-        return {
-            .stride = sizeof(Vertex),
-            .offset = 0
-        };
-    }
-
-    static std::vector<VertexAttributeInfo> getAttributeInfo() {
-        std::vector<VertexAttributeInfo> attributeInfo(1);
-
-        attributeInfo[0].location = 0;
-        attributeInfo[0].binding = 0;
-        attributeInfo[0].offset = offsetof(Vertex,position);
-        attributeInfo[0].type = ATTRIBUTE_TYPE_FLOAT3;
-
-        return attributeInfo;
-    }
-};
-
 int main() {
 
 //#define GRAPHICS
