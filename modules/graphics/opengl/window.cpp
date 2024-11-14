@@ -143,21 +143,20 @@ void Window::Draw::buffers(BufferBase<BUFFER_TYPE_VERTEX>* vertexBuffer, BufferB
 */
 
 void Window::Draw::shader(ShaderBase* shader) {
-    _info = shader->_info;
-    glUseProgram(shader->_program);
-}
-
-void Window::Draw::mesh(MeshBase* mesh) {
-    _topologyMode = _info.topologyMode;
-    if(_info.cullMode != CULL_MODE_NONE) {
+    _topologyMode = shader->_info.topologyMode;
+    if(shader->_info.cullMode != CULL_MODE_NONE) {
         glEnable(GL_CULL_FACE);
-        glCullFace(_info.cullMode);
+        glCullFace(shader->_info.cullMode);
     }
     else {
         glDisable(GL_CULL_FACE);
     }
 
-    glPolygonMode(GL_FRONT_AND_BACK, _info.renderMode);
+    glPolygonMode(GL_FRONT_AND_BACK, shader->_info.renderMode);
+    glUseProgram(shader->_program);
+}
+
+void Window::Draw::mesh(MeshBase* mesh) {
     glBindVertexArray(mesh->_vao);
     glDrawElements(_topologyMode, mesh->getIndexCount(), GL_UNSIGNED_INT, nullptr);
 }

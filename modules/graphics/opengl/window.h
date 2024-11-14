@@ -13,7 +13,6 @@ public:
     class Draw {
     private:
         TopologyMode _topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED;
-        RenderInfo _info;
     public:
         Window* window;
         uint32_t imageIndex;
