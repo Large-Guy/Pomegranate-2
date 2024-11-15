@@ -12,11 +12,12 @@ public:
         float* input;
         float* output;
         unsigned long frameCount;
-        float time;
-        float frameDeltaTime;
+        double time;
+        double frameDeltaTime;
         int sampleRate;
         int channels;
         void* userData;
+        int frame;
     };
 
     Stream();

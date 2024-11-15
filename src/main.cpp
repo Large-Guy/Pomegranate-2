@@ -101,16 +101,15 @@ int main() {
 
     Audio::getInstance();
 
+    static AudioSample music = AudioSample("assets/audio/sfx/kick.wav","Kick");
+
     Stream stream;
 
     stream.setCustomCallback(Function::create<void,Stream::CallbackInfo>([](Stream::CallbackInfo info) {
-        for (int i = 0; i < info.frameCount; i++) {
-            float sample = sinf(2.0f * M_PI * 440.0f * (info.time + info.frameDeltaTime * (float)i));
+        float left = music.sample<float>(info.frame, 0);
 
-            for (int j = 0; j < info.channels; j++) {
-                info.output[i * info.channels + j] = sample;
-            }
-        }
+        *info.output++ = left;
+        *info.output++ = left;
     }));
 
     stream.start();

@@ -12,6 +12,12 @@ File::File(const std::string& path) {
     this->buffer = List<char>();
 }
 
+File::File(const File& file) {
+    this->_path = file._path;
+    this->_lines = file._lines;
+    this->buffer = file.buffer;
+}
+
 File::~File() {
     this->_file.close();
 }

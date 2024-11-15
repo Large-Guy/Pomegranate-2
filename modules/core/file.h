@@ -12,6 +12,7 @@ private:
 public:
     File();
     File(const std::string& path);
+    File(const File& file);
     ~File();
     void open();
     void open(const std::string& path);
