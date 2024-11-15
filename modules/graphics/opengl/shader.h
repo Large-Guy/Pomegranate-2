@@ -11,6 +11,33 @@ protected:
     RenderInfo _info;
 public:
 
+    template <typename T>
+    void setUniform(const std::string& name, T value) {
+        glUseProgram(_program);
+
+        GLint location = glGetUniformLocation(_program, name.c_str());
+        if (location == -1) {
+            Debug::Log::error("Uniform", name.c_str(), "not found");
+            return;
+        }
+
+        if constexpr (std::is_same<T, int>::value) {
+            glUniform1i(location, value);
+        } else if constexpr (std::is_same<T, float>::value) {
+            glUniform1f(location, value);
+        } else if constexpr (std::is_same<T, Vector2>::value) {
+            glUniform2f(location, value.x, value.y);
+        } else if constexpr (std::is_same<T, Vector3>::value) {
+            glUniform3f(location, value.x, value.y, value.z);
+        } else if constexpr (std::is_same<T, Vector4>::value) {
+            glUniform4f(location, value.x, value.y, value.z, value.w);
+        } else if constexpr (std::is_same<T, Matrix4x4>::value) {
+            glUniformMatrix4fv(location, 1, GL_FALSE, &value.x.x);
+        } else {
+            Debug::Log::error("Uniform type not supported");
+        }
+    }
+
     ShaderBase() = default;
     virtual ~ShaderBase() = default;
 
@@ -20,13 +47,12 @@ public:
 template <typename VertexType>
 class Shader : public ShaderBase{
 public:
-    Shader(List<char> vertex, List<char> fragment, RenderInfo info = {.renderMode = RENDER_MODE_FILL, .cullMode = CULL_MODE_BACK})
+    Shader(const char* vertex, const char* fragment, RenderInfo info = {.renderMode = RENDER_MODE_FILL, .cullMode = CULL_MODE_BACK})
     {
         _info = info;
 
         GLuint _vertex = glCreateShader(GL_VERTEX_SHADER);
-        char* v = vertex.data();
-        glShaderSource(_vertex, 1, &v, nullptr);
+        glShaderSource(_vertex, 1, &vertex, nullptr);
         glCompileShader(_vertex);
 
         //Check for errors
@@ -35,12 +61,11 @@ public:
         if (!success) {
             GLchar infoLog[512];
             glGetShaderInfoLog(_vertex, 512, nullptr, infoLog);
-            Debug::Log::error("Vertex shader compilation failed: %s", infoLog);
+            Debug::Log::error("Vertex shader compilation failed:", infoLog);
         }
 
         GLuint _fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        char* f = fragment.data();
-        glShaderSource(_fragment, 1, &f, nullptr);
+        glShaderSource(_fragment, 1, &fragment, nullptr);
         glCompileShader(_fragment);
 
         //Check for errors
@@ -48,7 +73,7 @@ public:
         if (!success) {
             GLchar infoLog[512];
             glGetShaderInfoLog(_fragment, 512, nullptr, infoLog);
-            Debug::Log::error("Fragment shader compilation failed: %s", infoLog);
+            Debug::Log::error("Fragment shader compilation failed:", infoLog);
         }
 
         _program = glCreateProgram();
@@ -61,7 +86,7 @@ public:
         if (!success) {
             GLchar infoLog[512];
             glGetProgramInfoLog(_program, 512, nullptr, infoLog);
-            Debug::Log::error("Shader program linking failed: %s", infoLog);
+            Debug::Log::error("Shader program linking failed:", infoLog);
         }
 
         glDeleteShader(_vertex);

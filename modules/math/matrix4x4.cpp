@@ -116,8 +116,70 @@ Matrix4x4 Matrix4x4::rotateZ(float angle) const {
     );
 }
 
-Matrix4x4 Matrix4x4::createTransform(Vector3 pos, Vector3 scale, Vector3 rotation) {
-    return Matrix4x4().scale(scale).rotateX(rotation.x).rotateY(rotation.y).rotateZ(rotation.z).translate(pos);
+Matrix4x4 Matrix4x4::rotate(Vector3 eulerAngles) {
+    float xc = std::cos(eulerAngles.x);
+    float xs = std::sin(eulerAngles.x);
+
+    float yc = std::cos(eulerAngles.y);
+    float ys = std::sin(eulerAngles.y);
+
+    float zc = std::cos(eulerAngles.z);
+    float zs = std::sin(eulerAngles.z);
+
+    return dot({
+        zc*yc, -zs*xc + zc*ys*xs, zs*xs+zc*ys*xc, 0.0f,
+        zs*yc, zc*xc + zs*ys*xs, -zc*xs + zs*ys*xc, 0.0f,
+        -ys, yc*xs, yc*xc, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    });
+}
+
+Matrix4x4 Matrix4x4::dot(const Matrix4x4& m) const {
+    return Matrix4x4(
+        x.x * m.x.x + x.y * m.y.x + x.z * m.z.x + x.w * m.w.x,
+        x.x * m.x.y + x.y * m.y.y + x.z * m.z.y + x.w * m.w.y,
+        x.x * m.x.z + x.y * m.y.z + x.z * m.z.z + x.w * m.w.z,
+        x.x * m.x.w + x.y * m.y.w + x.z * m.z.w + x.w * m.w.w,
+        y.x * m.x.x + y.y * m.y.x + y.z * m.z.x + y.w * m.w.x,
+        y.x * m.x.y + y.y * m.y.y + y.z * m.z.y + y.w * m.w.y,
+        y.x * m.x.z + y.y * m.y.z + y.z * m.z.z + y.w * m.w.z,
+        y.x * m.x.w + y.y * m.y.w + y.z * m.z.w + y.w * m.w.w,
+        z.x * m.x.x + z.y * m.y.x + z.z * m.z.x + z.w * m.w.x,
+        z.x * m.x.y + z.y * m.y.y + z.z * m.z.y + z.w * m.w.y,
+        z.x * m.x.z + z.y * m.y.z + z.z * m.z.z + z.w * m.w.z,
+        z.x * m.x.w + z.y * m.y.w + z.z * m.z.w + z.w * m.w.w,
+        w.x * m.x.x + w.y * m.y.x + w.z * m.z.x + w.w * m.w.x,
+        w.x * m.x.y + w.y * m.y.y + w.z * m.z.y + w.w * m.w.y,
+        w.x * m.x.z + w.y * m.y.z + w.z * m.z.z + w.w * m.w.z,
+        w.x * m.x.w + w.y * m.y.w + w.z * m.z.w + w.w * m.w.w
+    );
+}
+
+Matrix4x4 Matrix4x4::identity() {
+    return Matrix4x4();
+}
+
+Matrix4x4 Matrix4x4::orthographic(float left, float right, float bottom, float top, float near, float far) {
+    return Matrix4x4(
+        2.0f / (right - left), 0.0f, 0.0f, 0.0f,
+        0.0f, 2.0f / (top - bottom), 0.0f, 0.0f,
+        0.0f, 0.0f, -2.0f / (far - near), 0.0f,
+        -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1.0f
+    );
+}
+
+Matrix4x4 Matrix4x4::perspective(float fov, float aspect, float near, float far) {
+    float tanHalfFov = std::tan(fov / 2.0f);
+    return Matrix4x4(
+        1.0f / (aspect * tanHalfFov), 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f / tanHalfFov, 0.0f, 0.0f,
+        0.0f, 0.0f, (far + near) / (near - far), -1.0f,
+        0.0f, 0.0f, (2.0f * far * near) / (near - far), 0.0f
+    );
+}
+
+Matrix4x4 Matrix4x4::transform(Vector3 pos, Vector3 scale, Vector3 rotation) {
+    return Matrix4x4().scale(scale).rotate(rotation).translate(pos);
 }
 
 std::array<float, 16> Matrix4x4::get() const {

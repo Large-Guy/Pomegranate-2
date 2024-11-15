@@ -21,8 +21,13 @@ struct Matrix4x4{
     [[nodiscard]] Matrix4x4 rotateX(float angle) const;
     [[nodiscard]] Matrix4x4 rotateY(float angle) const;
     [[nodiscard]] Matrix4x4 rotateZ(float angle) const;
+    [[nodiscard]] Matrix4x4 rotate(Vector3 eulerAngles);
+    [[nodiscard]] Matrix4x4 dot(const Matrix4x4& m) const;
 
-    static Matrix4x4 createTransform(Vector3 pos, Vector3 scale, Vector3 rotation);
+    static Matrix4x4 identity();
+    static Matrix4x4 orthographic(float left, float right, float bottom, float top, float near, float far);
+    static Matrix4x4 perspective(float fov, float aspect, float near, float far);
+    static Matrix4x4 transform(Vector3 pos, Vector3 scale, Vector3 rotation);
 
     void serialize(Archive& a) const;
     void deserialize(Archive& a);

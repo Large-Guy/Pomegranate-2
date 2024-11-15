@@ -117,7 +117,7 @@ int main() {
             .topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED
     };
 
-    Shader<Vertex3D> shader(vertexFile.readBuffer(), fragmentFile.readBuffer(), renderInfo);
+    Shader<Vertex3D> shader(vertexFile.readText().c_str(), fragmentFile.readText().c_str(), renderInfo);
 
     // Triangle vertices using Vertex structs
     List<Vertex3D> vertices = {
@@ -132,12 +132,22 @@ int main() {
 
     Mesh<Vertex3D, unsigned int> mesh(vertices, indices);
 
+    Matrix4x4 model = Matrix4x4::identity();
+    Matrix4x4 view = Matrix4x4::identity().translate({0.0f, 0.0f, -5.0f});
+    Matrix4x4 projection = Matrix4x4::perspective(45.0f * (float)M_PI / 180.0f, 800.0f / 600.0f, 0.01f, 1000.0f);
+
+
     while(window.isOpen()) {
         window.draw.begin();
+
+        model = Matrix4x4::transform({0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, (float)glfwGetTime()});
 
         window.draw.clear({0.1,0.1,0.1,1.0});
 
         window.draw.shader(&shader);
+        shader.setUniform<Matrix4x4>("model", model);
+        shader.setUniform<Matrix4x4>("view", view);
+        shader.setUniform<Matrix4x4>("projection", projection);
 
         window.draw.mesh(&mesh);
 
