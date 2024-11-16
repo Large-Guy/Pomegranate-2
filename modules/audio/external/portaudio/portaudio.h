@@ -268,7 +268,7 @@ PaHostApiIndex Pa_GetDefaultHostApi( void );
 
  New type ids will be allocated when support for a host API reaches
  "public alpha" status, prior to that developers should use the
- paInDevelopment type id.
+ paInDevelopment type _id.
 
  @see PaHostApiInfo
 */
@@ -501,7 +501,7 @@ typedef struct PaDeviceInfo
 {
     int structVersion;  /* this is struct version 2 */
     const char *name;
-    PaHostApiIndex hostApi; /**< note this is a host API index, not a type id*/
+    PaHostApiIndex hostApi; /**< note this is a host API index, not a type _id*/
 
     int maxInputChannels;
     int maxOutputChannels;

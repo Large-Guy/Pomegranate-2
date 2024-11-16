@@ -5,7 +5,7 @@ Transform2D::Transform2D() {
     this->position = Vector2();
     this->scale = Vector2(1, 1);
     this->rotation = 0;
-    property("position", &this->position);
+    property("_position", &this->position);
     property("scale", &this->scale);
     property("rotation", &this->rotation);
 }
@@ -15,7 +15,7 @@ Transform2D::Transform2D(const Vector2& position, const Vector2& scale, float ro
     this->position = position;
     this->scale = scale;
     this->rotation = rotation;
-    property("position", &this->position);
+    property("_position", &this->position);
     property("scale", &this->scale);
     property("rotation", &this->rotation);
 }
@@ -25,7 +25,7 @@ Transform2D::Transform2D(const Transform2D& other) {
     this->position = other.position;
     this->scale = other.scale;
     this->rotation = other.rotation;
-    property("position", &this->position);
+    property("_position", &this->position);
     property("scale", &this->scale);
     property("rotation", &this->rotation);
 }

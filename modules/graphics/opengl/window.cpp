@@ -50,6 +50,7 @@ void Window::setSize(int width, int height) {
 
 void Window::poll() {
     glfwPollEvents();
+
     if(glfwWindowShouldClose(this->_window)) {
         this->_open = false;
     }
@@ -68,6 +69,11 @@ void Window::show() {
 void Window::hide() {
     glfwHideWindow(this->_window);
     this->_visible = false;
+}
+
+void Window::close() {
+    glfwSetWindowShouldClose(this->_window, true);
+    this->_open = false;
 }
 
 void Window::fullscreen() {
@@ -151,8 +157,18 @@ void Window::Draw::shader(ShaderBase* shader) {
     else {
         glDisable(GL_CULL_FACE);
     }
-
     glPolygonMode(GL_FRONT_AND_BACK, shader->_info.renderMode);
+
+    if(shader->_info.depthMode != DEPTH_MODE_NEVER)
+    {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(shader->_info.depthMode);
+    }
+    else
+    {
+        glDisable(GL_DEPTH_TEST);
+    }
+
     glUseProgram(shader->_program);
 }
 

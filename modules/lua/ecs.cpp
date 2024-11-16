@@ -162,8 +162,8 @@ int LuaECS::LuaEntity::index(lua_State* L)
         lua_pop(L, 1);  // Clean up if it's not a function
     }
 
-    // Check if the key is "id"
-    if (strcmp(key, "id") == 0) {
+    // Check if the key is "_id"
+    if (strcmp(key, "_id") == 0) {
         lua_pushinteger(L, entity->id);
         return 1;
     }

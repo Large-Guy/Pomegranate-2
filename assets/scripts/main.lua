@@ -1,7 +1,7 @@
 Debug.Log.info("main.lua loaded!")
 
 entity = Entity.new()
-print("Entity created! ", entity, entity.id)
+print("Entity created! ", entity, entity._id)
 entity:add("Transform",{x=2,y=5})
 entity:add("Name",{name=1})
 

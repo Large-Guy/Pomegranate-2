@@ -40,6 +40,10 @@ Function& Function::operator=(const Function& function){
     return *this;
 }
 
+bool Function::operator==(const Function& function) const {
+    return _function == function._function;
+}
+
 size_t Function::getParameterCount() const {
     return _function->getParameterCount();
 }

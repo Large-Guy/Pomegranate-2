@@ -68,6 +68,8 @@ public:
     Function& operator=(FunctionBase* function);
     Function& operator=(const Function& function);
 
+    bool operator==(const Function& function) const;
+
     [[nodiscard]] size_t getParameterCount() const;
     [[nodiscard]] const std::vector<TypeInfo>& getParameters() const;
     [[nodiscard]] TypeInfo getReturn() const;

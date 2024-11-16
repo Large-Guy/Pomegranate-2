@@ -46,6 +46,7 @@ public:
     void poll();
     void show();
     void hide();
+    void close();
     void fullscreen();
     void maximize();
     void minimize();
@@ -59,6 +60,7 @@ public:
     [[nodiscard]] bool isOpen() const;
 
     friend Graphics;
+    friend class InputManager;
 };
 
 

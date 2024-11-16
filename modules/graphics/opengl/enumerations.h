@@ -16,6 +16,17 @@ enum CullMode {
     CULL_MODE_BOTH = GL_FRONT_AND_BACK
 };
 
+enum DepthMode {
+    DEPTH_MODE_NEVER = GL_NEVER,
+    DEPTH_MODE_LESS = GL_LESS,
+    DEPTH_MODE_EQUAL = GL_EQUAL,
+    DEPTH_MODE_LEQUAL = GL_LEQUAL,
+    DEPTH_MODE_GREATER = GL_GREATER,
+    DEPTH_MODE_NOTEQUAL = GL_NOTEQUAL,
+    DEPTH_MODE_GEQUAL = GL_GEQUAL,
+    DEPTH_MODE_ALWAYS = GL_ALWAYS
+};
+
 enum TopologyMode {
     TOPOLOGY_MODE_TRIANGLE_INDEXED = GL_TRIANGLES,
     TOPOLOGY_MODE_TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
@@ -40,6 +51,7 @@ struct RenderInfo {
     RenderMode renderMode = RENDER_MODE_FILL;
     CullMode cullMode = CULL_MODE_BACK;
     TopologyMode topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED;
+    DepthMode depthMode = DEPTH_MODE_LESS;
 };
 
 enum AttributeFormat {

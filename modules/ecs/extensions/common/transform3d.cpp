@@ -4,7 +4,7 @@ Transform3D::Transform3D() {
     this->position = Vector3();
     this->scale = Vector3(1, 1, 1);
     this->rotation = 0;
-    property("position", &this->position);
+    property("_position", &this->position);
     property("scale", &this->scale);
     property("rotation", &this->rotation);
 }
@@ -13,7 +13,7 @@ Transform3D::Transform3D(const Vector3& position, const Vector3& scale, const Ve
     this->position = position;
     this->scale = scale;
     this->rotation = rotation;
-    property("position", &this->position);
+    property("_position", &this->position);
     property("scale", &this->scale);
     property("rotation", &this->rotation);
 }
@@ -22,7 +22,7 @@ Transform3D::Transform3D(const Transform3D& other) {
     this->position = other.position;
     this->scale = other.scale;
     this->rotation = other.rotation;
-    property("position", &this->position);
+    property("_position", &this->position);
     property("scale", &this->scale);
     property("rotation", &this->rotation);
 }
