@@ -37,17 +37,29 @@ int main() {
     InputManager inputManager(&window);
 
     inputManager.addButtonAlias("exit", Keyboard::KEY_ESCAPE, Gamepad::BUTTON_START);
-    inputManager.addButtonAlias("jump", Keyboard::KEY_SPACE, Keyboard::KEY_Z, Gamepad::BUTTON_BOTTOM);
 
-    inputManager.addAxisAlias("rotateX",Axis(Keyboard::KEY_A,Keyboard::KEY_D));
     inputManager.addAxisAlias("rotateX",Axis(Keyboard::KEY_LEFT,Keyboard::KEY_RIGHT));
-    inputManager.addAxisAlias("rotateX",Axis(Gamepad::AXIS_LEFT_X, true));
+    inputManager.addAxisAlias("rotateX",Axis(Gamepad::BUTTON_DPAD_LEFT,Gamepad::BUTTON_DPAD_RIGHT));
+    inputManager.addAxisAlias("rotateX",Axis(Gamepad::AXIS_RIGHT_X, true));
     inputManager.setAxisAliasDeadzone("rotateX",0.1f);
 
-    inputManager.addAxisAlias("rotateY",Axis(Keyboard::KEY_W,Keyboard::KEY_S));
     inputManager.addAxisAlias("rotateY",Axis(Keyboard::KEY_UP,Keyboard::KEY_DOWN));
-    inputManager.addAxisAlias("rotateY",Axis(Gamepad::AXIS_LEFT_Y,true));
+    inputManager.addAxisAlias("rotateY",Axis(Gamepad::BUTTON_DPAD_UP,Gamepad::BUTTON_DPAD_DOWN));
+    inputManager.addAxisAlias("rotateY",Axis(Gamepad::AXIS_RIGHT_Y,true));
     inputManager.setAxisAliasDeadzone("rotateY",0.1f);
+
+    inputManager.addAxisAlias("moveRight",Axis(Keyboard::KEY_A,Keyboard::KEY_D));
+    inputManager.addAxisAlias("moveRight",Axis(Gamepad::AXIS_LEFT_X, true));
+    inputManager.setAxisAliasDeadzone("moveRight",0.1f);
+
+    inputManager.addAxisAlias("moveForward",Axis(Keyboard::KEY_W,Keyboard::KEY_S));
+    inputManager.addAxisAlias("moveForward",Axis(Gamepad::AXIS_LEFT_Y, true));
+    inputManager.setAxisAliasDeadzone("moveForward",0.1f);
+
+    inputManager.addAxisAlias("moveUp",Axis(Keyboard::KEY_SPACE,Keyboard::KEY_LEFT_SHIFT, true));
+    inputManager.addAxisAlias("moveUp",Axis(Gamepad::BUTTON_TOP,Gamepad::BUTTON_BOTTOM, true));
+    inputManager.setAxisAliasDeadzone("moveUp",0.1f);
+
 
     File vertexFile("assets/graphics/shaders/opengl/shader.vert");
     vertexFile.open();
@@ -90,13 +102,11 @@ int main() {
     Mesh<Vertex3D, unsigned int> mesh(vertices, indices);
 
     Matrix4x4 model = Matrix4x4::identity();
-    Matrix4x4 view = Matrix4x4::identity().translate({0.0f, 0.0f, -10.0f});
+    Matrix4x4 view = Matrix4x4::transform({0.0f, 0.0f, -5.0f}, {1.0f, 1.0f, 1.0f},{0.0f,0.0f,0.0f});
     Matrix4x4 projection = Matrix4x4::perspective(45.0f * (float)M_PI / 180.0f, 800.0f / 600.0f, 0.01f, 1000.0f);
 
-    float spinX = 0.0f;
-    float spinY = 0.0f;
-
-    Vector3 rotation;
+    Vector3 rotation = {};
+    Vector3 position = {0.0f,0.0f,-10.0f};
 
     while(window.isOpen()) {
         window.poll();
@@ -106,25 +116,27 @@ int main() {
             window.close();
         }
 
-        if(inputManager.getButtonAlias("jump") == BUTTON_PRESSED) {
-            spinY += 0.1f;
-        }
+        float rotateX = inputManager.getAxisAlias("rotateX");
+        float rotateY = inputManager.getAxisAlias("rotateY");
 
-        float leftStickX = inputManager.getAxisAlias("rotateX");
-        float leftStickY = inputManager.getAxisAlias("rotateY");
+        rotation.x += rotateY * 0.03f;
+        rotation.y += rotateX * 0.03f;
 
-        spinX += leftStickY * 0.01f;
-        spinY += leftStickX * 0.01f;
+        view = Matrix4x4::identity().translate(position).rotate(rotation);
 
-        rotation.x += spinX;
-        rotation.y += spinY;
+        Vector3 forward = view.forward();
+        Vector3 right = view.right();
+        Vector3 up = view.up();
 
-        spinX *= 0.97f;
-        spinY *= 0.97f;
+        float moveForward = inputManager.getAxisAlias("moveForward");
+        float moveRight = inputManager.getAxisAlias("moveRight");
+        float moveUp = inputManager.getAxisAlias("moveUp");
+
+        position += forward * moveForward * 0.1f;
+        position += right * moveRight * 0.1f;
+        position += up * moveUp * 0.1f;
 
         window.draw.begin();
-
-        model = Matrix4x4::transform({0.0, -1.5f, 0.0f}, {1.0f, 1.0f, 1.0f},{0.0f,0.0f,0.0f}).rotate(rotation);
 
         window.draw.clear({0.1,0.1,0.1,1.0});
 

@@ -17,9 +17,9 @@ public:
     enum Axis {
         AXIS_LEFT_X,
         AXIS_LEFT_Y,
+        AXIS_LEFT_TRIGGER,
         AXIS_RIGHT_X,
         AXIS_RIGHT_Y,
-        AXIS_LEFT_TRIGGER,
         AXIS_RIGHT_TRIGGER,
         AXIS_NONE
     };

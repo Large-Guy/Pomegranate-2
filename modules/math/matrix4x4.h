@@ -23,6 +23,9 @@ struct Matrix4x4{
     [[nodiscard]] Matrix4x4 rotateZ(float angle) const;
     [[nodiscard]] Matrix4x4 rotate(Vector3 eulerAngles);
     [[nodiscard]] Matrix4x4 dot(const Matrix4x4& m) const;
+    [[nodiscard]] Vector3 forward() const;
+    [[nodiscard]] Vector3 right() const;
+    [[nodiscard]] Vector3 up() const;
 
     static Matrix4x4 identity();
     static Matrix4x4 orthographic(float left, float right, float bottom, float top, float near, float far);

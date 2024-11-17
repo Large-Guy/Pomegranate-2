@@ -155,6 +155,18 @@ Matrix4x4 Matrix4x4::dot(const Matrix4x4& m) const {
     );
 }
 
+Vector3 Matrix4x4::forward() const {
+    return Vector3(x.z, y.z, z.z);
+}
+
+Vector3 Matrix4x4::right() const {
+    return Vector3(x.x,y.x,z.x);
+}
+
+Vector3 Matrix4x4::up() const {
+    return Vector3(x.y, y.y, z.y);
+}
+
 Matrix4x4 Matrix4x4::identity() {
     return Matrix4x4();
 }
