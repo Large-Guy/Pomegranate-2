@@ -11,19 +11,6 @@
 #include "lua/events.h"
 #include "lua/ecs.h"
 
-std::vector<std::string> split(const std::string& str, const std::string& delimiter) {
-    std::vector<std::string> parts;
-    size_t start = 0;
-    size_t end = str.find(delimiter);
-    while(end != std::string::npos) {
-        parts.push_back(str.substr(start, end - start));
-        start = end + delimiter.length();
-        end = str.find(delimiter, start);
-    }
-    parts.push_back(str.substr(start, end));
-    return parts;
-}
-
 int main() {
 
     Graphics::getInstance();
@@ -75,31 +62,7 @@ int main() {
 
     Shader<Vertex3D> shader(vertexFile.readText().c_str(), fragmentFile.readText().c_str(), renderInfo);
 
-    File meshFile = File("assets/graphics/models/teapot.obj");
-    meshFile.open();
-
-    List<Vertex3D> vertices{};
-    List<unsigned int> indices{};
-
-    std::vector<std::string> lines = split(meshFile.readText(), "\n");
-
-    for(auto& line : lines) {
-        if(line.find("v ") != std::string::npos) {
-            List<std::string> parts = split(line, " ");
-            Vertex3D vertex = {{std::stof(parts[1]), std::stof(parts[2]), std::stof(parts[3])},{0.0f,0.0f},{0.0f,0.0f,1.0f},{(float)rand()/(float)INT_MAX,(float)rand()/(float)INT_MAX,(float)rand()/(float)INT_MAX}};
-            vertices.add(vertex);
-
-        } else if(line.find("f ") != std::string::npos) {
-            List<std::string> parts = split(line, " ");
-            for(int i = 1; i < parts.size(); i++) {
-                List<std::string> ind = split(parts[i], "/");
-                unsigned int index = std::stoi(ind[0]) - 1;
-                indices.add(index);
-            }
-        }
-    }
-
-    Mesh<Vertex3D, unsigned int> mesh(vertices, indices);
+    Mesh<Vertex3D, unsigned int> mesh = Mesh<Vertex3D, unsigned int>("assets/graphics/models/teapot.obj");
 
     Matrix4x4 model = Matrix4x4::identity();
     Matrix4x4 view = Matrix4x4::transform({0.0f, 0.0f, -5.0f}, {1.0f, 1.0f, 1.0f},{0.0f,0.0f,0.0f});

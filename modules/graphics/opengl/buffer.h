@@ -76,42 +76,42 @@ private:
 
             for (int i = 0; i < attributeDescriptions.size(); i++)
             {
-                AttributeFormat format = attributeDescriptions[i].type;
+                AttributeFormat format = attributeDescriptions[i].format;
                 switch (format) {
-                    case ATTRIBUTE_TYPE_FLOAT:
+                    case ATTRIBUTE_FORMAT_FLOAT:
                         glVertexAttribPointer(i, 1, GL_FLOAT, GL_FALSE, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_FLOAT2:
+                    case ATTRIBUTE_FORMAT_FLOAT2:
                         glVertexAttribPointer(i, 2, GL_FLOAT, GL_FALSE, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_FLOAT3:
+                    case ATTRIBUTE_FORMAT_FLOAT3:
                         glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_FLOAT4:
+                    case ATTRIBUTE_FORMAT_FLOAT4:
                         glVertexAttribPointer(i, 4, GL_FLOAT, GL_FALSE, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_INT:
+                    case ATTRIBUTE_FORMAT_INT:
                         glVertexAttribIPointer(i, 1, GL_INT, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_INT2:
+                    case ATTRIBUTE_FORMAT_INT2:
                         glVertexAttribIPointer(i, 2, GL_INT, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_INT3:
+                    case ATTRIBUTE_FORMAT_INT3:
                         glVertexAttribIPointer(i, 3, GL_INT, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_INT4:
+                    case ATTRIBUTE_FORMAT_INT4:
                         glVertexAttribIPointer(i, 4, GL_INT, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_UNSIGNED_INT:
+                    case ATTRIBUTE_FORMAT_UNSIGNED_INT:
                         glVertexAttribIPointer(i, 1, GL_UNSIGNED_INT, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_UNSIGNED_INT2:
+                    case ATTRIBUTE_FORMAT_UNSIGNED_INT2:
                         glVertexAttribIPointer(i, 2, GL_UNSIGNED_INT, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_UNSIGNED_INT3:
+                    case ATTRIBUTE_FORMAT_UNSIGNED_INT3:
                         glVertexAttribIPointer(i, 3, GL_UNSIGNED_INT, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
-                    case ATTRIBUTE_TYPE_UNSIGNED_INT4:
+                    case ATTRIBUTE_FORMAT_UNSIGNED_INT4:
                         glVertexAttribIPointer(i, 4, GL_UNSIGNED_INT, bindingInfo.stride, (void*)attributeDescriptions[i].offset);
                         break;
                 }

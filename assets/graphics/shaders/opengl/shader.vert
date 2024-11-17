@@ -15,5 +15,5 @@ void main()
 {
     vec3 pos = vec3(position.x, position.y + (sin(position.x+time) + sin(position.z+time))*0.2, position.z);
     gl_Position = projection * view * model * vec4(pos.xyz, 1.0f);
-    fColor = color;
+    fColor = normal;
 }

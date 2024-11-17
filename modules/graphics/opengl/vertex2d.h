@@ -14,6 +14,10 @@ struct Vertex2D {
 
     void serialize(Archive& archive);
     void deserialize(Archive& archive);
+
+    bool operator==(const Vertex2D& other) const {
+        return position == other.position && texCoord == other.texCoord && color == other.color;
+    }
 };
 
 

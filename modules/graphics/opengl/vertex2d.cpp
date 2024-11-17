@@ -27,17 +27,17 @@ std::vector<VertexAttributeInfo> Vertex2D::getAttributeInfo() {
 
     attributeDescriptions[0].binding = 0;
     attributeDescriptions[0].location = 0;
-    attributeDescriptions[0].type = AttributeFormat::ATTRIBUTE_TYPE_FLOAT2;
+    attributeDescriptions[0].format = AttributeFormat::ATTRIBUTE_FORMAT_FLOAT2;
     attributeDescriptions[0].offset = offsetof(Vertex2D, position);
 
     attributeDescriptions[1].binding = 0;
     attributeDescriptions[1].location = 1;
-    attributeDescriptions[1].type = AttributeFormat::ATTRIBUTE_TYPE_FLOAT2;
+    attributeDescriptions[1].format = AttributeFormat::ATTRIBUTE_FORMAT_FLOAT2;
     attributeDescriptions[1].offset = offsetof(Vertex2D, texCoord);
 
     attributeDescriptions[2].binding = 0;
     attributeDescriptions[2].location = 2;
-    attributeDescriptions[2].type = AttributeFormat::ATTRIBUTE_TYPE_FLOAT3;
+    attributeDescriptions[2].format = AttributeFormat::ATTRIBUTE_FORMAT_FLOAT3;
     attributeDescriptions[2].offset = offsetof(Vertex2D, color);
 
     return attributeDescriptions;

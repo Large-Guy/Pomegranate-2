@@ -51,7 +51,7 @@ public:
     {
         return this->_data.size();
     }
-    void add(const T& value)
+    void add(T value)
     {
         this->_data.push_back(value);
     }

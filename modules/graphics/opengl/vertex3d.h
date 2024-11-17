@@ -15,6 +15,10 @@ struct Vertex3D {
 
     void serialize(Archive& archive);
     void deserialize(Archive& archive);
+
+    bool operator==(const Vertex3D& other) const {
+        return position == other.position && texCoord == other.texCoord && normal == other.normal && color == other.color;
+    }
 };
 
 
