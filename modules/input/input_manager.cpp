@@ -276,17 +276,15 @@ float InputManager::getAxisAlias(const std::string& name) {
                     value = -value;
                 }
 
-                values.push_back(value);
+                values.push_back(value * option.sensitivity);
                 break;
             }
             case Axis::MOUSE: {
-                auto positive = (Mouse::Axis) option.positive;
-                auto negative = (Mouse::Axis) option.negative;
+                auto axis = (Mouse::Axis) option.mouseAxis;
 
                 float positiveValue = 0.0f;
-                float negativeValue = 0.0f;
 
-                switch (positive) {
+                switch (axis) {
                     case Mouse::AXIS_DELTA_X:
                         positiveValue = getMouse().getDelta().x;
                         break;
@@ -301,29 +299,14 @@ float InputManager::getAxisAlias(const std::string& name) {
                         break;
                 }
 
-                switch (negative) {
-                    case Mouse::AXIS_DELTA_X:
-                        negativeValue = getMouse().getDelta().x;
-                        break;
-                    case Mouse::AXIS_DELTA_Y:
-                        negativeValue = getMouse().getDelta().y;
-                        break;
-                    case Mouse::AXIS_SCROLL_X:
-                        negativeValue = getMouse().getScroll().x;
-                        break;
-                    case Mouse::AXIS_SCROLL_Y:
-                        negativeValue = getMouse().getScroll().y;
-                        break;
-                }
-
-                float value = positiveValue + negativeValue;
+                float value = positiveValue;
 
                 if(option.invert)
                 {
                     value = -value;
                 }
 
-                values.push_back(value);
+                values.push_back(value * option.sensitivity);
                 break;
             }
             case Axis::GAMEPAD_AXIS: {
@@ -337,7 +320,7 @@ float InputManager::getAxisAlias(const std::string& name) {
                     value = -value;
                 }
 
-                values.push_back(value);
+                values.push_back(value * option.sensitivity);
                 break;
             }
             case Axis::GAMEPAD_BUTTONS: {
@@ -355,7 +338,7 @@ float InputManager::getAxisAlias(const std::string& name) {
                     value = -value;
                 }
 
-                values.push_back(value);
+                values.push_back(value * option.sensitivity);
                 break;
             }
         }

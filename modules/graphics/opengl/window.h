@@ -7,6 +7,7 @@
 #include "core.h"
 #include "mesh.h"
 #include "shader.h"
+#include "texture2d.h"
 
 class Window {
 public:
@@ -34,6 +35,9 @@ public:
     bool _visible;
     bool _open;
     Vector2i _position;
+    GLuint _framebuffer;
+    Texture2D _colorBuffer;
+    GLuint _depthBuffer;
 
 public:
     Draw draw;
@@ -61,6 +65,7 @@ public:
 
     friend Graphics;
     friend class InputManager;
+    friend class Mouse;
 };
 
 

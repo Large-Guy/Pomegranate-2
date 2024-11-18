@@ -30,6 +30,8 @@ public:
     Vector2 getDelta() const;
     ButtonState getButton(Button button) const;
 
+    void setPosition(Vector2 position);
+
     friend class InputManager;
 };
 

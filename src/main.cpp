@@ -21,6 +21,7 @@ int main() {
     window.setSize(800, 600);
     window.show();
 
+#pragma region InputManagement
     InputManager inputManager(&window);
 
     inputManager.addButtonAlias("exit", Keyboard::KEY_ESCAPE, Gamepad::BUTTON_START);
@@ -28,11 +29,13 @@ int main() {
     inputManager.addAxisAlias("rotateX",Axis(Keyboard::KEY_LEFT,Keyboard::KEY_RIGHT));
     inputManager.addAxisAlias("rotateX",Axis(Gamepad::BUTTON_DPAD_LEFT,Gamepad::BUTTON_DPAD_RIGHT));
     inputManager.addAxisAlias("rotateX",Axis(Gamepad::AXIS_RIGHT_X, true));
+    inputManager.addAxisAlias("rotateX", Axis(Mouse::AXIS_DELTA_X, 0.1f, true));
     inputManager.setAxisAliasDeadzone("rotateX",0.1f);
 
     inputManager.addAxisAlias("rotateY",Axis(Keyboard::KEY_UP,Keyboard::KEY_DOWN));
     inputManager.addAxisAlias("rotateY",Axis(Gamepad::BUTTON_DPAD_UP,Gamepad::BUTTON_DPAD_DOWN));
     inputManager.addAxisAlias("rotateY",Axis(Gamepad::AXIS_RIGHT_Y,true));
+    inputManager.addAxisAlias("rotateY", Axis(Mouse::AXIS_DELTA_Y, 0.1f, true));
     inputManager.setAxisAliasDeadzone("rotateY",0.1f);
 
     inputManager.addAxisAlias("moveRight",Axis(Keyboard::KEY_A,Keyboard::KEY_D));
@@ -46,8 +49,9 @@ int main() {
     inputManager.addAxisAlias("moveUp",Axis(Keyboard::KEY_SPACE,Keyboard::KEY_LEFT_SHIFT, true));
     inputManager.addAxisAlias("moveUp",Axis(Gamepad::BUTTON_TOP,Gamepad::BUTTON_BOTTOM, true));
     inputManager.setAxisAliasDeadzone("moveUp",0.1f);
+#pragma endregion
 
-
+#pragma region Shader
     File vertexFile("assets/graphics/shaders/opengl/shader.vert");
     vertexFile.open();
     File fragmentFile("assets/graphics/shaders/opengl/shader.frag");
@@ -55,14 +59,15 @@ int main() {
 
     RenderInfo renderInfo = {
             .renderMode = RENDER_MODE_FILL,
-            .cullMode = CULL_MODE_NONE,
+            .cullMode = CULL_MODE_BACK,
             .topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED,
             .depthMode = DEPTH_MODE_LESS
     };
 
     Shader<Vertex3D> shader(vertexFile.readText().c_str(), fragmentFile.readText().c_str(), renderInfo);
+#pragma endregion
 
-    Mesh<Vertex3D, unsigned int> mesh = Mesh<Vertex3D, unsigned int>("assets/graphics/models/teapot.obj");
+    Mesh<Vertex3D, unsigned int> mesh = Mesh<Vertex3D, unsigned int>("assets/graphics/models/mesh.obj");
 
     Matrix4x4 model = Matrix4x4::identity();
     Matrix4x4 view = Matrix4x4::transform({0.0f, 0.0f, -5.0f}, {1.0f, 1.0f, 1.0f},{0.0f,0.0f,0.0f});
@@ -74,6 +79,8 @@ int main() {
     while(window.isOpen()) {
         window.poll();
         inputManager.update();
+
+        inputManager.getMouse().setPosition({(float)window.getPosition().x,(float)window.getPosition().y});
 
         if(inputManager.getButtonAlias("exit") == BUTTON_PRESSED) {
             window.close();
@@ -101,7 +108,7 @@ int main() {
 
         window.draw.begin();
 
-        window.draw.clear({0.1,0.1,0.1,1.0});
+        window.draw.clear({0.2,0.2,0.2,1.0});
 
         window.draw.shader(&shader);
         shader.setUniform<Matrix4x4>("model", model);

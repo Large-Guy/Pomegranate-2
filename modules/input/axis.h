@@ -15,12 +15,14 @@ struct Axis {
     AxisType type;
     int gamepad;
     Gamepad::Axis gamepadAxis;
+    Mouse::Axis mouseAxis;
     int positive;
     int negative;
     bool invert;
+    float sensitivity;
     Axis();
     Axis(Keyboard::Key positive, Keyboard::Key negative, bool invert = false);
-    Axis(Mouse::Axis positive, Mouse::Axis negative, bool invert = false);
+    Axis(Mouse::Axis positive, float sensitivity, bool invert = false);
     Axis(Gamepad::Axis positive, bool invert = false);
     Axis(GamepadID gamepad, Gamepad::Axis positive, bool invert = false);
     Axis(Gamepad::Button positive, Gamepad::Button negative, bool invert = false);
