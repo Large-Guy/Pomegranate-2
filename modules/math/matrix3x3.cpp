@@ -96,6 +96,26 @@ Matrix3x3 Matrix3x3::dot(const Matrix3x3& m) const {
     );
 }
 
+Matrix3x3 Matrix3x3::operator*(const Matrix3x3& m) const {
+    return dot(m);
+}
+
+Vector3 Matrix3x3::operator*(const Vector3& v) const {
+    return Vector3(
+        x.x * v.x + x.y * v.y + x.z * v.z,
+        y.x * v.x + y.y * v.y + y.z * v.z,
+        z.x * v.x + z.y * v.y + z.z * v.z
+    );
+}
+
+Matrix3x3 Matrix3x3::operator*(float v) const {
+    return Matrix3x3(x * v, y * v, z * v);
+}
+
+bool Matrix3x3::operator==(const Matrix3x3& m) const {
+    return x == m.x && y == m.y && z == m.z;
+}
+
 Matrix3x3 Matrix3x3::createTransform(Vector2 pos, Vector2 scale, float angle) {
     return Matrix3x3().scale(std::move(scale)).rotate(angle).translate(std::move(pos));
 }

@@ -14,6 +14,11 @@ struct Matrix2x2 {
     [[nodiscard]] Matrix2x2 inverse() const;
     [[nodiscard]] Matrix2x2 dot(const Matrix2x2& m) const;
 
+    Matrix2x2 operator*(const Matrix2x2& m) const;
+    Vector2 operator*(const Vector2& v) const;
+    Matrix2x2 operator*(float v) const;
+    bool operator==(const Matrix2x2& m) const;
+
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
 };

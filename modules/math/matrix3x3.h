@@ -20,6 +20,11 @@ struct Matrix3x3 {
     [[nodiscard]] Matrix3x3 rotate(float angle) const;
     [[nodiscard]] Matrix3x3 dot(const Matrix3x3& m) const;
 
+    Matrix3x3 operator*(const Matrix3x3& m) const;
+    Vector3 operator*(const Vector3& v) const;
+    Matrix3x3 operator*(float v) const;
+    bool operator==(const Matrix3x3& m) const;
+
     static Matrix3x3 createTransform(Vector2 pos, Vector2 scale, float angle);
     static Matrix3x3 createOrthographic(float left, float right, float bottom, float top);
 

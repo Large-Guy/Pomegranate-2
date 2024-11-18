@@ -167,6 +167,32 @@ Vector3 Matrix4x4::up() const {
     return Vector3(x.y, y.y, z.y);
 }
 
+Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &v) const {
+    return dot(v);
+}
+
+Vector4 Matrix4x4::operator*(const Vector4 &v) const {
+    return Vector4(
+        x.x * v.x + x.y * v.y + x.z * v.z + x.w * v.w,
+        y.x * v.x + y.y * v.y + y.z * v.z + y.w * v.w,
+        z.x * v.x + z.y * v.y + z.z * v.z + z.w * v.w,
+        w.x * v.x + w.y * v.y + w.z * v.z + w.w * v.w
+    );
+}
+
+Matrix4x4 Matrix4x4::operator*(float v) const {
+    return Matrix4x4(
+        x.x * v, x.y * v, x.z * v, x.w * v,
+        y.x * v, y.y * v, y.z * v, y.w * v,
+        z.x * v, z.y * v, z.z * v, z.w * v,
+        w.x * v, w.y * v, w.z * v, w.w * v
+    );
+}
+
+bool Matrix4x4::operator==(const Matrix4x4 &v) const {
+    return x == v.x && y == v.y && z == v.z && w == v.w;
+}
+
 Matrix4x4 Matrix4x4::identity() {
     return Matrix4x4();
 }

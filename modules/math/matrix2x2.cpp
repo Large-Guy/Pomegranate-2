@@ -49,3 +49,19 @@ Matrix2x2 Matrix2x2::dot(const Matrix2x2& m) const {
         y.x * m.x.y + y.y * m.y.y
     );
 }
+
+Matrix2x2 Matrix2x2::operator*(const Matrix2x2& m) const {
+    return dot(m);
+}
+
+Vector2 Matrix2x2::operator*(const Vector2& v) const {
+    return Vector2(x.x * v.x + x.y * v.y, y.x * v.x + y.y * v.y);
+}
+
+Matrix2x2 Matrix2x2::operator*(float v) const {
+    return Matrix2x2(x.x * v, x.y * v, y.x * v, y.y * v);
+}
+
+bool Matrix2x2::operator==(const Matrix2x2& m) const {
+    return x == m.x && y == m.y;
+}

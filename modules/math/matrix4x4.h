@@ -27,6 +27,11 @@ struct Matrix4x4{
     [[nodiscard]] Vector3 right() const;
     [[nodiscard]] Vector3 up() const;
 
+    Matrix4x4 operator*(const Matrix4x4& m) const;
+    Vector4 operator*(const Vector4& v) const;
+    Matrix4x4 operator*(float v) const;
+    bool operator==(const Matrix4x4& m) const;
+
     static Matrix4x4 identity();
     static Matrix4x4 orthographic(float left, float right, float bottom, float top, float near, float far);
     static Matrix4x4 perspective(float fov, float aspect, float near, float far);
