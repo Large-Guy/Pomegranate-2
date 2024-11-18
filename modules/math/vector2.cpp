@@ -18,12 +18,6 @@ Vector2::Vector2(float x, float y)
     this->y = y;
 }
 
-Vector2::Vector2(const Vector2& v)
-{
-    x = v.x;
-    y = v.y;
-}
-
 Vector2 Vector2::operator+(const Vector2& v) const
 {
     return Vector2(x + v.x, y + v.y);
@@ -88,13 +82,6 @@ void Vector2::operator/=(float v)
 {
     x /= v;
     y /= v;
-}
-
-Vector2& Vector2::operator=(const Vector2& v)
-{
-    x = v.x;
-    y = v.y;
-    return *this;
 }
 
 bool Vector2::operator==(const Vector2& v) const

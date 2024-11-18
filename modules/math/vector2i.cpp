@@ -12,16 +12,9 @@ Vector2i::Vector2i(int v)
     y = v;
 }
 
-Vector2i::Vector2i(int x, int y)
-{
+Vector2i::Vector2i(int x, int y) {
     this->x = x;
     this->y = y;
-}
-
-Vector2i::Vector2i(const Vector2i& v)
-{
-    x = v.x;
-    y = v.y;
 }
 
 Vector2i Vector2i::operator+(const Vector2i& v) const
@@ -88,13 +81,6 @@ void Vector2i::operator/=(int v)
 {
     x /= v;
     y /= v;
-}
-
-Vector2i& Vector2i::operator=(const Vector2i& v)
-{
-    x = v.x;
-    y = v.y;
-    return *this;
 }
 
 bool Vector2i::operator==(const Vector2i& v) const

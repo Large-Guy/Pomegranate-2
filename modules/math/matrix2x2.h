@@ -12,6 +12,7 @@ struct Matrix2x2 {
 
     [[nodiscard]] Matrix2x2 transpose() const;
     [[nodiscard]] Matrix2x2 inverse() const;
+    [[nodiscard]] Matrix2x2 dot(const Matrix2x2& m) const;
 
     void serialize(Archive& a) const;
     void deserialize(Archive& a);

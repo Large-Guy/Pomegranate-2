@@ -24,14 +24,6 @@ Vector4::Vector4(float x, float y, float z, float w)
     this->w = w;
 }
 
-Vector4::Vector4(const Vector4& v)
-{
-    x = v.x;
-    y = v.y;
-    z = v.z;
-    w = v.w;
-}
-
 Vector4 Vector4::operator+(const Vector4& v) const
 {
     return Vector4(x + v.x, y + v.y, z + v.z, w + v.w);
@@ -108,15 +100,6 @@ void Vector4::operator/=(float v)
     y /= v;
     z /= v;
     w /= v;
-}
-
-Vector4& Vector4::operator=(const Vector4& v)
-{
-    x = v.x;
-    y = v.y;
-    z = v.z;
-    w = v.w;
-    return *this;
 }
 
 bool Vector4::operator==(const Vector4& v) const

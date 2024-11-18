@@ -9,7 +9,6 @@ struct Vector4i{
     Vector4i();
     Vector4i(int v);
     Vector4i(int x, int y, int z, int w = 0.0f);
-    Vector4i(const Vector4i& other);
 
     Vector4i operator+(const Vector4i& v) const;
     Vector4i operator-(const Vector4i& v) const;
@@ -23,7 +22,6 @@ struct Vector4i{
     void operator/=(const Vector4i& v);
     void operator*=(float v);
     void operator/=(float v);
-    Vector4i& operator=(const Vector4i& v);
     bool operator==(const Vector4i& v) const;
 
     [[nodiscard]] float dot(const Vector4i& v) const;

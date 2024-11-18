@@ -24,14 +24,6 @@ Vector4i::Vector4i(int x, int y, int z, int w)
     this->w = w;
 }
 
-Vector4i::Vector4i(const Vector4i& v)
-{
-    x = v.x;
-    y = v.y;
-    z = v.z;
-    w = v.w;
-}
-
 Vector4i Vector4i::operator+(const Vector4i& v) const
 {
     return Vector4i(x + v.x, y + v.y, z + v.z, w + v.w);
@@ -108,15 +100,6 @@ void Vector4i::operator/=(float v)
     y /= v;
     z /= v;
     w /= v;
-}
-
-Vector4i& Vector4i::operator=(const Vector4i& v)
-{
-    x = v.x;
-    y = v.y;
-    z = v.z;
-    w = v.w;
-    return *this;
 }
 
 bool Vector4i::operator==(const Vector4i& v) const

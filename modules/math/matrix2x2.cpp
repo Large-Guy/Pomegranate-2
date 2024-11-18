@@ -40,3 +40,12 @@ Matrix2x2 Matrix2x2::inverse() const {
     float invDet = 1.0f / det;
     return Matrix2x2(y.y * invDet, -x.y * invDet, -y.x * invDet, x.x * invDet);
 }
+
+Matrix2x2 Matrix2x2::dot(const Matrix2x2& m) const {
+    return Matrix2x2(
+        x.x * m.x.x + x.y * m.y.x,
+        x.x * m.x.y + x.y * m.y.y,
+        y.x * m.x.x + y.y * m.y.x,
+        y.x * m.x.y + y.y * m.y.y
+    );
+}

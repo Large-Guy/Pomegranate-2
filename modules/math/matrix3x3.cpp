@@ -82,6 +82,20 @@ Matrix3x3 Matrix3x3::rotate(float angle) const {
     );
 }
 
+Matrix3x3 Matrix3x3::dot(const Matrix3x3& m) const {
+    return Matrix3x3(
+        x.x * m.x.x + x.y * m.y.x + x.z * m.z.x,
+        x.x * m.x.y + x.y * m.y.y + x.z * m.z.y,
+        x.x * m.x.z + x.y * m.y.z + x.z * m.z.z,
+        y.x * m.x.x + y.y * m.y.x + y.z * m.z.x,
+        y.x * m.x.y + y.y * m.y.y + y.z * m.z.y,
+        y.x * m.x.z + y.y * m.y.z + y.z * m.z.z,
+        z.x * m.x.x + z.y * m.y.x + z.z * m.z.x,
+        z.x * m.x.y + z.y * m.y.y + z.z * m.z.y,
+        z.x * m.x.z + z.y * m.y.z + z.z * m.z.z
+    );
+}
+
 Matrix3x3 Matrix3x3::createTransform(Vector2 pos, Vector2 scale, float angle) {
     return Matrix3x3().scale(std::move(scale)).rotate(angle).translate(std::move(pos));
 }

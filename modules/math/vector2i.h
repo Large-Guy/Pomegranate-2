@@ -10,7 +10,6 @@ public:
     Vector2i();
     Vector2i(int v);
     Vector2i(int x, int y);
-    Vector2i(const Vector2i& other);
 
     Vector2i operator+(const Vector2i& v) const;
     Vector2i operator-(const Vector2i& v) const;
@@ -24,7 +23,6 @@ public:
     void operator/=(const Vector2i& v);
     void operator*=(int v);
     void operator/=(int v);
-    Vector2i& operator=(const Vector2i& v);
     bool operator==(const Vector2i& v) const;
 
     [[nodiscard]] int dot(const Vector2i& v) const;

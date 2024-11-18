@@ -21,13 +21,6 @@ Vector3i::Vector3i(int x, int y, int z)
     this->z = z;
 }
 
-Vector3i::Vector3i(const Vector3i& v)
-{
-    x = v.x;
-    y = v.y;
-    z = v.z;
-}
-
 Vector3i Vector3i::operator+(const Vector3i& v) const
 {
     return Vector3i(x + v.x, y + v.y, z + v.z);
@@ -98,14 +91,6 @@ void Vector3i::operator/=(float v)
     x /= v;
     y /= v;
     z /= v;
-}
-
-Vector3i& Vector3i::operator=(const Vector3i& v)
-{
-    x = v.x;
-    y = v.y;
-    z = v.z;
-    return *this;
 }
 
 bool Vector3i::operator==(const Vector3i& v) const

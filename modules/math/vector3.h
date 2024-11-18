@@ -9,7 +9,6 @@ struct Vector3{
     Vector3();
     Vector3(float v);
     Vector3(float x, float y, float z = 0.0f);
-    Vector3(const Vector3& other);
 
     Vector3 operator+(const Vector3& v) const;
     Vector3 operator-(const Vector3& v) const;
@@ -23,7 +22,6 @@ struct Vector3{
     void operator/=(const Vector3& v);
     void operator*=(float v);
     void operator/=(float v);
-    Vector3& operator=(const Vector3& v);
     bool operator==(const Vector3& v) const;
 
     [[nodiscard]] float dot(const Vector3& v) const;
