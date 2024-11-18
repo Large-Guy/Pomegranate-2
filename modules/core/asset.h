@@ -1,6 +1,5 @@
 #ifndef POMEGRANATE_ENGINE_CORE_RESOURCE_H
 #define POMEGRANATE_ENGINE_CORE_RESOURCE_H
-#include<string>
 #include<core/serializable.h>
 
 class Asset {

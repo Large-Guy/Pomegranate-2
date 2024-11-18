@@ -45,12 +45,12 @@ Texture2D::Texture2D(const std::string& path, const std::string& name) : Asset(p
 }
 
 Texture2D::~Texture2D() {
-    if (_data != nullptr) {
-        delete[] _data;
-    }
-
     if (_id != 0) {
         glDeleteTextures(1, &_id);
+    }
+
+    if (_data != nullptr) {
+        delete[] _data;
     }
 }
 

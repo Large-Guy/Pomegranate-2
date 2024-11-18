@@ -14,6 +14,10 @@ void Vertex3D::deserialize(Archive &archive) {
     archive >> color;*/
 }
 
+bool Vertex3D::operator==(const Vertex3D &other) const {
+    return position == other.position && texCoord == other.texCoord && normal == other.normal && color == other.color;
+}
+
 VertexBindingInfo Vertex3D::getBindingInfo() {
     VertexBindingInfo bindingInfo{};
     bindingInfo.binding = 0;

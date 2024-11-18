@@ -153,7 +153,7 @@ bool Window::isOpen() const {
 void Window::Draw::begin() {
     glfwMakeContextCurrent(this->window->_window);
     //glBindFramebuffer(GL_FRAMEBUFFER, this->window->_framebuffer);
-    glViewport(0, 0, this->window->_size.x, this->window->_size.y);
+    //glViewport(0, 0, this->window->_size.x, this->window->_size.y);
 }
 
 void Window::Draw::end() {

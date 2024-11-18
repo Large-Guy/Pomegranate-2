@@ -30,13 +30,13 @@ int main() {
     inputManager.addAxisAlias("rotateX",Axis(Gamepad::BUTTON_DPAD_LEFT,Gamepad::BUTTON_DPAD_RIGHT));
     inputManager.addAxisAlias("rotateX",Axis(Gamepad::AXIS_RIGHT_X, true));
     inputManager.addAxisAlias("rotateX", Axis(Mouse::AXIS_DELTA_X, 0.1f, true));
-    inputManager.setAxisAliasDeadzone("rotateX",0.1f);
+    inputManager.setAxisAliasDeadzone("rotateX",0.01f);
 
     inputManager.addAxisAlias("rotateY",Axis(Keyboard::KEY_UP,Keyboard::KEY_DOWN));
     inputManager.addAxisAlias("rotateY",Axis(Gamepad::BUTTON_DPAD_UP,Gamepad::BUTTON_DPAD_DOWN));
     inputManager.addAxisAlias("rotateY",Axis(Gamepad::AXIS_RIGHT_Y,true));
     inputManager.addAxisAlias("rotateY", Axis(Mouse::AXIS_DELTA_Y, 0.1f, true));
-    inputManager.setAxisAliasDeadzone("rotateY",0.1f);
+    inputManager.setAxisAliasDeadzone("rotateY",0.01f);
 
     inputManager.addAxisAlias("moveRight",Axis(Keyboard::KEY_A,Keyboard::KEY_D));
     inputManager.addAxisAlias("moveRight",Axis(Gamepad::AXIS_LEFT_X, true));
@@ -67,14 +67,14 @@ int main() {
     Shader<Vertex3D> shader(vertexFile.readText().c_str(), fragmentFile.readText().c_str(), renderInfo);
 #pragma endregion
 
-    Mesh<Vertex3D, unsigned int> mesh = Mesh<Vertex3D, unsigned int>("assets/graphics/models/mesh.obj");
+    Mesh<Vertex3D, unsigned int> mesh = Mesh<Vertex3D, unsigned int>("assets/graphics/models/suzanne.obj");
 
     Matrix4x4 model = Matrix4x4::identity();
     Matrix4x4 view = Matrix4x4::transform({0.0f, 0.0f, -5.0f}, {1.0f, 1.0f, 1.0f},{0.0f,0.0f,0.0f});
     Matrix4x4 projection = Matrix4x4::perspective(45.0f * (float)M_PI / 180.0f, 800.0f / 600.0f, 0.01f, 1000.0f);
 
     Vector3 rotation = {};
-    Vector3 position = {0.0f,0.0f,-10.0f};
+    Vector3 position = {0.0f,0.0f,0.0f};
 
     while(window.isOpen()) {
         window.poll();

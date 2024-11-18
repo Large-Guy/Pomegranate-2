@@ -111,7 +111,7 @@ private:
                 }
             }
 
-            int uvIndex = vertexAttributeIndex(ATTRIBUTE_TYPE_NORMAL);
+            int uvIndex = vertexAttributeIndex(ATTRIBUTE_TYPE_TEXCOORD);
             if(uvIndex != -1) {
                 if (line.find("vt ") != std::string::npos) {
                     std::vector<std::string> parts = split(line, " ");
@@ -141,21 +141,31 @@ private:
                     if(ind.size() > 2 && !ind[2].empty())
                         normal = std::stoi(ind[2]) - 1;
 
-                    indices.emplace_back(index, uv, normal);
+                    indices.push_back({index, uv, normal});
                 }
             }
         }
 
         for(auto& index : indices) {
-            Vertex vertex;
-            if(attributeCount[vertexAttributeIndex(ATTRIBUTE_TYPE_POSITION)] > 0) {
-                vertex.position = vertices[index.index];
+            Vertex vertex{};
+
+            int positionIndex = vertexAttributeIndex(ATTRIBUTE_TYPE_POSITION);
+            if(positionIndex != -1 && attributeCount[positionIndex] > 0) {
+                //Memcpy the position
+                int offset = attributes[positionIndex].offset;
+                memcpy(&vertex + offset, &vertices[index.index], sizeof(Vector3));
             }
-            if(attributeCount[vertexAttributeIndex(ATTRIBUTE_TYPE_NORMAL)] > 0) {
-                vertex.normal = normals[index.normalIndex];
+            int normalIndex = vertexAttributeIndex(ATTRIBUTE_TYPE_NORMAL);
+            if(normalIndex != -1 && attributeCount[normalIndex] > 0) {
+                //Memcpy the normal
+                size_t offset = attributes[normalIndex].offset;
+                memcpy(((char*)&vertex) + offset, &normals[index.normalIndex], sizeof(Vector3));
             }
-            if(attributeCount[vertexAttributeIndex(ATTRIBUTE_TYPE_TEXCOORD)] > 0) {
-                vertex.texCoord = uvs[index.uvIndex];
+            int uvIndex = vertexAttributeIndex(ATTRIBUTE_TYPE_TEXCOORD);
+            if(uvIndex != -1 && attributeCount[uvIndex] > 0) {
+                //Memcpy the uv
+                size_t offset = attributes[uvIndex].offset;
+                memcpy(((char*)&vertex) + offset, &uvs[index.uvIndex], sizeof(Vector2));
             }
             _vertices.push_back(vertex);
         }
