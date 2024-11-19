@@ -29,13 +29,13 @@ int main() {
     inputManager.addAxisAlias("rotateX",Axis(Keyboard::KEY_LEFT,Keyboard::KEY_RIGHT));
     inputManager.addAxisAlias("rotateX",Axis(Gamepad::BUTTON_DPAD_LEFT,Gamepad::BUTTON_DPAD_RIGHT));
     inputManager.addAxisAlias("rotateX",Axis(Gamepad::AXIS_RIGHT_X, true));
-    inputManager.addAxisAlias("rotateX", Axis(Mouse::AXIS_DELTA_X, 0.1f, true));
+    //inputManager.addAxisAlias("rotateX", Axis(Mouse::AXIS_DELTA_X, 0.1f, true));
     inputManager.setAxisAliasDeadzone("rotateX",0.01f);
 
     inputManager.addAxisAlias("rotateY",Axis(Keyboard::KEY_UP,Keyboard::KEY_DOWN));
     inputManager.addAxisAlias("rotateY",Axis(Gamepad::BUTTON_DPAD_UP,Gamepad::BUTTON_DPAD_DOWN));
     inputManager.addAxisAlias("rotateY",Axis(Gamepad::AXIS_RIGHT_Y,true));
-    inputManager.addAxisAlias("rotateY", Axis(Mouse::AXIS_DELTA_Y, 0.1f, true));
+    //inputManager.addAxisAlias("rotateY", Axis(Mouse::AXIS_DELTA_Y, 0.1f, true));
     inputManager.setAxisAliasDeadzone("rotateY",0.01f);
 
     inputManager.addAxisAlias("moveRight",Axis(Keyboard::KEY_A,Keyboard::KEY_D));
@@ -59,7 +59,7 @@ int main() {
 
     RenderInfo renderInfo = {
             .renderMode = RENDER_MODE_FILL,
-            .cullMode = CULL_MODE_BACK,
+            .cullMode = CULL_MODE_NONE,
             .topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED,
             .depthMode = DEPTH_MODE_LESS
     };
@@ -80,7 +80,7 @@ int main() {
         window.poll();
         inputManager.update();
 
-        inputManager.getMouse().setPosition({(float)window.getPosition().x,(float)window.getPosition().y});
+        //inputManager.getMouse().setPosition({(float)window.getPosition().x,(float)window.getPosition().y});
 
         if(inputManager.getButtonAlias("exit") == BUTTON_PRESSED) {
             window.close();
@@ -114,7 +114,7 @@ int main() {
         shader.setUniform<Matrix4x4>("model", model);
         shader.setUniform<Matrix4x4>("view", view);
         shader.setUniform<Matrix4x4>("projection", projection);
-        shader.setUniform<float>("time", (float)glfwGetTime());
+        //shader.setUniform<float>("time", (float)glfwGetTime());
 
         window.draw.mesh(&mesh);
 
