@@ -138,7 +138,10 @@ Entity::Entity(const Entity &entity) {
 }
 
 Entity::Entity(const Entity *entity) {
-    this->id = entity->id;
+    if(entity != nullptr)
+        this->id = entity->id;
+    else
+        this->id = NULL_ENTITY;
 }
 
 Entity& Entity::operator=(const Entity &entity) {

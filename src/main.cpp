@@ -3,6 +3,7 @@
 #include <ecs/ecs.h>
 #include <events/events.h>
 #include <ecs/extensions/common/common.h>
+#include <ecs/extensions/rendering/rendering.h>
 #include <graphics/opengl/graphics.h>
 #include <input/input.h>
 #include <math/geometry/geometry.h>
@@ -12,6 +13,9 @@
 #include "lua/ecs.h"
 
 int main() {
+
+    Extensions::Common::init();
+    Extensions::Rendering::init();
 
     Graphics::getInstance();
 
@@ -67,21 +71,19 @@ int main() {
     Shader<Vertex3D> shader(vertexFile.readText().c_str(), fragmentFile.readText().c_str(), renderInfo);
 #pragma endregion
 
-    Mesh<Vertex3D, unsigned int> mesh = Mesh<Vertex3D,unsigned int>::sphere(0.5f, 32, 32);
+    Mesh<Vertex3D, unsigned int> mesh = Mesh<Vertex3D,unsigned int>::sphere(1.0f, 32, 32);
 
-    Mesh<Vertex3D, unsigned int> mesh2 = Mesh<Vertex3D,unsigned int>::cuboid({1.0f});
+    Entity camera = Entity::create();
+    camera.add<Transform3D>();
+    camera.add<Camera3D>();
+    Camera3D::setMain(camera);
 
-    Transform3D transform = Transform3D();
-    transform.scale.y = 2.0f;
+    Entity entity = Entity::create();
+    entity.add<Transform3D>()->position = {2.5f,0.0,0.0};
+    entity.add<MeshInstance>()->mesh = &mesh;
+    entity.add<Material>()->shader = &shader;
 
-    Transform3D transform2 = Transform3D();
-    transform2.position = {2.0f,0.0f,0.0f};
-
-    Transform3D cameraTransform = Transform3D();
-
-    Matrix4x4 projection = Matrix4x4::perspective(45.0f * (float)M_PI / 180.0f, 800.0f / 600.0f, 0.01f, 1000.0f);
-
-
+    Transform3D* cameraTransform = camera.get<Transform3D>();
 
     while(window.isOpen()) {
         window.poll();
@@ -96,35 +98,26 @@ int main() {
         float rotateX = inputManager.getAxisAlias("rotateX");
         float rotateY = inputManager.getAxisAlias("rotateY");
 
-        cameraTransform.rotation.x += rotateY * 0.03f;
-        cameraTransform.rotation.y += rotateX * 0.03f;
+        cameraTransform->rotation.x += rotateY * 0.03f;
+        cameraTransform->rotation.y += rotateX * 0.03f;
 
-        Vector3 forward = cameraTransform.getLocalMatrix().forward();
-        Vector3 right = cameraTransform.getLocalMatrix().right();
-        Vector3 up = cameraTransform.getLocalMatrix().up();
+        Vector3 forward = cameraTransform->getLocalMatrix().forward();
+        Vector3 right = cameraTransform->getLocalMatrix().right();
+        Vector3 up = cameraTransform->getLocalMatrix().up();
 
         float moveForward = inputManager.getAxisAlias("moveForward");
         float moveRight = inputManager.getAxisAlias("moveRight");
         float moveUp = inputManager.getAxisAlias("moveUp");
 
-        cameraTransform.position += forward * moveForward * 0.1f;
-        cameraTransform.position += right * moveRight * 0.1f;
-        cameraTransform.position += up * moveUp * 0.1f;
+        cameraTransform->position += forward * moveForward * 0.1f;
+        cameraTransform->position += right * moveRight * 0.1f;
+        cameraTransform->position += up * moveUp * 0.1f;
 
         window.draw.begin();
 
         window.draw.clear({0.2,0.2,0.2,1.0});
 
-        window.draw.shader(&shader);
-        shader.setUniform<Matrix4x4>("model", transform.getLocalMatrix());
-        shader.setUniform<Matrix4x4>("view", Matrix4x4::identity().translate(cameraTransform.position).rotate(cameraTransform.rotation));
-        shader.setUniform<Matrix4x4>("projection", projection);
-        //shader.setUniform<float>("time", (float)glfwGetTime());
-
-        window.draw.mesh(&mesh);
-
-        shader.setUniform<Matrix4x4>("model", transform2.getLocalMatrix());
-        window.draw.mesh(&mesh2);
+        Extensions::Rendering::render3d();
 
         window.draw.end();
     }

@@ -207,6 +207,7 @@ Matrix4x4 Matrix4x4::orthographic(float left, float right, float bottom, float t
 }
 
 Matrix4x4 Matrix4x4::perspective(float fov, float aspect, float near, float far) {
+    fov = fov * 3.14159265358979323846f / 180.0f;
     float tanHalfFov = std::tan(fov / 2.0f);
     return Matrix4x4(
         1.0f / (aspect * tanHalfFov), 0.0f, 0.0f, 0.0f,

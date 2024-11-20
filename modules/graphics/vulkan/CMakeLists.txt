@@ -20,16 +20,16 @@ set(POMEGRANATE_GRAPHICS_VULKAN_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/buffer.cpp
 )
 
-set(POMEGRANATE_GRAPHICS_VULKAN_INCLUDE_DIRS
+set(POMEGRANATE_GRAPHICS_INCLUDE_DIRS
         ../
 )
 
-add_library(PomegranateVulkan ${POMEGRANATE_GRAPHICS_VULKAN_SOURCES})
+add_library(PomegranateGraphics ${POMEGRANATE_GRAPHICS_SOURCES})
 
-target_include_directories(PomegranateVulkan PUBLIC ${POMEGRANATE_GRAPHICS_VULKAN_INCLUDE_DIRS} ${POMEGRANATE_MATH_INCLUDE_DIRS} ${POMEGRANATE_CORE_INCLUDE_DIRS})
+target_include_directories(PomegranateGraphics PUBLIC ${POMEGRANATE_GRAPHICS_INCLUDE_DIRS} ${POMEGRANATE_MATH_INCLUDE_DIRS} ${POMEGRANATE_CORE_INCLUDE_DIRS})
 
 find_package(glfw3 REQUIRED)
 find_package(Vulkan REQUIRED)
 
 
-target_link_libraries(PomegranateVulkan glfw Vulkan::Vulkan PomegranateMath PomegranateCore)
+target_link_libraries(PomegranateGraphics glfw Vulkan::Vulkan PomegranateMath PomegranateCore)

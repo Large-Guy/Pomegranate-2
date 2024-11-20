@@ -1,5 +1,7 @@
 #include "window.h"
 
+Window* Window::_current = nullptr;
+
 Window::Window() {
     Graphics::getInstance();
     this->_title = "Pomegranate Engine";
@@ -148,9 +150,14 @@ bool Window::isOpen() const {
     return this->_open;
 }
 
+Window* Window::getCurrent() {
+    return _current;
+}
+
 //----------- Draw Class ------------
 
 void Window::Draw::begin() {
+    _current = this->window;
     glfwMakeContextCurrent(this->window->_window);
     //glBindFramebuffer(GL_FRAMEBUFFER, this->window->_framebuffer);
     //glViewport(0, 0, this->window->_size.x, this->window->_size.y);
@@ -158,6 +165,7 @@ void Window::Draw::begin() {
 
 void Window::Draw::end() {
     glfwSwapBuffers(this->window->_window);
+    _current = nullptr;
 }
 
 void Window::Draw::clear(Vector4 color) {

@@ -9,5 +9,6 @@
 #include "vertex3d.h"
 #include "buffer.h"
 #include "texture2d.h"
+#include "mesh.h"
 
 #endif //POMEGRANATEENGINE_GRAPHICS_H

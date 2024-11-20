@@ -23,8 +23,8 @@ set(POMEGRANATE_INPUT_INCLUDE_DIRS
 
 add_library(PomegranateInput ${POMEGRANATE_INPUT_SOURCES})
 
-target_include_directories(PomegranateInput PUBLIC ${POMEGRANATE_INPUT_INCLUDE_DIRS} ${POMEGRANATE_GRAPHICS_OPEN_GL_SOURCES})
+target_include_directories(PomegranateInput PUBLIC ${POMEGRANATE_INPUT_INCLUDE_DIRS} ${POMEGRANATE_GRAPHICS_SOURCES})
 
 find_package(glfw3 REQUIRED)
 
-target_link_libraries(PomegranateInput glfw PomegranateMath PomegranateCore PomegranateGL)
+target_link_libraries(PomegranateInput glfw PomegranateMath PomegranateCore PomegranateGraphics)

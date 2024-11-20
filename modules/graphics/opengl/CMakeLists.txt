@@ -1,4 +1,4 @@
-set(POMEGRANATE_GRAPHICS_OPEN_GL_SOURCES
+set(POMEGRANATE_GRAPHICS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/graphics.h
         ${CMAKE_CURRENT_SOURCE_DIR}/core.h
         ${CMAKE_CURRENT_SOURCE_DIR}/core.cpp
@@ -24,17 +24,21 @@ set(POMEGRANATE_GRAPHICS_OPEN_GL_GLAD_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad/src/glad.c
 )
 
-set(POMEGRANATE_GRAPHICS_OPEN_GL_INCLUDE_DIRS
+set(POMEGRANATE_GRAPHICS_INCLUDE_DIRS
         ../
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad/include
 )
 
-add_library(PomegranateGL ${POMEGRANATE_GRAPHICS_OPEN_GL_SOURCES} ${POMEGRANATE_GRAPHICS_OPEN_GL_GLAD_SOURCES})
+add_library(PomegranateGraphics
+        ${POMEGRANATE_GRAPHICS_SOURCES}
+        ${POMEGRANATE_GRAPHICS_OPEN_GL_GLAD_SOURCES})
 
-target_include_directories(PomegranateGL PUBLIC ${POMEGRANATE_GRAPHICS_OPEN_GL_INCLUDE_DIRS} ${POMEGRANATE_MATH_INCLUDE_DIRS} ${POMEGRANATE_CORE_INCLUDE_DIRS})
+target_include_directories(PomegranateGraphics PUBLIC
+        ${POMEGRANATE_GRAPHICS_INCLUDE_DIRS}
+        ${POMEGRANATE_MATH_INCLUDE_DIRS}
+        ${POMEGRANATE_CORE_INCLUDE_DIRS})
 
 find_package(glfw3 REQUIRED)
 find_package(Vulkan REQUIRED)
 
-
-target_link_libraries(PomegranateGL glfw Vulkan::Vulkan PomegranateMath PomegranateCore)
+target_link_libraries(PomegranateGraphics glfw Vulkan::Vulkan PomegranateMath PomegranateCore)

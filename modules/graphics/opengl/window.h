@@ -11,6 +11,8 @@
 
 class Window {
 public:
+    static Window* _current;
+
     class Draw {
     private:
         TopologyMode _topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED;
@@ -62,6 +64,8 @@ public:
     Vector2i getSize() const;
     std::string getTitle() const;
     [[nodiscard]] bool isOpen() const;
+
+    static Window* getCurrent();
 
     friend Graphics;
     friend class InputManager;
