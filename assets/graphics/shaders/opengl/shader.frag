@@ -38,7 +38,7 @@ void main()
     //Do basic lighting
     vec3 normal = normalize(FRAGMENT_NORMAL);
     vec3 viewDir = normalize(FRAGMENT_VIEW_DIR);
-    vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+    vec3 lightDir = normalize(vec3(1.0, 3.0, 1.0));
     vec3 halfDir = normalize(lightDir + viewDir);
 
     //Calculate the diffuse term

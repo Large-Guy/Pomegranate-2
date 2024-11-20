@@ -23,7 +23,8 @@ void main()
     vec3 pos = vec3(VERTEX.x, VERTEX.y, VERTEX.z);
     gl_Position = projection * view * model * vec4(pos.xyz, 1.0f);
     FRAGMENT_COLOR = VERTEX_COLOR;
-    FRAGMENT_NORMAL = VERTEX_NORMAL;
+    //Normal needs to be transformed by the inverse transpose of the model matrix
+    FRAGMENT_NORMAL = normalize(mat3(transpose(inverse(model))) * VERTEX_NORMAL);
     FRAGMENT_TEXCOORD = VERTEX_TEXCOORD;
     FRAGMENT_VIEW_DIR = normalize(cameraPosition - pos);
     FRAGMENT_POSITION = pos;
