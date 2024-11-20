@@ -26,7 +26,7 @@ struct Vector3{
 
     [[nodiscard]] float dot(const Vector3& v) const;
     [[nodiscard]] float length() const;
-    [[nodiscard]] Vector3 normalized() const;
+    [[nodiscard]] Vector3 normalize() const;
     [[nodiscard]] Vector3 lerp(const Vector3& v, float t) const;
     [[nodiscard]] Vector3 slerp(const Vector3& v, float t) const;
     [[nodiscard]] Vector3 nlerp(const Vector3& v, float t) const;

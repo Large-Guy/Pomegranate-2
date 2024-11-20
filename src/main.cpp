@@ -59,7 +59,7 @@ int main() {
 
     RenderInfo renderInfo = {
             .renderMode = RENDER_MODE_FILL,
-            .cullMode = CULL_MODE_NONE,
+            .cullMode = CULL_MODE_BACK,
             .topologyMode = TOPOLOGY_MODE_TRIANGLE_INDEXED,
             .depthMode = DEPTH_MODE_LESS
     };
@@ -67,14 +67,21 @@ int main() {
     Shader<Vertex3D> shader(vertexFile.readText().c_str(), fragmentFile.readText().c_str(), renderInfo);
 #pragma endregion
 
-    Mesh<Vertex3D, unsigned int> mesh = Mesh<Vertex3D, unsigned int>("assets/graphics/models/suzanne.obj");
+    Mesh<Vertex3D, unsigned int> mesh = Mesh<Vertex3D,unsigned int>::sphere(0.5f, 32, 32);
 
-    Matrix4x4 model = Matrix4x4::identity();
-    Matrix4x4 view = Matrix4x4::transform({0.0f, 0.0f, -5.0f}, {1.0f, 1.0f, 1.0f},{0.0f,0.0f,0.0f});
+    Mesh<Vertex3D, unsigned int> mesh2 = Mesh<Vertex3D,unsigned int>::cuboid({1.0f});
+
+    Transform3D transform = Transform3D();
+    transform.scale.y = 2.0f;
+
+    Transform3D transform2 = Transform3D();
+    transform2.position = {2.0f,0.0f,0.0f};
+
+    Transform3D cameraTransform = Transform3D();
+
     Matrix4x4 projection = Matrix4x4::perspective(45.0f * (float)M_PI / 180.0f, 800.0f / 600.0f, 0.01f, 1000.0f);
 
-    Vector3 rotation = {};
-    Vector3 position = {0.0f,0.0f,0.0f};
+
 
     while(window.isOpen()) {
         window.poll();
@@ -89,34 +96,35 @@ int main() {
         float rotateX = inputManager.getAxisAlias("rotateX");
         float rotateY = inputManager.getAxisAlias("rotateY");
 
-        rotation.x += rotateY * 0.03f;
-        rotation.y += rotateX * 0.03f;
+        cameraTransform.rotation.x += rotateY * 0.03f;
+        cameraTransform.rotation.y += rotateX * 0.03f;
 
-        view = Matrix4x4::identity().translate(position).rotate(rotation);
-
-        Vector3 forward = view.forward();
-        Vector3 right = view.right();
-        Vector3 up = view.up();
+        Vector3 forward = cameraTransform.getLocalMatrix().forward();
+        Vector3 right = cameraTransform.getLocalMatrix().right();
+        Vector3 up = cameraTransform.getLocalMatrix().up();
 
         float moveForward = inputManager.getAxisAlias("moveForward");
         float moveRight = inputManager.getAxisAlias("moveRight");
         float moveUp = inputManager.getAxisAlias("moveUp");
 
-        position += forward * moveForward * 0.1f;
-        position += right * moveRight * 0.1f;
-        position += up * moveUp * 0.1f;
+        cameraTransform.position += forward * moveForward * 0.1f;
+        cameraTransform.position += right * moveRight * 0.1f;
+        cameraTransform.position += up * moveUp * 0.1f;
 
         window.draw.begin();
 
         window.draw.clear({0.2,0.2,0.2,1.0});
 
         window.draw.shader(&shader);
-        shader.setUniform<Matrix4x4>("model", model);
-        shader.setUniform<Matrix4x4>("view", view);
+        shader.setUniform<Matrix4x4>("model", transform.getLocalMatrix());
+        shader.setUniform<Matrix4x4>("view", Matrix4x4::identity().translate(cameraTransform.position).rotate(cameraTransform.rotation));
         shader.setUniform<Matrix4x4>("projection", projection);
         //shader.setUniform<float>("time", (float)glfwGetTime());
 
         window.draw.mesh(&mesh);
+
+        shader.setUniform<Matrix4x4>("model", transform2.getLocalMatrix());
+        window.draw.mesh(&mesh2);
 
         window.draw.end();
     }

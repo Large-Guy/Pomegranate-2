@@ -27,7 +27,7 @@ public:
 
     [[nodiscard]] int dot(const Vector2i& v) const;
     [[nodiscard]] int length() const;
-    [[nodiscard]] Vector2i normalized() const;
+    [[nodiscard]] Vector2i normalize() const;
     [[nodiscard]] Vector2i lerp(const Vector2i& v, float t) const;
     [[nodiscard]] Vector2i slerp(const Vector2i& v, float t) const;
     [[nodiscard]] Vector2i nlerp(const Vector2i& v, float t) const;

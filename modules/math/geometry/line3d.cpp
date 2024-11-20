@@ -27,7 +27,7 @@ Line3D &Line3D::operator=(const Line3D &other) {
 }
 
 Vector3 Line3D::direction() const {
-    return (b - a).normalized();
+    return (b - a).normalize();
 }
 
 bool Line3D::contains(const Vector3 &point) const {

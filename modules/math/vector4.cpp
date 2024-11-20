@@ -117,7 +117,7 @@ float Vector4::length() const
     return sqrtf(x * x + y * y + z * z + w * w);
 }
 
-Vector4 Vector4::normalized() const
+Vector4 Vector4::normalize() const
 {
     float len = length();
     return Vector4(x / len, y / len, z / len, w / len);
@@ -130,16 +130,16 @@ Vector4 Vector4::lerp(const Vector4& v, float t) const
 
 Vector4 Vector4::slerp(const Vector4& v, float t) const
 {
-    float dot = normalized().dot(v.normalized());
+    float dot = normalize().dot(v.normalize());
     dot = fmaxf(fminf(dot, 1), -1);
     float theta = acosf(dot) * t;
-    Vector4 relative = (v - *this * dot).normalized();
+    Vector4 relative = (v - *this * dot).normalize();
     return *this * cosf(theta) + relative * sinf(theta);
 }
 
 Vector4 Vector4::nlerp(const Vector4& v, float t) const
 {
-    return lerp(v, t).normalized();
+    return lerp(v, t).normalize();
 }
 
 Vector4 Vector4::cross(const Vector4& v) const

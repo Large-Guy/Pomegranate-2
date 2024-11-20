@@ -47,6 +47,10 @@ public:
 template <typename VertexType>
 class Shader : public ShaderBase{
 public:
+    Shader()
+    {
+        _info = {.renderMode = RENDER_MODE_FILL, .cullMode = CULL_MODE_BACK};
+    }
     Shader(const char* vertex, const char* fragment, RenderInfo info = {.renderMode = RENDER_MODE_FILL, .cullMode = CULL_MODE_BACK})
     {
         _info = info;

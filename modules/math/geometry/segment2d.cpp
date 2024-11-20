@@ -39,7 +39,7 @@ float Segment2D::length() const {
 }
 
 Vector2 Segment2D::normal() const {
-    return Vector2(-(end - start).y, (end - start).x).normalized();
+    return Vector2(-(end - start).y, (end - start).x).normalize();
 }
 
 Vector2 Segment2D::pointAt(float t) const {

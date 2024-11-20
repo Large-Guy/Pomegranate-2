@@ -27,11 +27,11 @@ Line2D &Line2D::operator=(const Line2D &other) {
 }
 
 Vector2 Line2D::direction() const {
-    return (b - a).normalized();
+    return (b - a).normalize();
 }
 
 Vector2 Line2D::normal() const {
-    return Vector2(-(b - a).y, (b - a).x).normalized();
+    return Vector2(-(b - a).y, (b - a).x).normalize();
 }
 
 bool Line2D::contains(const Vector2 &point) const {

@@ -96,7 +96,7 @@ int Vector2i::length() const {
     return sqrtf(x * x + y * y);
 }
 
-Vector2i Vector2i::normalized() const {
+Vector2i Vector2i::normalize() const {
     int l = length();
     return Vector2i(x / l, y / l);
 }
@@ -106,16 +106,16 @@ Vector2i Vector2i::lerp(const Vector2i &v, float t) const {
 }
 
 Vector2i Vector2i::slerp(const Vector2i &v, float t) const {
-    int dot = normalized().dot(v.normalized());
+    int dot = normalize().dot(v.normalize());
     //Clamp
     dot = fmaxf(-1.0f, fminf(1.0f, dot));
     int theta = acosf(dot) * t;
-    Vector2i relative = (v - *this * dot).normalized();
+    Vector2i relative = (v - *this * dot).normalize();
     return *this * cosf(theta) + relative * sinf(theta);
 }
 
 Vector2i Vector2i::nlerp(const Vector2i &v, float t) const {
-    return lerp(v, t).normalized();
+    return lerp(v, t).normalize();
 }
 
 Vector2i Vector2i::cross(const Vector2i &v) const {

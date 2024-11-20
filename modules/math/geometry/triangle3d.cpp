@@ -32,7 +32,7 @@ Triangle3D &Triangle3D::operator=(const Triangle3D &other) {
 }
 
 Vector3 Triangle3D::normal() const {
-    return (b - a).cross(c - a).normalized();
+    return (b - a).cross(c - a).normalize();
 }
 
 Vector3 Triangle3D::center() const {

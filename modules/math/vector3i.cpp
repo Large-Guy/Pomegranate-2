@@ -108,7 +108,7 @@ float Vector3i::length() const
     return sqrtf(x * x + y * y + z * z);
 }
 
-Vector3i Vector3i::normalized() const
+Vector3i Vector3i::normalize() const
 {
     float l = length();
     return Vector3i(x / l, y / l, z / l);
@@ -121,19 +121,19 @@ Vector3i Vector3i::lerp(const Vector3i& v, float t) const
 
 Vector3i Vector3i::slerp(const Vector3i& v, float t) const
 {
-    float dot = normalized().dot(v.normalized());
+    float dot = normalize().dot(v.normalize());
     if (dot < -1.0f)
         dot = -1.0f;
     if (dot > 1.0f)
         dot = 1.0f;
     float theta = acosf(dot) * t;
-    Vector3i relative = (v - *this * dot).normalized();
+    Vector3i relative = (v - *this * dot).normalize();
     return *this * cosf(theta) + relative * sinf(theta);
 }
 
 Vector3i Vector3i::nlerp(const Vector3i& v, float t) const
 {
-    return lerp(v, t).normalized();
+    return lerp(v, t).normalize();
 }
 
 Vector3i Vector3i::cross(const Vector3i& v) const

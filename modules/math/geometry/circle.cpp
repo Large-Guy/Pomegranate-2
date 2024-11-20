@@ -60,7 +60,7 @@ void Circle::cast(const Ray2D &ray, Hit2D &hit) const {
     hit.hit = true;
     hit.point = ray.pointAt(t);
     hit.distance = t;
-    hit.normal = (hit.point - position).normalized();
+    hit.normal = (hit.point - position).normalize();
 }
 
 void Circle::serialize(Archive &a) const {

@@ -117,7 +117,7 @@ float Vector4i::length() const
     return sqrtf(x * x + y * y + z * z + w * w);
 }
 
-Vector4i Vector4i::normalized() const
+Vector4i Vector4i::normalize() const
 {
     float len = length();
     return Vector4i(x / len, y / len, z / len, w / len);
@@ -130,16 +130,16 @@ Vector4i Vector4i::lerp(const Vector4i& v, float t) const
 
 Vector4i Vector4i::slerp(const Vector4i& v, float t) const
 {
-    float dot = normalized().dot(v.normalized());
+    float dot = normalize().dot(v.normalize());
     dot = fmaxf(fminf(dot, 1), -1);
     float theta = acosf(dot) * t;
-    Vector4i relative = (v - *this * dot).normalized();
+    Vector4i relative = (v - *this * dot).normalize();
     return *this * cosf(theta) + relative * sinf(theta);
 }
 
 Vector4i Vector4i::nlerp(const Vector4i& v, float t) const
 {
-    return lerp(v, t).normalized();
+    return lerp(v, t).normalize();
 }
 
 Vector4i Vector4i::cross(const Vector4i& v) const

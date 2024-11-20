@@ -27,6 +27,10 @@ Transform3D::Transform3D(const Transform3D& other) {
     property("rotation", &this->rotation);
 }
 
+Matrix4x4 Transform3D::getLocalMatrix() const {
+    return Matrix4x4::transform(this->position, this->scale, this->rotation);
+}
+
 Vector3 Transform3D::getPosition(Entity& entity) {
     auto* transform = entity.get<Transform3D>();
     if(transform == nullptr)
