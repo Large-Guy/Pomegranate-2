@@ -9,6 +9,8 @@
 #include "shader.h"
 #include "texture2d.h"
 
+class InputManager;
+
 class Window {
 public:
     static Window* _current;
@@ -41,6 +43,8 @@ public:
     Texture2D _colorBuffer;
     GLuint _depthBuffer;
 
+    InputManager* _inputManager;
+
 public:
     Draw draw;
     Window();
@@ -64,11 +68,12 @@ public:
     Vector2i getSize() const;
     std::string getTitle() const;
     [[nodiscard]] bool isOpen() const;
+    InputManager* getInputManager() const;
 
     static Window* getCurrent();
 
     friend Graphics;
-    friend class InputManager;
+    friend InputManager;
     friend class Mouse;
 };
 

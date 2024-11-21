@@ -20,6 +20,7 @@ InputManager::InputManager() {
 
 InputManager::InputManager(Window* window) {
     attachedWindow = window;
+    window->_inputManager = this;
     _keyboard = {};
     _keyboard._inputManager = this;
     _mouse = {};

@@ -46,7 +46,7 @@ void main()
     float diffuse = NdotL;
 
     //Calculate the ambient term
-    float ambient = 0.05;
+    float ambient = 0.15;
 
     //Calculate the final color
     vec3 color = albedo * (diffuse) + ambient;

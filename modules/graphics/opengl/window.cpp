@@ -48,6 +48,8 @@ Window::Window() {
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         Debug::Log::error("Framebuffer is not complete!");
     }
+
+    _current = this;
 }
 
 Window::~Window() {
@@ -150,6 +152,10 @@ bool Window::isOpen() const {
     return this->_open;
 }
 
+InputManager* Window::getInputManager() const {
+    return this->_inputManager;
+}
+
 Window* Window::getCurrent() {
     return _current;
 }
@@ -165,7 +171,6 @@ void Window::Draw::begin() {
 
 void Window::Draw::end() {
     glfwSwapBuffers(this->window->_window);
-    _current = nullptr;
 }
 
 void Window::Draw::clear(Vector4 color) {

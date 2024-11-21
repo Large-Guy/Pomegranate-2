@@ -56,17 +56,17 @@ public:
     [[nodiscard]] void* get(ComponentID component) const;
     [[nodiscard]] void* get(const std::string& component) const;
     template<typename T>
-    T* get()
+    T* get() const
     {
         return (T*) get(ECS::component_ids[typeid(T).hash_code()]);
     }
     template<typename T>
-    T* get(ComponentID component)
+    T* get(ComponentID component) const
     {
         return (T*) get(component);
     }
     template<typename T>
-    T* get(const std::string& component)
+    T* get(const std::string& component) const
     {
         return (T*) get(component);
     }
