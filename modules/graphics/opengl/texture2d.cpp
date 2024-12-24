@@ -41,6 +41,10 @@ Texture2D::Texture2D(int width, int height, TextureFormat format, TextureFilter 
 
 Texture2D::Texture2D(const std::string& path, const std::string& name) : Asset(path, name){
     _id = 0;
+    _width = 0;
+    _height = 0;
+    _format = TEXTURE_FORMAT_RGBA;
+    _data = nullptr;
     //_data = stbi_load(path.c_str(), &_width, &_height, &_channels, 0);
 }
 
