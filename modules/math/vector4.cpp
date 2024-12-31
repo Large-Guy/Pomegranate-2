@@ -1,5 +1,14 @@
 #include "vector4.h"
 
+const Vector4 Vector4::zero = Vector4(0);
+const Vector4 Vector4::one = Vector4(1);
+const Vector4 Vector4::up = Vector4(0, 1, 0, 0);
+const Vector4 Vector4::down = Vector4(0, -1, 0, 0);
+const Vector4 Vector4::left = Vector4(-1, 0, 0, 0);
+const Vector4 Vector4::right = Vector4(1, 0, 0, 0);
+const Vector4 Vector4::forward = Vector4(0, 0, 1, 0);
+const Vector4 Vector4::back = Vector4(0, 0, -1, 0);
+
 Vector4::Vector4()
 {
     x = 0;

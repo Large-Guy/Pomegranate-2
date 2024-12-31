@@ -9,7 +9,7 @@ void Event::on(EventID id, Function callback) {
 }
 
 void Event::on(const std::string& name, Function callback) {
-    EventID id = Event::getEventId(name);
+    EventID id = Event::create(name);
     Event::_events[id].push_back(callback);
 }
 
@@ -17,7 +17,7 @@ EventID Event::createEvent() {
     return Event::_eventCounter++;
 }
 
-EventID Event::getEventId(const std::string &name) {
+EventID Event::create(const std::string &name) {
     if(Event::_eventIndex.count(name)) {
         return Event::_eventIndex[name];
     }
@@ -27,4 +27,8 @@ EventID Event::getEventId(const std::string &name) {
         Event::_eventIndex[name] = id;
         return id;
     }
+}
+
+EventID Event::get(const std::string &name) {
+    return Event::_eventIndex[name];
 }

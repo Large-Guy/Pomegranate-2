@@ -25,10 +25,11 @@ public:
         }
     }
     template <typename... Args> static void emit(const std::string& name, Args... args) {
-        EventID id = getEventId(name);
+        EventID id = create(name);
         emit(id, args...);
     };
-    static EventID getEventId(const std::string& name);
+    static EventID create(const std::string& name); //Creates an event with the given name if it doesn't exist
+    static EventID get(const std::string& name); //Gets the event id of the event with the given name
 };
 
 

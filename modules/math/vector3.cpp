@@ -1,5 +1,14 @@
 #include "vector3.h"
 
+const Vector3 Vector3::zero = Vector3(0);
+const Vector3 Vector3::one = Vector3(1);
+const Vector3 Vector3::up = Vector3(0, 1, 0);
+const Vector3 Vector3::down = Vector3(0, -1, 0);
+const Vector3 Vector3::left = Vector3(-1, 0, 0);
+const Vector3 Vector3::right = Vector3(1, 0, 0);
+const Vector3 Vector3::forward = Vector3(0, 0, 1);
+const Vector3 Vector3::back = Vector3(0, 0, -1);
+
 Vector3::Vector3()
 {
     x = 0;
@@ -152,6 +161,33 @@ Vector3 Vector3::refract(const Vector3& normal, float eta) const
         return Vector3(0.0f);
     else
         return *this * eta - normal * (eta * dot + sqrtf(k));
+}
+
+Vector3 Vector3::rotate(float angle) const
+{
+    float s = sinf(angle);
+    float c = cosf(angle);
+    return Vector3(x * c - y * s, x * s + y * c, z);
+}
+
+Vector3 Vector3::rotate(const Vector3& rotation) const
+{
+    float x = this->x;
+    float y = this->y;
+    float z = this->z;
+    float a = rotation.x;
+    float b = rotation.y;
+    float c = rotation.z;
+    float cosA = cosf(a);
+    float sinA = sinf(a);
+    float cosB = cosf(b);
+    float sinB = sinf(b);
+    float cosC = cosf(c);
+    float sinC = sinf(c);
+    float x1 = x * (cosB * cosC) + y * (cosB * sinC) + z * (-sinB);
+    float y1 = x * (sinA * sinB * cosC - cosA * sinC) + y * (sinA * sinB * sinC + cosA * cosC) + z * (sinA * cosB);
+    float z1 = x * (cosA * sinB * cosC + sinA * sinC) + y * (cosA * sinB * sinC - sinA * cosC) + z * (cosA * cosB);
+    return Vector3(x1, y1, z1);
 }
 
 void Vector3::serialize(Archive& a) const

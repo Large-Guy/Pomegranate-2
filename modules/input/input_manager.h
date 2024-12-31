@@ -20,6 +20,8 @@ private:
     std::array<Gamepad,17> _gamepads; //1 extra for AnyGamepad
     Window* attachedWindow;
 
+    std::unordered_map<std::string, float> _axisPreviousValues;
+
     std::unordered_map<std::string,ButtonAlias> _buttonAliases;
     std::unordered_map<std::string,AxisAlias> _axisAliases;
 public:
@@ -28,32 +30,48 @@ public:
     void update();
     void attachWindow(Window* window);
     Window* getAttachedWindow();
-    void addButtonAlias(const std::string& name, ButtonAlias alias);
-    void addAxisAlias(const std::string& name, AxisAlias alias);
+    ButtonAlias& addButtonAlias(const std::string& name, ButtonAlias alias);
+    AxisAlias& addAxisAlias(const std::string& name, AxisAlias alias);
     void setAxisAliasDeadzone(const std::string& name, float deadzone);
 
     template<typename...Buttons>
-    void addButtonAlias(const std::string& name, Buttons...buttons) {
+    ButtonAlias& addButtonAlias(const std::string& name, Buttons...buttons) {
         if(_buttonAliases.find(name) != _buttonAliases.end()){
             ButtonAlias& alias = _buttonAliases[name];
+            alias._inputManager = this;
+            alias._onIdle = Event::create("@"+name+"-idle");
+            alias._onHeld = Event::create("@"+name+"-held");
+            alias._onPressed = Event::create("@"+name+"-pressed");
+            alias._onReleased = Event::create("@"+name+"-released");
             (alias.addButton(buttons), ...);
-            return;
+            return alias;
         }
         ButtonAlias alias{};
+        alias._inputManager = this;
+        alias._onIdle = Event::create("@"+name+"-idle");
+        alias._onHeld = Event::create("@"+name+"-held");
+        alias._onPressed = Event::create("@"+name+"-pressed");
+        alias._onReleased = Event::create("@"+name+"-released");
         (alias.addButton(buttons), ...);
         _buttonAliases[name] = alias;
+        return _buttonAliases[name];
     }
 
     template<typename...Axes>
-    void addAxisAlias(const std::string& name, Axes...axes) {
+    AxisAlias& addAxisAlias(const std::string& name, Axes...axes) {
         if(_axisAliases.find(name) != _axisAliases.end()){
             AxisAlias& alias = _axisAliases[name];
+            alias._inputManager = this;
+            alias._onChanged = Event::create("@"+name+"-changed");
             (alias.addAxis(axes), ...);
-            return;
+            return alias;
         }
         AxisAlias alias{};
+        alias._inputManager = this;
+        alias._onChanged = Event::create("@"+name+"-changed");
         (alias.addAxis(axes), ...);
         _axisAliases[name] = alias;
+        return _axisAliases[name];
     }
 
 
@@ -61,8 +79,9 @@ public:
     Mouse& getMouse();
     Gamepad& getGamepad(GamepadID gamepad);
 
-    ButtonState getButtonAlias(const std::string& name);
-    float getAxisAlias(const std::string& name);
+    ButtonAlias& getButtonAlias(const std::string& name);
+    AxisAlias& getAxisAlias(const std::string& name);
+    Alias getAlias(const std::string& name);
 };
 
 

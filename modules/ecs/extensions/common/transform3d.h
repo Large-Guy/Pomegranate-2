@@ -15,10 +15,14 @@ struct Transform3D : public Reflectable
 
     Matrix4x4 getLocalMatrix() const;
 
-    static Vector3 getPosition(Entity& entity);
-    static Vector3 getScale(Entity& entity);
-    static Vector3 getRotation(Entity& entity);
-    static Matrix4x4 getMatrix(Entity& entity);
+    static Vector3 getPosition(const Entity& entity);
+    static Vector3 getScale(const Entity& entity);
+    static Vector3 getRotation(const Entity& entity);
+    static Matrix4x4 getMatrix(const Entity& entity);
+    static Matrix4x4 getLocalMatrix(const Entity& entity);
+    static Vector3 getForward(const Entity& entity);
+    static Vector3 getUp(const Entity& entity);
+    static Vector3 getRight(const Entity& entity);
     void serialize(Archive& a) const;
     void deserialize(Archive& a);
 };

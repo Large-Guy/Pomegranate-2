@@ -145,6 +145,34 @@ void InputManager::update() {
             }
         }
     }
+
+    //Iterate over all button aliases
+    for(auto & [name, alias] : _buttonAliases) {
+        ButtonState state = getButtonAlias(name).getState();
+        switch (state) {
+            case BUTTON_IDLE:
+                Event::emit(alias._onIdle);
+                break;
+            case BUTTON_HELD:
+                Event::emit(alias._onHeld);
+                break;
+            case BUTTON_PRESSED:
+                Event::emit(alias._onPressed);
+                break;
+            case BUTTON_RELEASED:
+                Event::emit(alias._onReleased);
+                break;
+        }
+    }
+
+    //Iterate over all axis aliases
+    for(auto & [name, alias] : _axisAliases) {
+        float value = getAxisAlias(name).getState();
+        if(value != _axisPreviousValues[name]) {
+            Event::emit(alias._onChanged, value);
+        }
+        _axisPreviousValues[name] = value;
+    }
 }
 
 void InputManager::attachWindow(Window* window) {
@@ -155,12 +183,27 @@ Window* InputManager::getAttachedWindow() {
     return attachedWindow;
 }
 
-void InputManager::addButtonAlias(const std::string& name, ButtonAlias alias) {
+ButtonAlias& InputManager::addButtonAlias(const std::string& name, ButtonAlias alias) {
     _buttonAliases[name] = std::move(alias);
+    ButtonAlias& buttonAlias = _buttonAliases[name];
+    buttonAlias._inputManager = this;
+    buttonAlias._onIdle = Event::create("@"+name+"-idle");
+    buttonAlias._onHeld = Event::create("@"+name+"-held");
+    buttonAlias._onPressed = Event::create("@"+name+"-pressed");
+    buttonAlias._onReleased = Event::create("@"+name+"-released");
+
+    return buttonAlias;
 }
 
-void InputManager::addAxisAlias(const std::string& name, AxisAlias alias) {
+AxisAlias& InputManager::addAxisAlias(const std::string& name, AxisAlias alias) {
     _axisAliases[name] = std::move(alias);
+
+    AxisAlias& axisAlias = _axisAliases[name];
+    axisAlias._inputManager = this;
+    axisAlias._onChanged = Event::create("@"+name+"-changed");
+
+
+    return axisAlias;
 }
 
 void InputManager::setAxisAliasDeadzone(const std::string& name, float deadzone) {
@@ -183,196 +226,29 @@ Gamepad& InputManager::getGamepad(GamepadID gamepad) {
     return _gamepads[gamepad];
 }
 
-ButtonState InputManager::getButtonAlias(const std::string& name) {
+ButtonAlias& InputManager::getButtonAlias(const std::string& name) {
     if(_buttonAliases.find(name) == _buttonAliases.end()) {
         Debug::Log::warn("Button Alias",name,"not found!");
-        return BUTTON_IDLE;
     }
-    ButtonAlias alias = _buttonAliases[name];
-    auto& options = alias.buttons;
-
-    ButtonState state = BUTTON_IDLE;
-
-    for(auto & option : options) {
-        switch (option.type) {
-            case Button::KEYBOARD: {
-                auto key = (Keyboard::Key)option.button;
-                ButtonState keyState = getKeyboard().getKey(key);
-
-                //Prioritize just pressed and just released
-                if(keyState == BUTTON_PRESSED) {
-                    return BUTTON_PRESSED;
-                }
-                if(keyState == BUTTON_RELEASED) {
-                    state = BUTTON_RELEASED;
-                }
-                if(keyState == BUTTON_HELD) {
-                    state = BUTTON_HELD;
-                }
-                break;
-            }
-            case Button::MOUSE: {
-                auto button = (Mouse::Button)option.button;
-                ButtonState buttonState = getMouse().getButton(button);
-
-                //Prioritize just pressed and just released
-                if(buttonState == BUTTON_PRESSED) {
-                    return BUTTON_PRESSED;
-                }
-                if(buttonState == BUTTON_RELEASED) {
-                    state = BUTTON_RELEASED;
-                }
-                if(buttonState == BUTTON_HELD) {
-                    state = BUTTON_HELD;
-                }
-                break;
-            }
-            case Button::GAMEPAD: {
-                auto gamepad = (GamepadID)option.gamepad;
-                auto button = (Gamepad::Button)option.button;
-                ButtonState buttonState = getGamepad(gamepad).getButton(button);
-
-                //Prioritize just pressed and just released
-                if(buttonState == BUTTON_PRESSED) {
-                    return BUTTON_PRESSED;
-                }
-                if(buttonState == BUTTON_RELEASED) {
-                    state = BUTTON_RELEASED;
-                }
-                if(buttonState == BUTTON_HELD) {
-                    state = BUTTON_HELD;
-                }
-                break;
-            }
-        }
-    }
-
-    return state;
+    ButtonAlias& alias = _buttonAliases[name];
+    return alias;
 }
 
-float InputManager::getAxisAlias(const std::string& name) {
+AxisAlias& InputManager::getAxisAlias(const std::string& name) {
     if (_axisAliases.find(name) == _axisAliases.end()) {
         Debug::Log::warn("Axis Alias", name, "not found!");
-        return 0.0f;
     }
-    AxisAlias alias = _axisAliases[name];
-    auto &options = alias.axes;
+    AxisAlias& alias = _axisAliases[name];
+    return alias;
+}
 
-    std::vector<float> values{};
-    values.reserve(options.size());
-
-    for (auto &option: options) {
-        switch (option.type) {
-            case Axis::KEYBOARD: {
-                auto positive = (Keyboard::Key) option.positive;
-                auto negative = (Keyboard::Key) option.negative;
-
-                float positiveValue = getKeyboard().getKey(positive) == BUTTON_HELD ? 1.0f : 0.0f;
-                float negativeValue = getKeyboard().getKey(negative) == BUTTON_HELD ? -1.0f : 0.0f;
-
-                float value = positiveValue + negativeValue;
-
-                if(option.invert)
-                {
-                    value = -value;
-                }
-
-                values.push_back(value * option.sensitivity);
-                break;
-            }
-            case Axis::MOUSE: {
-                auto axis = (Mouse::Axis) option.mouseAxis;
-
-                float positiveValue = 0.0f;
-
-                switch (axis) {
-                    case Mouse::AXIS_DELTA_X:
-                        positiveValue = getMouse().getDelta().x;
-                        break;
-                    case Mouse::AXIS_DELTA_Y:
-                        positiveValue = getMouse().getDelta().y;
-                        break;
-                    case Mouse::AXIS_SCROLL_X:
-                        positiveValue = getMouse().getScroll().x;
-                        break;
-                    case Mouse::AXIS_SCROLL_Y:
-                        positiveValue = getMouse().getScroll().y;
-                        break;
-                }
-
-                float value = positiveValue;
-
-                if(option.invert)
-                {
-                    value = -value;
-                }
-
-                values.push_back(value * option.sensitivity);
-                break;
-            }
-            case Axis::GAMEPAD_AXIS: {
-                auto gamepad = (GamepadID) option.gamepad;
-                auto axis = (Gamepad::Axis) option.gamepadAxis;
-
-                float value = getGamepad(gamepad).getAxis(axis);
-
-                if(option.invert)
-                {
-                    value = -value;
-                }
-
-                values.push_back(value * option.sensitivity);
-                break;
-            }
-            case Axis::GAMEPAD_BUTTONS: {
-                auto gamepad = (GamepadID) option.gamepad;
-                auto positive = (Gamepad::Button) option.positive;
-                auto negative = (Gamepad::Button) option.negative;
-
-                float positiveValue = getGamepad(gamepad).getButton(positive) == BUTTON_HELD ? 1.0f : 0.0f;
-                float negativeValue = getGamepad(gamepad).getButton(negative) == BUTTON_HELD ? -1.0f : 0.0f;
-
-                float value = positiveValue + negativeValue;
-
-                if(option.invert)
-                {
-                    value = -value;
-                }
-
-                values.push_back(value * option.sensitivity);
-                break;
-            }
-        }
+Alias InputManager::getAlias(const std::string& name) {
+    if(_buttonAliases.find(name) != _buttonAliases.end()) {
+        return _buttonAliases[name];
     }
-
-    float maxValue = 0.0f;
-    for(auto & value : values) {
-        if(abs(value) > abs(maxValue)) {
-            maxValue = value;
-        }
+    if(_axisAliases.find(name) != _axisAliases.end()) {
+        return _axisAliases[name];
     }
-
-    if(abs(maxValue) < alias.deadzone)
-    {
-        return 0.0f;
-    }
-
-    if(alias.snap)
-    {
-        if(maxValue > 0.0f)
-        {
-            return 1.0f;
-        }
-        if(maxValue < 0.0f)
-        {
-            return -1.0f;
-        }
-    }
-
-    if(alias.invert)
-    {
-        return -maxValue;
-    }
-
-    return maxValue;
+    Debug::Log::warn("Alias",name,"not found!");
+    return {};
 }

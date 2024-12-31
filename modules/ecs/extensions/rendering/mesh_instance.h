@@ -6,6 +6,7 @@
 class MeshInstance : Reflectable {
 public:
     MeshBase* mesh;
+    ShaderBase* shader;
 
     MeshInstance();
     MeshInstance(MeshBase* mesh);

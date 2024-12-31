@@ -42,7 +42,14 @@ float Gamepad::getAxis(Gamepad::Axis axis) const {
                 }
             }
         }
+
         return greatestValue;
+    }
+
+
+    if(axis == AXIS_LEFT_Y || axis == AXIS_RIGHT_Y)
+    {
+        return -_axes[axis];
     }
 
     return _axes[axis];

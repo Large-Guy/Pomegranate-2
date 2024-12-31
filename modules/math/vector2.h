@@ -5,6 +5,13 @@
 #include <array>
 
 struct Vector2 {
+    static const Vector2 zero;
+    static const Vector2 one;
+    static const Vector2 up;
+    static const Vector2 down;
+    static const Vector2 left;
+    static const Vector2 right;
+
     float x = 0, y = 0;
     Vector2();
     Vector2(float v);

@@ -27,4 +27,4 @@ target_include_directories(PomegranateInput PUBLIC ${POMEGRANATE_INPUT_INCLUDE_D
 
 find_package(glfw3 REQUIRED)
 
-target_link_libraries(PomegranateInput glfw PomegranateMath PomegranateCore PomegranateGraphics)
+target_link_libraries(PomegranateInput glfw PomegranateMath PomegranateCore PomegranateGraphics PomegranateEvents)

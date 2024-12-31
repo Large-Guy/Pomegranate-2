@@ -12,11 +12,15 @@
 #include "lua/events.h"
 #include "lua/ecs.h"
 
+void testFunc() {
+    Debug::Log::info("Hello World!");
+}
+
 int main() {
 
 #pragma region Events
-    const EventID DRAW = Event::getEventId("DRAW");
-    const EventID UPDATE = Event::getEventId("UPDATE");
+    const EventID DRAW = Event::create("@draw");
+    const EventID UPDATE = Event::create("@update");
 #pragma endregion
 
 #pragma region EcsExtensions
@@ -56,22 +60,39 @@ int main() {
 #pragma region InputManagement
     InputManager inputManager(&window);
 
-    inputManager.addButtonAlias("exit", Keyboard::KEY_ESCAPE, Gamepad::BUTTON_START);
+    auto& exit = inputManager.addButtonAlias("exit", Keyboard::KEY_ESCAPE, Gamepad::BUTTON_START);
+    exit.onPressed(Function::create<void>([](){
+        Debug::Log::info("Exiting...");
+        Window::getCurrent()->close();
+    }));
+
+    auto& forward = inputManager.addAxisAlias("forward",
+                                              Axis(Keyboard::KEY_W, Keyboard::KEY_S),
+                                              Axis(Gamepad::AXIS_RIGHT_Y)
+                                              );
+
+    Event::on("@forward-changed", Function::create<void, float>([](float position){
+        Camera3D::getMain().get<Transform3D>()->position += Transform3D::getForward(Camera3D::getMain()) * position;
+
+    }));
 
 #pragma endregion
 
-    Entity camera = Entity::create();
-    camera.add<Transform3D>()->position = {0.0f,0.0f,-15.0f};
-    camera.add<Camera3D>();
-    Camera3D::setMain(camera);
+    Entity e_camera = Entity::create();
+    e_camera.add<Transform3D>()->position = {0.0f,0.0f,-15.0f};
+    e_camera.add<Camera3D>();
+    Camera3D::setMain(e_camera);
+
+    Entity e_sphere = Entity::create();
+    e_sphere.add<Transform3D>();
+    auto* instance = e_sphere.add<MeshInstance>();
+    instance->mesh = &sphere;
+    instance->shader = &shader;
 
     Event::on(DRAW, Function::create<void>(Extensions::Rendering::render3d));
     Event::on(UPDATE, Function::create<void,float>([](float deltaTime){
         InputManager* inputManager = Window::getCurrent()->getInputManager();
-
-        if(inputManager->getButtonAlias("exit")) {
-            Window::getCurrent()->close();
-        }
+        Debug::Log::info(1.0/deltaTime);
     }));
 
     float deltaTime = 0.016f;
@@ -97,8 +118,6 @@ int main() {
 
         deltaTime = (float)glfwGetTime() - lastFrame;
         lastFrame = (float)glfwGetTime();
-
-        Debug::Log::info("FPS: " + std::to_string(1.0f / deltaTime));
     }
 
     return 0;

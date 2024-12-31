@@ -1,18 +1,15 @@
 #ifndef POMEGRANATE_ENGINE_ECS_RENDERING_H
 #define POMEGRANATE_ENGINE_ECS_RENDERING_H
 
-#include "mesh.h"
-#include "material.h"
+#include "mesh_instance.h"
 #include "camera3d.h"
 #include "ecs/extensions/common/common.h"
 
 namespace Extensions::Rendering {
     ComponentID MESH_INSTANCE;
-    ComponentID MATERIAL;
     ComponentID CAMERA;
     void init() {
         MESH_INSTANCE = Component::create<MeshInstance>("MeshInstance");
-        MATERIAL = Component::create<Material>("Material");
         CAMERA = Component::create<Camera3D>("Camera");
     }
 
@@ -35,14 +32,13 @@ namespace Extensions::Rendering {
 
         ECS::each<MeshInstance>(MESH_INSTANCE, [&](MeshInstance* meshInstance, Entity& entity){
             ShaderBase* shader = nullptr;
-            if(entity.has<Material>())
+            if(meshInstance->shader != nullptr)
             {
-                Material* material = entity.get<Material>();
-                shader = material->shader;
+                shader = meshInstance->shader;
             }
             else
             {
-                Debug::Log::warn("Entity does not have a material!");
+                Debug::Log::warn("No shader for mesh instance!");
                 return;
             }
 

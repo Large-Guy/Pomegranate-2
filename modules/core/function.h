@@ -61,7 +61,7 @@ private:
     FunctionBase* _function;
 public:
     explicit Function();
-    explicit Function(const Function& function);
+    Function(const Function& function);
     explicit Function(FunctionBase* function);
     ~Function();
 

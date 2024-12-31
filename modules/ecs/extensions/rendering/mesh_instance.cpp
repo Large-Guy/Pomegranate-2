@@ -1,4 +1,4 @@
-#include "mesh.h"
+#include "mesh_instance.h"
 
 MeshInstance::MeshInstance() {
     this->mesh = nullptr;

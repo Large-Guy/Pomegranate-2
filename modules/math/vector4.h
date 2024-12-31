@@ -5,6 +5,15 @@
 #include <array>
 
 struct Vector4 {
+    static const Vector4 zero;
+    static const Vector4 one;
+    static const Vector4 up;
+    static const Vector4 down;
+    static const Vector4 left;
+    static const Vector4 right;
+    static const Vector4 forward;
+    static const Vector4 back;
+
     float x = 0, y = 0, z = 0, w = 0;
     Vector4();
     Vector4(float v);

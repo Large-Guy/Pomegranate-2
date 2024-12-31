@@ -31,7 +31,7 @@ Matrix4x4 Transform3D::getLocalMatrix() const {
     return Matrix4x4::transform(this->position, this->scale, this->rotation);
 }
 
-Vector3 Transform3D::getPosition(Entity& entity) {
+Vector3 Transform3D::getPosition(const Entity& entity) {
     auto* transform = entity.get<Transform3D>();
     if(transform == nullptr)
     {
@@ -45,7 +45,7 @@ Vector3 Transform3D::getPosition(Entity& entity) {
     return transform->position;
 }
 
-Vector3 Transform3D::getScale(Entity& entity) {
+Vector3 Transform3D::getScale(const Entity& entity) {
     auto* transform = entity.get<Transform3D>();
     if(transform == nullptr)
     {
@@ -59,7 +59,7 @@ Vector3 Transform3D::getScale(Entity& entity) {
     return transform->scale;
 }
 
-Vector3 Transform3D::getRotation(Entity& entity) {
+Vector3 Transform3D::getRotation(const Entity& entity) {
     auto *transform = entity.get<Transform3D>();
     if (transform == nullptr) {
         return {};
@@ -72,7 +72,7 @@ Vector3 Transform3D::getRotation(Entity& entity) {
 }
 
 
-Matrix4x4 Transform3D::getMatrix(Entity& entity) {
+Matrix4x4 Transform3D::getMatrix(const Entity& entity) {
     auto* transform = entity.get<Transform3D>();
     if(transform == nullptr)
     {
@@ -82,6 +82,45 @@ Matrix4x4 Transform3D::getMatrix(Entity& entity) {
     Vector3 scale = getScale(entity);
     Vector3 rotation = getRotation(entity);
     return Matrix4x4().rotateZ(rotation.z).rotateY(rotation.y).rotateX(rotation.x).scale(scale).translate(position);
+}
+
+Matrix4x4 Transform3D::getLocalMatrix(const Entity& entity) {
+    auto* transform = entity.get<Transform3D>();
+    if(transform == nullptr)
+    {
+        return {};
+    }
+    return transform->getLocalMatrix();
+}
+
+Vector3 Transform3D::getForward(const Entity& entity) {
+    auto* transform = entity.get<Transform3D>();
+    if(transform == nullptr)
+    {
+        return {};
+    }
+    Matrix4x4 matrix = getMatrix(entity);
+    return matrix.forward();
+}
+
+Vector3 Transform3D::getUp(const Entity& entity) {
+    auto* transform = entity.get<Transform3D>();
+    if(transform == nullptr)
+    {
+        return {};
+    }
+    Matrix4x4 matrix = getMatrix(entity);
+    return matrix.up();
+}
+
+Vector3 Transform3D::getRight(const Entity& entity) {
+    auto* transform = entity.get<Transform3D>();
+    if(transform == nullptr)
+    {
+        return {};
+    }
+    Matrix4x4 matrix = getMatrix(entity);
+    return matrix.right();
 }
 
 void Transform3D::serialize(Archive& a) const {

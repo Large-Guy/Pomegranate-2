@@ -5,6 +5,15 @@
 #include <array>
 
 struct Vector3{
+    static const Vector3 zero;
+    static const Vector3 one;
+    static const Vector3 up;
+    static const Vector3 down;
+    static const Vector3 left;
+    static const Vector3 right;
+    static const Vector3 forward;
+    static const Vector3 back;
+
     float x = 0, y = 0, z = 0;
     Vector3();
     Vector3(float v);
@@ -33,6 +42,8 @@ struct Vector3{
     [[nodiscard]] Vector3 cross(const Vector3& v) const;
     [[nodiscard]] Vector3 reflect(const Vector3& normal) const;
     [[nodiscard]] Vector3 refract(const Vector3& normal, float eta) const;
+    [[nodiscard]] Vector3 rotate(float angle) const;
+    [[nodiscard]] Vector3 rotate(const Vector3& rotation) const;
     //Vector3 rotate(float angle) const;
     //Vector3 rotate(const Vector3& pivot, float angle) const;
 
