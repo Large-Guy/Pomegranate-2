@@ -3,6 +3,7 @@
 #include <core/serializable.h>
 #include <cmath>
 #include <array>
+#include "vector_types.h"
 
 class Vector2i{
 public:
@@ -24,6 +25,14 @@ public:
     void operator*=(int v);
     void operator/=(int v);
     bool operator==(const Vector2i& v) const;
+
+    operator Vector2() const;
+    operator Vector3() const;
+    operator Vector3i() const;
+    operator Vector4() const;
+    operator Vector4i();
+
+
 
     [[nodiscard]] int dot(const Vector2i& v) const;
     [[nodiscard]] int length() const;

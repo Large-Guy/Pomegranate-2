@@ -19,6 +19,9 @@ struct Matrix3x3 {
     [[nodiscard]] Matrix3x3 scale(Vector2 scale) const;
     [[nodiscard]] Matrix3x3 rotate(float angle) const;
     [[nodiscard]] Matrix3x3 dot(const Matrix3x3& m) const;
+    [[nodiscard]] Vector3 forward() const;
+    [[nodiscard]] Vector3 right() const;
+    [[nodiscard]] Vector3 up() const;
 
     Matrix3x3 operator*(const Matrix3x3& m) const;
     Vector3 operator*(const Vector3& v) const;

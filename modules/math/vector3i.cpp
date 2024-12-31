@@ -1,4 +1,9 @@
 #include "vector3i.h"
+#include "vector2.h"
+#include "vector3.h"
+#include "vector2i.h"
+#include "vector4.h"
+#include "vector4i.h"
 
 Vector3i::Vector3i()
 {
@@ -170,3 +175,24 @@ std::array<int, 3> Vector3i::get() const
 {
     return {x, y, z};
 }
+
+Vector3i::operator Vector2() const {
+    return {(float)x, (float)y};
+}
+
+Vector3i::operator Vector2i() const {
+    return {x, y};
+}
+
+Vector3i::operator Vector3() const {
+    return {(float)x, (float)y, (float)z};
+}
+
+Vector3i::operator Vector4() const {
+    return {(float)x, (float)y, (float)z, 0.0f};
+}
+
+Vector3i::operator Vector4i() const {
+    return {x, y, z, 0};
+}
+

@@ -3,6 +3,11 @@
 #include <core/serializable.h>
 #include <cmath>
 #include <array>
+#include "vector2i.h"
+#include "vector3.h"
+#include "vector3i.h"
+#include "vector4.h"
+#include "vector4i.h"
 
 struct Vector2 {
     static const Vector2 zero;
@@ -30,6 +35,12 @@ struct Vector2 {
     void operator*=(float v);
     void operator/=(float v);
     bool operator==(const Vector2& v) const;
+
+    operator Vector2i() const;
+    operator Vector3() const;
+    operator Vector3i() const;
+    operator Vector4() const;
+    operator Vector4i() const;
 
     [[nodiscard]] float dot(const Vector2& v) const;
     [[nodiscard]] float length() const;

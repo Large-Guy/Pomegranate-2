@@ -1,4 +1,9 @@
 #include "vector2.h"
+#include "vector3.h"
+#include "vector2i.h"
+#include "vector3i.h"
+#include "vector4.h"
+#include "vector4i.h"
 
 const Vector2 Vector2::zero = Vector2(0);
 const Vector2 Vector2::one = Vector2(1);
@@ -161,4 +166,24 @@ void Vector2::serialize(Archive& a) const
 void Vector2::deserialize(Archive& a)
 {
     a >> x >> y;
+}
+
+Vector2::operator Vector2i() const {
+    return {(int)x, (int)y};
+}
+
+Vector2::operator Vector3() const {
+    return {x, y, 0};
+}
+
+Vector2::operator Vector3i() const {
+    return {(int)x, (int)y, 0};
+}
+
+Vector2::operator Vector4() const {
+    return {x, y, 0, 0};
+}
+
+Vector2::operator Vector4i() const {
+    return {(int)x, (int)y, 0, 0};
 }

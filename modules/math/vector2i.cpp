@@ -1,4 +1,9 @@
 #include "vector2i.h"
+#include "vector3.h"
+#include "vector2.h"
+#include "vector3i.h"
+#include "vector4.h"
+#include "vector4i.h"
 
 Vector2i::Vector2i()
 {
@@ -155,4 +160,24 @@ void Vector2i::deserialize(Archive& a) {
 
 std::array<int, 2> Vector2i::get() const {
     return {x, y};
+}
+
+Vector2i::operator Vector2() const {
+    return {(float)x, (float)y};
+}
+
+Vector2i::operator Vector3() const {
+    return {(float)x, (float)y, 0.0f};
+}
+
+Vector2i::operator Vector3i() const {
+    return {x, y, 0};
+}
+
+Vector2i::operator Vector4() const {
+    return {(float)x, (float)y, 0.0f, 0.0f};
+}
+
+Vector2i::operator Vector4i() {
+    return {x, y, 0, 0};
 }

@@ -11,6 +11,7 @@ set(POMEGRANATE_MATH_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vector4.h
         ${CMAKE_CURRENT_SOURCE_DIR}/vector4i.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vector4i.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector_types.h
         ${CMAKE_CURRENT_SOURCE_DIR}/matrix2x2.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/matrix2x2.h
         ${CMAKE_CURRENT_SOURCE_DIR}/matrix3x3.cpp

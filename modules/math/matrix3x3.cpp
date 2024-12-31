@@ -96,6 +96,18 @@ Matrix3x3 Matrix3x3::dot(const Matrix3x3& m) const {
     );
 }
 
+Vector3 Matrix3x3::forward() const {
+    return Vector3(z.x, z.y, z.z);
+}
+
+Vector3 Matrix3x3::right() const {
+    return Vector3(x.x, x.y, x.z);
+}
+
+Vector3 Matrix3x3::up() const {
+    return Vector3(y.x, y.y, y.z);
+}
+
 Matrix3x3 Matrix3x3::operator*(const Matrix3x3& m) const {
     return dot(m);
 }

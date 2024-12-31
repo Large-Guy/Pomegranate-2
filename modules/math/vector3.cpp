@@ -1,4 +1,9 @@
 #include "vector3.h"
+#include "vector2.h"
+#include "vector2i.h"
+#include "vector3i.h"
+#include "vector4.h"
+#include "vector4i.h"
 
 const Vector3 Vector3::zero = Vector3(0);
 const Vector3 Vector3::one = Vector3(1);
@@ -203,4 +208,24 @@ void Vector3::deserialize(Archive& a)
 std::array<float, 3> Vector3::get() const
 {
     return {x, y, z};
+}
+
+Vector3::operator Vector2() const {
+    return {x, y};
+}
+
+Vector3::operator Vector2i() const {
+    return {(int)x, (int)y};
+}
+
+Vector3::operator Vector3i() const {
+    return {(int)x, (int)y, (int)z};
+}
+
+Vector3::operator Vector4() const {
+    return {x, y, z, 0};
+}
+
+Vector3::operator Vector4i() const {
+    return {(int)x, (int)y, (int)z, 0};
 }
